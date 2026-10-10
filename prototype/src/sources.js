@@ -2,6 +2,8 @@
    Fontes de dados: módulos de ligação e importador CSV com validação de proveniência.
    Extras do Observar da SPV (notícias, sazonalidade, recolha seletiva).
    ============================================================ */
+// LIGAÇÃO[*]: cada módulo abaixo corresponde a uma fonte. O campo «st» (estado) passa a «ok» quando a fonte estiver ligada.
+// Ponto de ligação de cada um: docs/09-pontos-de-ligacao.md.
 const MODS=[
  {n:"Meta Ad Library",ty:"Anúncios",how:"API (Graph)",st:["wip","Simulado na demo"],desc:"Anúncios entregues na UE, incluindo comerciais: texto, datas, plataformas e alcance na UE. Não devolve investimento nem segmentação em anúncios comerciais.",flds:["page_name","ad_creative_bodies","ad_delivery_start_time","ad_delivery_stop_time","publisher_platforms","eu_total_reach","ad_snapshot_url"],cob:"Anúncios entregues na UE; os comerciais ficam cerca de 1 ano",reg:"Fonte pública oficial. O token exige identidade confirmada; aprovação de IT e Compliance",own:"Radar · scripts/collect_meta_ads.py",csv:1},
  {n:"Google Ads Transparency Center",ty:"Anúncios",how:"Consulta manual ou CSV",st:["wip","Manual + importador"],desc:"Anúncios por anunciante em pesquisa, YouTube e display, com datas e formatos. Não tem API oficial.",flds:["anunciante","formato","plataforma","primeira_vez_visto","ultima_vez_visto","regiao"],cob:"Por anunciante e região",reg:"Fonte pública. Recolha manual até haver forma aprovada de automatizar",own:"Equipa · manual",csv:1},

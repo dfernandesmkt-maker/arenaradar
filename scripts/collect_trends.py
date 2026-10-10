@@ -1,4 +1,6 @@
-"""Recolhe interesse de pesquisa do Google Trends por cluster.
+"""LIGAÇÃO[google-trends] — contrato de dados e responsáveis em docs/09-pontos-de-ligacao.md.
+
+Recolhe interesse de pesquisa do Google Trends por cluster.
 
 Usa pytrends (biblioteca não oficial, arquivada em 2025, funciona só em parte).
 Se falhar: exportar CSV manualmente em trends.google.com para

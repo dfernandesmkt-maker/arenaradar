@@ -2,10 +2,15 @@
    Concorrência (vertical Energia): modelo demo, gráficos, filtros e separadores.
    Todos os dados são simulados (origem: demo) e usam marcas fictícias.
    Em produção, cada série vem de um módulo de Fontes de dados.
+   LIGAÇÃO[meta-ad-library] LIGAÇÃO[google-ads-transparency] LIGAÇÃO[tiktok-ad-library] LIGAÇÃO[marktest-adcheck]:
+   os blocos CR (criativos), AD/NA (anúncios ativos e novos) e PC (investimento por plataforma) são gerados aqui.
+   Para ligar uma fonte real, substituir o gerador por dados lidos de data/processed/<cliente>.json
+   (contrato de dados e responsáveis em docs/09-pontos-de-ligacao.md).
    ============================================================ */
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const MW=26, WB=13, mLab=i=>wLab(WB+i);
+// LIGAÇÃO[marktest-adcheck] PC = investimento de referência por plataforma (hoje fixo). Fonte real: ad intelligence licenciada.
 const PL=["Meta","Google","YouTube","TikTok"], PW={Meta:1,Google:.9,YouTube:1.15,TikTok:.8}, PC={Meta:420,Google:360,YouTube:540,TikTok:300};
 const FM=["Vídeo","Imagem","Carrossel","Texto"], TH=["Preço","Sustentabilidade","Simplicidade","App e inovação","Família"];
 const RAMP=["var(--r1)","var(--r2)","var(--r3)","var(--r4)"];
@@ -42,6 +47,9 @@ const CTA=["Saber mais","Simular poupança","Pedir proposta","Mudar agora"];
 function pickFmt(p,b,r){const w=p==="TikTok"?[1,0,0,0]:p==="YouTube"?[.92,.08,0,0]:p==="Google"?[.1,.25,0,.65]:[.42,.28,.30,0];
  if(b==="aurea")w[0]*=1.4;if(b==="helio"){w[3]*=1.3;w[0]*=.7}if(b==="voltix"&&p==="Meta")w[2]*=1.6;
  const t=w.reduce((a,c)=>a+c,0);let x=r()*t;for(let i=0;i<4;i++){x-=w[i];if(x<=0)return i}return 0}
+// LIGAÇÃO[meta-ad-library] LIGAÇÃO[google-ads-transparency] LIGAÇÃO[tiktok-ad-library]
+// CR = um registo por criativo (marca, plataforma, formato, datas, texto, origem). Fonte real: um registo por anúncio
+// recolhido (scripts/collect_meta_ads.py hoje; Google e TikTok a acrescentar). Campos e mapeamento: docs/09-pontos-de-ligacao.md.
 const CR=[];
 (()=>{const r=rng(2026);
  FL.forEach((f,fi)=>{const len=f.e-f.s+1,n=Math.max(2,Math.round(f.int*len/3.5));

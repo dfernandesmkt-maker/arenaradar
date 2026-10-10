@@ -1,4 +1,6 @@
-"""Recolhe notícias do Google News RSS (PT) para as queries do cliente."""
+"""LIGAÇÃO[news-rss] — contrato de dados e responsáveis em docs/09-pontos-de-ligacao.md.
+
+Recolhe notícias do Google News RSS (PT) para as queries do cliente."""
 from __future__ import annotations
 
 import argparse

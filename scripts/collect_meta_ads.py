@@ -1,4 +1,6 @@
-"""Recolhe anúncios da Meta Ad Library API entregues em Portugal.
+"""LIGAÇÃO[meta-ad-library] — contrato de dados e responsáveis em docs/09-pontos-de-ligacao.md.
+
+Recolhe anúncios da Meta Ad Library API entregues em Portugal.
 
 Requisitos: identidade confirmada na Meta, app de programador e token em .env.
 Por força do DSA, a API cobre todos os anúncios entregues na UE (ad_type=ALL).
