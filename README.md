@@ -18,6 +18,7 @@ Conceito e protótipo de alta fidelidade concluídos. Dados reais, motor de leit
 | `docs/04-dados-e-fontes.md` | Fontes, viabilidade e política de proveniência |
 | `docs/05-backlog.md` | Tarefas priorizadas, prontas a executar |
 | `docs/06-arranque-claude-code.md` | Como pôr isto a andar no Claude Code |
+| `docs/07-revisao-ux-e-estrutura.md` | Revisão de UX/UI e de estrutura, com proposta de solução (rascunho) |
 | `docs/legacy/` | Documentos antigos (documento estratégico de abril) |
 | `config/clients/` | Configuração por cliente (o Radar é agnóstico ao cliente) |
 | `scripts/` | Recolha de dados: notícias, Google Trends, Meta Ad Library |
