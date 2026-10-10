@@ -15,9 +15,9 @@ function pageCriativos(){
   use("anuncios");
   const body=`${filterBar({platforms:true,brands:true,compare:false})}
    <div class="gtool" style="margin-top:16px"><div class="seg" id="gsort"><button data-sort="rec" aria-pressed="${S.sort==="rec"}">Mais recentes</button><button data-sort="long" aria-pressed="${S.sort==="long"}">Mais longevos</button></div>
-    ${FM.filter(f=>f!=="Não indicado").map(f=>`<button class="fchip" data-gfm="${esc(f)}" aria-pressed="${S.fm.has(f)}">${esc(f)}</button>`).join("")}
-    <button class="fchip" data-gon="1" aria-pressed="${S.only}">Só ativos</button>
-    ${b?`<button class="fchip" data-clrb="1" aria-pressed="true"><i style="background:${col(b)}"></i>${esc(b.nome)} ✕</button>`:""}
+    ${FM.filter(f=>f!=="Não indicado").map(f=>`<button class="tgl" data-gfm="${esc(f)}" aria-pressed="${S.fm.has(f)}">${esc(f)}</button>`).join("")}
+    <button class="tgl" data-gon="1" aria-pressed="${S.only}">Só ativos</button>
+    ${b?`<button class="tgl" data-clrb="1" aria-pressed="true"><i style="background:${col(b)}"></i>${esc(b.nome)} ✕</button>`:""}
     <span style="flex:1"></span><span class="t-sm muted">${nf(list.length)} criativos</span></div>
    ${shown.length?`<div class="gal">${shown.map(c=>{const e=ebyid(c.b),nm=e?e.nome:(c.bn||c.b);return`<button class="cr" data-cr="${esc(c.id)}" aria-label="Abrir criativo de ${esc(nm)}" data-src="anuncios">${thumb(c)}<div class="cm"><b><i style="background:${e?col(e):"#6b7a77"}"></i>${esc(nm)}</b><div class="r2"><span class="tag">${c.p}</span><span class="tag">${esc(FM[c.fm])}</span>${c.th>=0?`<span class="tag">${esc(TH[c.th])}</span>`:""}</div><span>${isOn(c)?"Ativo":"Terminado"} · desde ${dateOf(c)} · ${c.days} dias</span></div></button>`}).join("")}</div>
    ${list.length>shown.length?`<p style="margin-top:16px"><button class="btn" data-more="1">Ver mais ${Math.min(12,list.length-shown.length)}</button></p>`:""}`:`<div class="lockcard">Nenhum criativo com estes filtros. Alarga o período ou limpa os formatos.</div>`}

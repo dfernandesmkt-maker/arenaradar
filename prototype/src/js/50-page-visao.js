@@ -24,9 +24,9 @@ function sigCardCli(s,i){
 function sigMeter(s){
   if(s.limiar==null||s.valor==null||!+s.limiar)return"";
   const v=Math.abs(s.valor),l=Math.abs(s.limiar),pc=clamp(v/(l*2)*100,3,100),d=v<10?1:0,u=s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%";
-  return`<div class="meter" role="meter" aria-valuemin="0" aria-valuemax="${nf(l*2,d)}" aria-valuenow="${nf(v,d)}" aria-label="Valor face ao limiar" data-tip="Valor observado face ao limiar definido para este tipo de sinal">
+  return`<div class="lmeter" role="meter" aria-valuemin="0" aria-valuemax="${nf(l*2,d)}" aria-valuenow="${nf(v,d)}" aria-label="Valor face ao limiar" data-tip="Valor observado face ao limiar definido para este tipo de sinal">
    <div class="mb"><i class="${v>=l?"ok":""}" style="width:${pc.toFixed(0)}%"></i><u></u></div>
-   <div class="ml"><span><b>${nf(v,d)}${u}</b> observado</span><span>limiar ${nf(l,d)}${u}</span></div></div>`}
+   <div class="ml"><span><b>${nf(v,d)}${u}</b> ${s.janela_curta?(s.janela_curta.startsWith("vs")?s.janela_curta:"em "+s.janela_curta):"observado"}</span><span>limiar ${nf(l,d)}${u}</span></div></div>`}
 function sigCard(s,i){
   if(isCli())return sigCardCli(s,i);
   const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),pub=D.pub.cartoes.includes(s.id);
@@ -61,7 +61,7 @@ function mainChartHTML(){
     return cardHTML("Anúncios ativos por plataforma",`Soma das marcas do conjunto. ${top?`<b>${top.n}</b> concentra ${nf(top.v/tot*100)}% dos anúncios ativos esta semana.`:""}`,`${legendHTML(ser)}<div class="cv" id="mc"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}
   if(D.procura){
     const pr=D.procura.principais||D.procura.series.map(s=>s.id),ser=D.procura.series.filter(s=>pr.includes(s.id)),a0=W.a0,xl=i=>wLab(a0+i);
-    const S2=ser.map(s=>({id:s.id,n:s.nome,c:CAT[s.cor%5],d:s.valores.slice(a0,Z+1)})),ev=(D.eventos||[]).map(e=>({i:e.semana-a0,t:e.titulo}));
+    const S2=ser.map(s=>({id:s.id,n:s.nome,c:procC(s,D.procura.series.indexOf(s)),d:s.valores.slice(a0,Z+1)})),ev=(D.eventos||[]).map(e=>({i:e.semana-a0,t:e.titulo}));
     later(()=>tsChart($("#mc"),{series:S2,type:"line",ymax:100,events:ev,xl,fmt:v=>nf(v),aria:"Interesse de pesquisa por tema"},true));
     return cardHTML("Procura por tema",`Interesse de pesquisa em Portugal, de 0 a 100. <a href="#" data-go="procura" style="color:var(--brand-ink);font-weight:600">Abrir Procura e notícias</a>.`,`${legendHTML(S2,true)}<div class="cv" id="mc"></div>${tableHTML({series:S2,xl,fmt:nf})}`,"procura")}
   return""}
@@ -74,7 +74,7 @@ function detailHTML(){
     const rows=[...bs].sort((a,b)=>press(b.id,W.z)-press(a.id,W.z)).map(e=>{const a1=act(e.id,W.z),a2=W.canP?act(e.id,W.z-W.w):null,nw=sumR(neu,e.id,W.a0,W.z),i=bs.indexOf(e);
       return`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${dot(e)}${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td class="n">${nf(a1)}</td><td class="n">${a2!=null&&a2>=3?dchip(pctd(a1,a2)):`<span class="muted">—</span>`}</td><td class="n">${nf(sv[e.id],1)}%</td><td class="n">${svp?dchip(sv[e.id]-svp[e.id],"p.p."):`<span class="muted">—</span>`}</td><td class="n">${nf(nw)}</td><td class="n">${eur(sp[i])}</td></tr>`}).join("");
     use("investimento");
-    return secHTML("Marcas em comparação","Clica numa marca para ver o detalhe.",`<p class="tbtn" style="margin:-4px 0 8px;text-align:right"><button class="btn ghost sm" type="button" data-copytbl>Copiar tabela</button></p><div class="panel tblwrap"><table><thead><tr><th>Marca</th><th class="n">Anúncios ativos</th><th class="n">Variação</th><th class="n">Quota de voz</th><th class="n">Variação</th><th class="n">Novos no período</th><th class="n">Investimento est.</th></tr></thead><tbody>${rows}</tbody></table></div>`,"anuncios")}
+    return secHTML("Marcas em comparação","Clica numa marca para ver o detalhe.",`<p class="tbtn" style="margin:-4px 0 8px;text-align:right"><button class="btn ghost sm" type="button" data-copytbl>Copiar tabela</button></p><div class="panel tblwrap"><table><thead><tr><th>Marca</th><th class="n">Anúncios ativos</th><th class="n">Variação${W.canP?`<small class="thw">vs há ${W.w} sem.</small>`:""}</th><th class="n">Quota de voz</th><th class="n">Variação${W.canP?`<small class="thw">vs há ${W.w} sem.</small>`:""}</th><th class="n">Novos no período</th><th class="n">Investimento est.</th></tr></thead><tbody>${rows}</tbody></table></div>`,"anuncios")}
   use("voz");const vz=Object.fromEntries((D.voz||[]).map(v=>[v.entidade,v])),cel=v=>v==null?`<span class="ghost">Por recolher</span>`:nf(v);
   return secHTML("Quem comunica sobre o tema","Entidades do universo e o que já foi recolhido sobre cada uma.",`<div class="panel tblwrap"><table><thead><tr><th>Entidade</th><th>Papel</th><th>Prioridade</th><th>Anúncios Meta</th><th>Notícias</th></tr></thead><tbody>${D.entidades.map(e=>`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td>${esc(e.papel)}</td><td>${esc(e.prioridade&&e.prioridade!=="cliente"?e.prioridade:"—")}</td><td>${cel((vz[e.id]||{}).anuncios_meta)}</td><td>${cel((vz[e.id]||{}).noticias)}</td></tr>`).join("")}</tbody></table></div>${BLK("voz").origem==="pendente"?`<p class="t-sm muted" style="margin-top:10px">Estes campos preenchem-se com dados reais (Meta Ad Library, notícias). O Radar nunca inventa números sobre entidades de terceiros.</p>`:""}`,"voz")}
 

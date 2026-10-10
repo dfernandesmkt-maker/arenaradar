@@ -347,6 +347,16 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
     else:
         sg, ps = signals.sinais_tema(cfg, series_prim, {i["id"]: i for i in indicadores}, lim, z, blocos)
 
+    # --- o que mudou face à semana anterior: sinais novos e sinais que deixaram de estar acima do limiar
+    resolvidos: list[dict] = []
+    if sg:
+        if tipo == "concorrencia":
+            sg_ant, _ = signals.sinais_concorrencia(ents, ad_aggr[0], ad_aggr[1], anuncios, plats, lim, z - 1, inicio,
+                                                    blocos["anuncios"]["origem"])
+        else:
+            sg_ant, _ = signals.sinais_tema(cfg, series_prim, {i["id"]: i for i in indicadores}, lim, z - 1, blocos)
+        resolvidos = signals.comparar_semana_anterior(sg, sg_ant)
+
     # --- leilão (depende da quota Google de cada marca)
     leilao = None
     if tipo == "concorrencia" and ad_aggr and "Google" in pn:
@@ -383,7 +393,7 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
         "anuncios": {"bloco": "anuncios", "itens": anuncios} if anuncios is not None else None,
         "contexto": {"indicadores": indicadores, "variacoes": variacoes} if indicadores else None,
         "agenda": agenda or None, "eventos": eventos, "sazonalidade": saz, "leilao": {"bloco": "leilao", "itens": leilao} if leilao else None,
-        "voz": voz, "sinais": sg, "pistas": ps, "pulso": pulso,
+        "voz": voz, "sinais": sg, "sinais_resolvidos": resolvidos, "pistas": ps, "pulso": pulso,
         "internos": internos,
     }
 

@@ -4,7 +4,8 @@
    ============================================================ */
 const CUR={refresh:()=>{}};   // página ativa: o router define refresh() para refazer só o conteúdo
 
-const dot=e=>`<i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${col(e)};margin-right:8px;flex:none"></i>`;
+const dotc=c=>`<i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${c};margin-right:8px;flex:none"></i>`;
+const dot=e=>dotc(col(e));
 const tag=t=>`<span class="tag">${t}</span>`;
 const dchip=(d,unit="%")=>{const tp=unit==="p.p."?` data-tip="Pontos percentuais: diferença entre duas quotas"`:"";if(d===null||d===undefined||isNaN(d))return`<span class="dchip">—</span>`;const up=d>0.5,dn=d<-0.5;return`<span class="dchip ${up?"up":dn?"dn":""}"${tp}>${up?"▲":dn?"▼":"•"} ${sgn(Math.round(d*10)/10,Math.abs(d)<10&&unit!=="%"?1:0)}${unit==="%"?"%":" "+unit}</span>`};
 

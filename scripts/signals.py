@@ -38,6 +38,27 @@ def matriz_anuncios(anuncios: list[dict], marcas: list[str], plataformas: list[s
     return ad, na
 
 
+def _d(rotulo: str, valor: float, dec: int = 0, sufixo: str = "") -> dict:
+    """Um número que explica o sinal («Porquê?»): rótulo, valor, casas decimais e sufixo."""
+    return {"rotulo": rotulo, "valor": round(valor, 2), "dec": dec, "sufixo": sufixo}
+
+
+def comparar_semana_anterior(atuais: list[dict], anteriores: list[dict]) -> list[dict]:
+    """Marca cada sinal como novo (acima do limiar agora e não na semana anterior) e devolve os que deixaram de estar."""
+    def chave(s):
+        return (s["categoria"], s.get("entidade"))
+
+    ant = {chave(s): s for s in anteriores}
+    for s in atuais:
+        a = ant.get(chave(s))
+        s["novo"] = bool(s["material"] and (a is None or not a["material"]))
+        if a is not None and a.get("valor") is not None and s.get("valor") is not None:
+            s["valor_anterior"] = a["valor"]
+    agora = {chave(s) for s in atuais if s["material"]}
+    return [{"categoria": a["categoria"], "entidade": a.get("entidade"), "titulo": a["titulo"]}
+            for a in anteriores if a["material"] and chave(a) not in agora]
+
+
 def _pista(sid: str, titulo: str, sinal: str, leitura: str, acao: str, para: str, confianca: str,
            bloco: str, hipotese: bool = False) -> dict:
     return {"id": "p-" + sid, "sinal_id": sid, "titulo": titulo, "sinal": sinal, "leitura": leitura,
@@ -50,8 +71,7 @@ def sinais_concorrencia(ents: list[dict], ad: dict, na: dict, anuncios: list[dic
     me = next(e for e in ents if e.get("cliente"))
     pn = [p["id"] for p in plats]
     peso = {p["id"]: p["peso"] for p in plats}
-    conf = ("Ilustrativo: depende de dados reais." if origem_bloco == "demo"
-            else "Confiança média: confirmar com a equipa antes de agir.")
+    conf = "Confiança média: confirmar com a equipa antes de agir."
 
     def act(b, w):
         return sum(ad[b][p][w] for p in pn)
@@ -90,7 +110,12 @@ def sinais_concorrencia(ents: list[dict], ad: dict, na: dict, anuncios: list[dic
         add({"categoria": "Atividade", "entidade": u["e"]["id"], "titulo": t, "material": True,
              "valor": round(u["d"], 1), "limiar": lim_up,
              "leitura": f"Passou de {fmt_pt(u['p'])} para {fmt_pt(u['l'])} anúncios ativos em média, sobretudo em {pf}.",
-             "serie": {"tipo": "anuncios_ativos", "id": u["e"]["id"]}},
+             "serie": {"tipo": "anuncios_ativos", "id": u["e"]["id"]},
+             "janela": "últimas 4 semanas face às 4 anteriores", "janela_curta": "4 sem.",
+             "regra": (f"Variação da média de anúncios ativos de cada concorrente nas últimas 4 semanas face às 4 anteriores. "
+                       f"É sinal quando sobe {fmt_pt(lim_up)}% ou mais; escolhe-se o concorrente com a maior subida."),
+             "detalhe": [_d("Média das últimas 4 semanas", u["l"], 1, " anúncios ativos"),
+                         _d("Média das 4 semanas anteriores", u["p"], 1, " anúncios ativos")]},
             _pista("", f"Responder ao aumento de pressão de {u['e']['nome']}", t,
                    f"Passou de {fmt_pt(u['p'])} para {fmt_pt(u['l'])} anúncios ativos em média, sobretudo em {pf}.",
                    f"Rever lances e orçamento em {pf} nas próximas duas semanas.", "Performance", conf, ""))
@@ -115,7 +140,12 @@ def sinais_concorrencia(ents: list[dict], ad: dict, na: dict, anuncios: list[dic
         leit = (f"Território: {top_t.lower()}. " if top_t else "") + f"Plataforma principal: {top_p}."
         add({"categoria": "Lançamento", "entidade": e["id"], "titulo": t, "material": True, "valor": n2,
              "limiar": lim.get("lancamento_criativos_2s", 5), "leitura": leit,
-             "serie": {"tipo": "anuncios_ativos", "id": e["id"]}},
+             "serie": {"tipo": "anuncios_ativos", "id": e["id"]},
+             "janela": "últimas 2 semanas", "janela_curta": "2 sem.",
+             "regra": (f"Criativos novos de um concorrente nas últimas 2 semanas, com pelo menos 3 vezes a média semanal "
+                       f"das 8 semanas anteriores. É sinal a partir de {lim.get('lancamento_criativos_2s', 5)} criativos."),
+             "detalhe": [_d("Criativos novos nas últimas 2 semanas", n2, 0, " criativos"),
+                         _d("Média semanal nas 8 semanas anteriores", base, 1, " criativos")]},
             _pista("", f"Avaliar o lançamento de {e['nome']}", t, leit,
                    (f"Avaliar se a nossa mensagem em «{top_t.lower()}» precisa de reforço."
                     if top_t else "Avaliar se a nossa mensagem precisa de reforço."), "Brand", conf, ""))
@@ -131,7 +161,11 @@ def sinais_concorrencia(ents: list[dict], ad: dict, na: dict, anuncios: list[dic
     leit = f"Quota de voz atual: {fmt_pt(sv(z), 1)}% entre as {len(inc)} marcas do conjunto."
     add({"categoria": "Quota de voz", "entidade": me["id"], "titulo": t, "material": abs(d8) >= lim_sv,
          "valor": round(d8, 1), "limiar": lim_sv, "leitura": leit,
-         "serie": {"tipo": "quota_voz", "id": me["id"]}, "em_observacao": abs(d8) < lim_sv},
+         "serie": {"tipo": "quota_voz", "id": me["id"]}, "em_observacao": abs(d8) < lim_sv,
+         "janela": "últimas 8 semanas", "janela_curta": "8 sem.",
+         "regra": (f"Variação da quota de voz do cliente entre a semana atual e há 8 semanas, em pontos percentuais. "
+                   f"É sinal quando a variação, em valor absoluto, chega a {fmt_pt(lim_sv, 1)} p.p."),
+         "detalhe": [_d("Quota de voz agora", sv(z), 1, "%"), _d("Quota de voz há 8 semanas", sv(z - 8), 1, "%")]},
         _pista("", f"Acompanhar a quota de voz de {me['nome']}", t, leit,
                ("Preparar a leitura para a próxima reunião de acompanhamento e discutir o plano de resposta."
                 if d8 < 0 else "Documentar o que está a funcionar para replicar noutras ativações."),
@@ -146,7 +180,12 @@ def sinais_concorrencia(ents: list[dict], ad: dict, na: dict, anuncios: list[dic
                 "Pode ser pausa entre campanhas.")
         add({"categoria": "Pressão", "entidade": d["e"]["id"], "titulo": t, "material": True,
              "valor": round(d["d"], 1), "limiar": -lim_up, "leitura": leit,
-             "serie": {"tipo": "anuncios_ativos", "id": d["e"]["id"]}},
+             "serie": {"tipo": "anuncios_ativos", "id": d["e"]["id"]},
+             "janela": "últimas 4 semanas face às 4 anteriores", "janela_curta": "4 sem.",
+             "regra": (f"Queda da média de anúncios ativos de um concorrente nas últimas 4 semanas face às 4 anteriores. "
+                       f"É sinal quando desce {fmt_pt(lim_up)}% ou mais; escolhe-se o concorrente com a maior queda."),
+             "detalhe": [_d("Média das últimas 4 semanas", d["l"], 1, " anúncios ativos"),
+                         _d("Média das 4 semanas anteriores", d["p"], 1, " anúncios ativos")]},
             _pista("", f"Aproveitar a menor pressão de {d['e']['nome']}", t, leit,
                    "Janela de menor ruído para reforçar a presença, a confirmar com o histórico.",
                    "Performance", conf, ""))
@@ -161,6 +200,9 @@ def sinais_tema(cfg: dict, series: dict[str, list], indicadores: dict, lim: dict
     for m in cfg.get("sinais_modelo", []):
         g = m.get("gatilho", {})
         material, ctx = not m.get("em_observacao", False), {"variacao": "", "limiar": fmt_pt(lim_p)}
+        janela = m.get("janela")
+        regra = m.get("regra")
+        detalhe = None
         if g.get("tipo") == "procura_variacao":
             v = series.get(g["serie"])
             if not v or len(v) < z + 1 or v[z] is None:
@@ -174,12 +216,20 @@ def sinais_tema(cfg: dict, series: dict[str, list], indicadores: dict, lim: dict
             ctx["variacao"] = fmt_pt(pct)
             material = pct >= lim_p
             valor, limiar = pct, lim_p
+            janela = janela or "semana atual face à média das 8 anteriores"
+            regra = regra or (f"Interesse de pesquisa da semana atual face à média das 8 semanas anteriores. "
+                              f"É sinal quando sobe {fmt_pt(lim_p)}% ou mais.")
+            detalhe = [_d("Interesse de pesquisa esta semana", v[z], 0, " (0 a 100)"),
+                       _d("Média das 8 semanas anteriores", mean(base), 1, " (0 a 100)")]
         elif g.get("tipo") == "indicador":
             if g["indicador"] not in indicadores:
                 continue
             valor, limiar = indicadores[g["indicador"]].get("variacao"), None
+            regra = regra or "Indicador público de contexto de mercado. Fica em observação até haver dados que confirmem a leitura."
+            janela = janela or "semestre face ao mesmo semestre do ano anterior"
         else:
             valor, limiar = None, None
+            regra = regra or "Marco do calendário que costuma mudar o contexto e a janela de ativação. Fica em observação."
         if m.get("bloco") not in blocos:
             continue
 
@@ -192,6 +242,13 @@ def sinais_tema(cfg: dict, series: dict[str, list], indicadores: dict, lim: dict
              "hipotese": bool(m.get("hipotese"))}
         if m.get("serie"):
             s["serie"] = m["serie"]
+        if janela:
+            s["janela"] = janela
+            s["janela_curta"] = m.get("janela_curta") or ("vs média 8 sem." if g.get("tipo") == "procura_variacao" else "")
+        if regra:
+            s["regra"] = regra
+        if detalhe:
+            s["detalhe"] = detalhe
         p = m.get("pista")
         if p:
             pistas.append({"id": "p-" + m["id"], "sinal_id": m["id"], "titulo": p["titulo"],

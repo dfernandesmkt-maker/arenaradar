@@ -13,7 +13,6 @@ function resetEstado(){
   Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub={publicada:false,paginas:[...PAGINAS_CLIENTE],cartoes:[],nota:"",quando:null}});
   Object.values(SESS).forEach(s=>{s.bquiet=false;s.bmode="equipa"});
   toast("Demonstração reposta: pistas por decidir e nada publicado.");CUR.refresh()}
-document.addEventListener("click",e=>{if(e.target.closest("#resetdemo"))resetEstado()});   // (o menu de definições trata o seu próprio botão)
 
 function tourPreparar(cid,tipo){
   const d=CLS[cid];if(!d||!tipo)return;

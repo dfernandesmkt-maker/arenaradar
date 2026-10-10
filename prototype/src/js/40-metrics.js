@@ -56,7 +56,7 @@ function leadText(){if(S.bquiet&&!isCli())return"Simulação: nenhum sinal ultra
 function sigChart(s){if(!s.serie)return null;const a=Math.max(0,Z-11),r=range(a,Z),xl=i=>wLab(a+i);
   if(s.serie.tipo==="anuncios_ativos"){const e=ebyid(s.serie.id);return{series:[{n:e.nome,c:col(e),d:r.map(w=>PL.reduce((q,p)=>q+AD[e.id][p][w],0))}],xl,fmt:v=>nf(v)+" anúncios",aria:"Anúncios ativos nas últimas 12 semanas"}}
   if(s.serie.tipo==="quota_voz"){const e=ebyid(s.serie.id);return{series:[{n:e.nome,c:col(e),d:r.map(w=>sov(w)[e.id])}],xl,fmt:v=>nf(v,1)+"%",aria:"Quota de voz nas últimas 12 semanas"}}
-  if(s.serie.tipo==="procura"){const z=serieProcura(s.serie.id);return z?{series:[{n:z.nome,c:CAT[z.cor%5],d:r.map(w=>z.valores[w])}],xl,fmt:v=>nf(v),aria:"Procura nas últimas 12 semanas"}:null}
+  if(s.serie.tipo==="procura"){const z=serieProcura(s.serie.id);return z?{series:[{n:z.nome,c:procC(z,D.procura.series.indexOf(z)),d:r.map(w=>z.valores[w])}],xl,fmt:v=>nf(v),aria:"Procura nas últimas 12 semanas"}:null}
   return null}
 
 /* ---------- Pistas: estado vivo da equipa (em memória; a persistência é a tarefa RB-22) ---------- */

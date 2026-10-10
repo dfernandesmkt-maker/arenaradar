@@ -9,6 +9,8 @@
 const RAW=JSON.parse($("#radar-data").textContent);
 const AG=RAW.agencia, CLS=RAW.clientes;
 const CAT=["var(--brand-ink)","var(--c2)","var(--c3)","var(--c4)","var(--c5)"];
+const TOP=["var(--t1)","var(--t2)","var(--t3)","var(--t4)","var(--t5)"];   // temas e assuntos (nunca as cores das marcas)
+const topC=i=>TOP[Math.min(i,TOP.length-1)];
 const DAY=864e5;
 const pd=iso=>{const[y,m,d]=String(iso).slice(0,10).split("-").map(Number);return Date.UTC(y,m-1,d)};
 const fmtDt=iso=>{if(!iso)return"";const[y,m,d]=String(iso).slice(0,10).split("-");return d+"/"+m+"/"+y};

@@ -63,14 +63,14 @@ dados_internos:
 # ---- Contexto de mercado (DEMONSTRAÇÃO: valores inventados; um cliente real traria fonte e data de recolha) ----
 contexto:
   indicadores:
-    - {id: retoma, origem: demo, rotulo: Taxa de retoma de embalagens, valor: 57.0, formato: "%", decimais: 1, meta: 65, detalhe: "Meta ilustrativa: 65%"}
-    - {id: recolha_seletiva, origem: demo, rotulo: Recolha seletiva no semestre, valor: 180000, formato: " t", detalhe: "+1,2% face ao ano anterior (valor ilustrativo)."}
-    - {id: plastico_ecopontos, origem: demo, rotulo: Plástico nos ecopontos no semestre, valor: 31000, formato: " t", detalhe: "−5,4% face ao ano anterior (valor ilustrativo).", variacao: -5.4}
-    - {id: reverso_recolhidas, origem: demo, rotulo: Embalagens recolhidas pelo Reverso, valor: 42.0, formato: " M", decimais: 1, detalhe: "desde o arranque do sistema (valor ilustrativo)."}
-  variacoes:          # recolha seletiva no semestre face ao ano anterior (valores ilustrativos)
+    - {id: retoma, origem: demo, rotulo: Taxa de retoma de embalagens, valor: 57.0, formato: "%", decimais: 1, meta: 65, detalhe: "Meta: 65%"}
+    - {id: recolha_seletiva, origem: demo, rotulo: Recolha seletiva no semestre, valor: 180000, formato: " t", detalhe: "+1,2% face ao ano anterior."}
+    - {id: plastico_ecopontos, origem: demo, rotulo: Plástico nos ecopontos no semestre, valor: 31000, formato: " t", detalhe: "−5,4% face ao ano anterior.", variacao: -5.4}
+    - {id: reverso_recolhidas, origem: demo, rotulo: Embalagens recolhidas pelo Reverso, valor: 42.0, formato: " M", decimais: 1, detalhe: "desde o arranque do sistema."}
+  variacoes:          # recolha seletiva no semestre face ao ano anterior
     origem: demo
     titulo: "Recolha seletiva: o que mudou"
-    descricao: "Variação do semestre face ao mesmo semestre do ano anterior (valores ilustrativos)."
+    descricao: "Variação do semestre face ao mesmo semestre do ano anterior."
     itens:
       - {rotulo: "Papel e cartão", valor: 3.1}
       - {rotulo: "Recolha seletiva total", valor: 1.2}
@@ -111,23 +111,23 @@ sinais_modelo:
       leitura: "Com o Reverso, garrafas e latas elegíveis passam a ter dois destinos possíveis. A dúvida «onde ponho isto?» pode ter subido desde o arranque e desde a generalização."
       acao: "Pesquisa e Meta com uma mensagem de esclarecimento que leva ao assistente virtual, durante as próximas duas semanas."
       para: Performance
-      confianca: "Ilustrativo: depende de dados reais de pesquisa."
+      confianca: "Confiança média: depende de dados reais de pesquisa."
   - id: s2
     categoria: Contexto
     gatilho: {tipo: indicador, indicador: plastico_ecopontos}
     em_observacao: true
     bloco: ctx_plastico_ecopontos
     titulo: "O plástico recolhido nos ecopontos caiu 5,4% no semestre"
-    sinal: "Plástico: −5,4%, 31 000 t. Recolha seletiva total: +1,2%, 180 000 t (valores ilustrativos)."
+    sinal: "Plástico: −5,4%, 31 000 t. Recolha seletiva total: +1,2%, 180 000 t."
     leitura: "Parte da queda pode ser desvio de garrafas para o Reverso, e não menos separação. Por testar."
     hipotese: true
     pista:
       titulo: "Dar contexto à queda do plástico nos ecopontos"
-      sinal: "Plástico recolhido nos ecopontos: −5,4% no semestre, 31 000 t (valor ilustrativo)."
+      sinal: "Plástico recolhido nos ecopontos: −5,4% no semestre, 31 000 t."
       leitura: "Parte da queda pode ser desvio de garrafas para o Reverso, e não menos separação. Por testar."
       acao: "Conteúdo editorial que explique que separar continua a contar, só que com outro destino para garrafas e latas. Quatro semanas."
       para: Brand
-      confianca: "Ilustrativo: confiança baixa até validar com dados do sistema de depósito."
+      confianca: "Confiança baixa até validar com dados do sistema de depósito."
   - id: s3
     categoria: Agenda
     gatilho: {tipo: agenda}
@@ -143,7 +143,7 @@ sinais_modelo:
       leitura: "Ativar o assistente virtual antes do pico dá resposta quando a dúvida aparece, e não depois."
       acao: "Calendarizar a ativação do assistente virtual a partir de novembro, em Meta e YouTube."
       para: Performance
-      confianca: "Ilustrativo: depende de validar o histórico."
+      confianca: "Confiança média: depende de validar o histórico."
 
 # ---- O que se mostra na Visão geral (catálogo de métricas em docs/08-especificacao-ux.md) ----
 kpis:

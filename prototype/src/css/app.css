@@ -302,7 +302,7 @@ textarea.edit{width:100%;min-height:78px;border-radius:10px;border:1px solid var
   .kpis,.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .kpi:nth-child(3),.tile:nth-child(3){border-left:0}
   .kpi:nth-child(n+3),.tile:nth-child(n+3){border-top:1px solid var(--line)}
-  .chartrow,.setgrid{grid-template-columns:1fr}
+  .chartrow,.setgrid{grid-template-columns:minmax(0,1fr)}
   .funnel{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fstep:nth-child(odd){border-left:0}
   .fstep:nth-child(n+3){border-top:1px solid var(--line)}
@@ -532,12 +532,12 @@ html[data-present] #toast{bottom:116px}
 .sg .pk2 .pa{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .sg .acts{margin-top:auto;padding-top:4px;align-items:center;position:relative}
 .sg .acts .tag.ok{margin-left:2px}
-.meter .mb{position:relative;height:6px;border-radius:99px;background:var(--line-2,var(--line))}
-.meter .mb i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--text-2);opacity:.55}
-.meter .mb i.ok{background:var(--brand);opacity:1}
-.meter .mb u{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--text);border-radius:2px;opacity:.7}
-.meter .ml{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--text-2);margin-top:5px}
-.meter .ml b{font-weight:600;color:var(--text)}
+.lmeter .mb{position:relative;height:6px;border-radius:99px;background:var(--line-2,var(--line))}
+.lmeter .mb i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--text-2);opacity:.55}
+.lmeter .mb i.ok{background:var(--brand);opacity:1}
+.lmeter .mb u{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--text);border-radius:2px;opacity:.7}
+.lmeter .ml{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--text-2);margin-top:5px}
+.lmeter .ml b{font-weight:600;color:var(--text)}
 .sg .more{margin-left:auto;position:relative}
 .btn.ico{padding:0;width:34px;justify-content:center}
 .btn.ico .ic{width:18px;height:18px}
@@ -559,8 +559,13 @@ html[data-present] #toast{bottom:116px}
 #page h1:focus{outline:none}
 @media (pointer:coarse){.btn,.fbtn,.nv,.iconbtn,.seg button,.mm button{min-height:44px}.qm{width:24px;height:24px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.sg .meter{margin-bottom:2px}
-.sg .pk2{margin-top:4px}
+.sg .lmeter{margin:2px 0 4px}
+.sg .pk2{margin-top:2px}
 @media (max-width:680px){#fbar.fbar{padding:6px 0;margin-bottom:14px}}
 .nv .sh{display:none}
 @media (max-width:900px){.nv .lg{display:none}.nv .sh{display:inline}}
+.setgrid>*,.chartrow>*{min-width:0}
+@media (max-width:680px){.slider{gap:10px}.slider output{min-width:0;font-size:12.5px}}
+.rhead{display:grid;grid-template-columns:24px 118px minmax(0,1fr) 62px 74px;gap:10px;font-size:11.5px;font-weight:500;color:var(--text-2);padding-bottom:4px;border-bottom:1px solid var(--line-2);margin-bottom:2px}
+.rhead .num{text-align:right}
+@media (max-width:680px){.rhead{grid-template-columns:20px 86px minmax(0,1fr) 54px}.rhead .dlh{display:none}}
