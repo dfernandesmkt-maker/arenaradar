@@ -185,7 +185,7 @@ tbody tr.go:hover{background:var(--line-2)}
 .tl time{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
 .lockcard{display:flex;gap:14px;align-items:center;padding:16px 18px;border:1px dashed var(--line);border-radius:14px;color:var(--text-2);font-size:14px}
 
-/* ============ Vertical Energia ============ */
+/* ============ Mercado: quota de voz e conjunto competitivo ============ */
 .setgrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:30px;align-items:start}
 .race{position:relative}
 .rrow{position:absolute;left:0;right:0;height:44px;display:grid;grid-template-columns:24px 118px minmax(0,1fr) 62px 74px;gap:10px;align-items:center;transition:transform .7s var(--ease),opacity .4s;font-size:14px}

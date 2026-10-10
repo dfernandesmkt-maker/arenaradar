@@ -45,12 +45,14 @@ const METR={
  indicador(k){const it=D.contexto&&D.contexto.indicadores.find(i=>i.id===k.id);if(!it)return null;
   return{l:it.rotulo,v:`<span>${nf(it.valor,it.decimais||0)}${it.formato||""}</span>`,sub:`<span class="muted">${esc(it.detalhe||"")}</span>`,src:it.bloco,go:"mercado/ctx"}}
 };
-function kpisHTML(){const ks=D.kpis.map(k=>(METR[k.metrica]||(()=>null))(k)).filter(Boolean);return ks.length?`<div class="kpis k5">${ks.map(kpiHTML).join("")}</div>`:""}
+const KP_ADS=new Set(["anuncios_ativos","anuncios_novos","quota_voz","investimento"]);
+function kpisHTML(){const ks=D.kpis.filter(k=>!KP_ADS.has(k.metrica)||hasAds()).map(k=>(METR[k.metrica]||(()=>null))(k)).filter(Boolean);return ks.length?`<div class="kpis k5">${ks.map(kpiHTML).join("")}</div>`:""}
 
 /* ---------- Sinais: texto de abertura e mini-gráficos ---------- */
 const sinaisMat=()=>D.sinais.filter(s=>s.material);
-function headline(){const m=sinaisMat();return m.length?m[0].titulo:"Sem sinais materiais esta semana"}
-function leadText(){const m=sinaisMat().length,o=D.sinais.length-m;return m?`${m===1?"Um sinal acima":nf(m)+" sinais acima"} do limiar${o?` e ${o===1?"um":nf(o)} em observação`:""}. A equipa decide o que fazer com cada um.`:"O Radar continua a observar, e isso também é informação. A equipa decide o que fazer a seguir."}
+const semDados=()=>Object.values(D.blocos).every(b=>b.origem==="pendente");   // nenhuma fonte ligada nem demonstração
+function headline(){if(semDados())return"Ainda sem dados ligados";const m=sinaisMat();return m.length?m[0].titulo:"Sem sinais materiais esta semana"}
+function leadText(){if(semDados())return"Liga as fontes em Fontes de dados. Enquanto não houver dados, o Radar não mostra números.";const m=sinaisMat().length,o=D.sinais.length-m;return m?`${m===1?"Um sinal acima":nf(m)+" sinais acima"} do limiar${o?` e ${o===1?"um":nf(o)} em observação`:""}. A equipa decide o que fazer com cada um.`:"O Radar continua a observar, e isso também é informação. A equipa decide o que fazer a seguir."}
 function sigChart(s){if(!s.serie)return null;const a=Math.max(0,Z-11),r=range(a,Z),xl=i=>wLab(a+i);
   if(s.serie.tipo==="anuncios_ativos"){const e=ebyid(s.serie.id);return{series:[{n:e.nome,c:col(e),d:r.map(w=>PL.reduce((q,p)=>q+AD[e.id][p][w],0))}],xl,fmt:v=>nf(v)+" anúncios",aria:"Anúncios ativos nas últimas 12 semanas"}}
   if(s.serie.tipo==="quota_voz"){const e=ebyid(s.serie.id);return{series:[{n:e.nome,c:col(e),d:r.map(w=>sov(w)[e.id])}],xl,fmt:v=>nf(v,1)+"%",aria:"Quota de voz nas últimas 12 semanas"}}

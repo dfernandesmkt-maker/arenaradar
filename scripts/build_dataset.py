@@ -22,7 +22,7 @@ import argparse
 import csv
 import json
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from statistics import mean
@@ -52,6 +52,16 @@ def _merge(base: dict, extra: dict | None) -> dict:
     out = dict(base)
     out.update(extra or {})
     return out
+
+
+MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
+
+
+def rotulo_semana(inicio: date, z: int) -> str:
+    """«28 set a 4 out 2026» para a semana de índice z (segunda a domingo)."""
+    a = inicio + timedelta(days=7 * z)
+    b = a + timedelta(days=6)
+    return f"{a.day} {MESES[a.month - 1]} a {b.day} {MESES[b.month - 1]} {b.year}"
 
 
 def _bloco(origem: str, rotulo: str, fonte: str | None = None, metodo: str | None = None, url: str | None = None,
@@ -104,7 +114,7 @@ def real_trends(cid: str, cfg: dict, n: int, z: int, inicio: date) -> tuple[list
     pres = cfg.get("trends", {}).get("apresentacao", {})
     por: dict[str, dict[int, list[int]]] = defaultdict(lambda: defaultdict(list))
     for r in rows:
-        w = (date.fromisoformat(r["semana"]) - inicio).days // 7
+        w = (date.fromisoformat(r["semana"]) + timedelta(days=1) - inicio).days // 7   # domingo → segunda seguinte: a semana que contém 6 dos 7 dias
         if 0 <= w < n:
             por[r["cluster"]][w].append(int(r["indice"]))
     series = []
@@ -121,7 +131,7 @@ def real_trends(cid: str, cfg: dict, n: int, z: int, inicio: date) -> tuple[list
         return None
     rec = max(r["data_recolha"] for r in rows)
     return series, _bloco("real", "Procura (Google Trends)", rows[0].get("fonte", "Google Trends"),
-                          "Índice relativo 0-100; média dos termos de cada cluster. Semanas de domingo a sábado.", None, rec)
+                          "Índice relativo 0-100; média dos termos de cada cluster. Semanas do Google (domingo a sábado) atribuídas à semana de segunda a domingo que contém 6 dos 7 dias.", None, rec)
 
 
 def real_noticias(cid: str, cfg: dict, n: int, inicio: date) -> tuple[list[dict], dict] | None:
@@ -159,10 +169,26 @@ def real_noticias(cid: str, cfg: dict, n: int, inicio: date) -> tuple[list[dict]
 
 
 # ---------------------------------------------------------------- construção de um cliente
+def _exigir(d: dict, chaves: list[str], onde: str) -> None:
+    falta = [c for c in chaves if not d.get(c)]
+    if falta:
+        raise SystemExit(f"Configuração incompleta: falta {', '.join(falta)} em {onde}. Ver config/clients/_template.yaml.")
+
+
 def build_client(cid: str, ag: dict, fontes: dict) -> dict:
     cfg = load_yaml(ROOT / "config" / "clients" / f"{cid}.yaml")
-    cl = cfg["cliente"]
-    vert = load_yaml(ROOT / "config" / "verticals" / f"{cl['vertical']}.yaml")
+    cl = cfg.get("cliente") or {}
+    _exigir(cl, ["id", "nome", "vertical", "tipo_universo"], f"config/clients/{cid}.yaml (secção «cliente»)")
+    if cl["id"] != cid:
+        raise SystemExit(f"O «id» ({cl['id']}) tem de ser igual ao nome do ficheiro ({cid}.yaml).")
+    if cl["tipo_universo"] not in ("concorrencia", "tema"):
+        raise SystemExit(f"tipo_universo «{cl['tipo_universo']}» inválido em {cid}.yaml: usa «concorrencia» ou «tema».")
+    if not any((u.get("papel", "").lower() == "cliente" or u.get("prioridade") == "cliente") for u in cfg.get("universo", [])):
+        raise SystemExit(f"{cid}.yaml: o «universo» tem de incluir o próprio cliente (papel: Cliente).")
+    vp = ROOT / "config" / "verticals" / f"{cl['vertical']}.yaml"
+    if not vp.exists():
+        raise SystemExit(f"A vertical «{cl['vertical']}» não existe: cria config/verticals/{cl['vertical']}.yaml (modelo em _template.yaml).")
+    vert = load_yaml(vp)
     cal = ag["calendario"]
     inicio, n, z = cal["inicio"], cal["semanas"], cal["semana_atual"]
     ref = cal["data_referencia"]
@@ -199,58 +225,63 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
     ids = {e["id"] for e in ents}
 
     # --- anúncios (concorrência) e quota de voz
+    # Cada bloco: dados reais se existirem em data/raw/; senão demonstração, se o cliente a configurou (`demo`);
+    # senão o bloco fica ausente e a interface mostra «por ligar». Um cliente real, sem `demo`, nunca recebe dados simulados.
+    demo = cfg.get("demo") or {}
     anuncios, ad_aggr = None, None
+    pn = [p["id"] for p in plats]
     if tipo == "concorrencia":
         real = real_meta_ads(cid, ids, inicio, formatos)
         if real:
             anuncios, blocos["anuncios"] = real
-        else:
-            anuncios = demo_data.anuncios_demo(cfg["demo"], ents, vert, ag, inicio, z)
+        elif demo.get("campanhas"):
+            _exigir(vert, ["territorios", "ctas", "textos"], f"a vertical «{cl['vertical']}» (necessário para dados de demonstração)")
+            anuncios = demo_data.anuncios_demo(demo, ents, vert, ag, inicio, z)
             blocos["anuncios"] = _bloco("demo", "Anúncios e criativos", None,
                                         "Anúncios simulados a partir das campanhas em config/clients/%s.yaml; marcas fictícias" % cid,
                                         None, ref)
-        pn = [p["id"] for p in plats]
-        ad, na = signals.matriz_anuncios(anuncios, [e["id"] for e in ents], pn, inicio, n)
-        ad_aggr = (ad, na)
-        blocos["investimento"] = _bloco(
-            "demo" if blocos["anuncios"]["origem"] == "demo" else "estimado", "Investimento estimado", None,
-            "Anúncios ativos por semana × valor médio assumido por anúncio e plataforma (config/agencia.yaml) × fator por marca. "
-            "Hipóteses de trabalho a calibrar com uma fonte licenciada", None, ref)
-        blocos["leilao"] = _bloco("demo", "Informações do leilão (Google Ads)", None,
-                                  "Simulação no formato do relatório; dados reais exigem autorização do cliente e parecer de Compliance (Q12)", None, ref)
+        if anuncios is not None:
+            ad_aggr = signals.matriz_anuncios(anuncios, [e["id"] for e in ents], pn, inicio, n)
+            blocos["investimento"] = _bloco(
+                "demo" if blocos["anuncios"]["origem"] == "demo" else "estimado", "Investimento estimado", None,
+                "Anúncios ativos por semana × valor médio assumido por anúncio e plataforma (config/agencia.yaml) × fator por marca. "
+                "Hipóteses de trabalho a calibrar com uma fonte licenciada", None, ref)
+            blocos["leilao"] = _bloco("demo", "Informações do leilão (Google Ads)", None,
+                                      "Simulação no formato do relatório; dados reais exigem autorização do cliente e parecer de Compliance (Q12)", None, ref)
 
     # --- procura
     procura = None
     pres = cfg.get("trends", {}).get("apresentacao", {})
-    real = real_trends(cid, cfg, n, z, inicio) if cfg.get("trends", {}).get("clusters") else None
+    real = real_trends(cid, cfg, n, z, inicio) if pres else None
     if real:
         procura, blocos["procura"] = real
-    elif tipo == "tema":
+    elif tipo == "tema" and demo.get("procura"):
         procura = [{"id": s["id"], "nome": pres[s["id"]]["nome"], "cor": pres[s["id"]].get("cor", 0),
                     "valores": demo_data.serie_por_pontos(s["pontos"], s["seed"], s["ruido"], n)}
-                   for s in cfg["demo"]["procura"] if s["id"] in pres]
+                   for s in demo["procura"] if s["id"] in pres]
         blocos["procura"] = _bloco("demo", "Procura (Google Trends)", None,
                                    "Séries simuladas ao nível do tema; substituídas por dados do Google Trends quando recolhidos "
                                    "(scripts/collect_trends.py)", None, ref)
-    else:
-        act = {e["id"]: [sum(ad_aggr[0][e["id"]][p][w] for p in [p["id"] for p in plats]) for w in range(n)] for e in ents}
-        procura = demo_data.procura_demo_entidades(ents, act, n, int(cfg["demo"]["seed"]))
+    elif tipo == "concorrencia" and ad_aggr and demo.get("seed") is not None:
+        act = {e["id"]: [sum(ad_aggr[0][e["id"]][p][w] for p in pn) for w in range(n)] for e in ents}
+        procura = demo_data.procura_demo_entidades(ents, act, n, int(demo["seed"]))
         blocos["procura"] = _bloco("demo", "Procura pela marca (Google Trends)", None,
                                    "Séries simuladas para marcas fictícias, ligadas à atividade de anúncios", None, ref)
 
     # --- notícias
     noticias = None
-    real = real_noticias(cid, cfg, n, inicio) if cfg.get("noticias", {}).get("temas") else None
+    temas_n = cfg.get("noticias", {}).get("temas")
+    real = real_noticias(cid, cfg, n, inicio) if temas_n else None
     if real:
         noticias, blocos["noticias"] = real
-    else:
-        if tipo == "tema":
-            nome = {t["id"]: t["nome"] for t in cfg["noticias"]["temas"]}
-            noticias = [{"id": s["id"], "nome": nome[s["id"]], "cor": (i + 1) % 5,
-                         "valores": demo_data.serie_por_pontos(s["pontos"], s["seed"], s["ruido"], n)}
-                        for i, s in enumerate(cfg["demo"]["noticias"])]
-        else:
-            noticias = demo_data.noticias_demo(vert.get("noticias_temas", []), n, int(cfg["demo"]["seed"]))
+    elif tipo == "tema" and demo.get("noticias") and temas_n:
+        nome = {t["id"]: t["nome"] for t in temas_n}
+        noticias = [{"id": s["id"], "nome": nome[s["id"]], "cor": (i + 1) % 5,
+                     "valores": demo_data.serie_por_pontos(s["pontos"], s["seed"], s["ruido"], n)}
+                    for i, s in enumerate(demo["noticias"])]
+    elif tipo == "concorrencia" and demo.get("seed") is not None and vert.get("noticias_temas"):
+        noticias = demo_data.noticias_demo(vert["noticias_temas"], n, int(demo["seed"]))
+    if noticias and "noticias" not in blocos:
         blocos["noticias"] = _bloco("demo", "Conversa nas notícias", None,
                                     "Volume simulado; substituído por contagens reais do Google News RSS (scripts/collect_news.py)", None, ref)
 
@@ -280,35 +311,48 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
         blocos["sazonalidade"] = _bloco("estimado", "Sazonalidade da procura", None, cfg["sazonalidade"]["metodo"], None, ref)
         saz = {"indice_mensal": cfg["sazonalidade"]["indice_mensal"], "bloco": "sazonalidade"}
 
-    # --- voz no tema (entidades × canais): só mostra o que foi recolhido
+    # --- voz no tema (entidades × canais): só mostra o que foi recolhido; o resto fica «por recolher»
     voz = None
     if tipo == "tema":
-        blocos["voz"] = _bloco("pendente", "Voz no tema", None, "Por ligar: Meta Ad Library e notícias por entidade", None, None)
-        voz = [{"entidade": e["id"], "anuncios_meta": None, "noticias": None} for e in ents]
+        real_ads = real_meta_ads(cid, ids, inicio, list(formatos))
+        if real_ads:
+            ads_t, bt = real_ads
+            blocos["voz"] = _bloco("real", "Voz no tema", bt["fonte"], "Anúncios ativos por entidade (Meta Ad Library); notícias por entidade por ligar", None, bt["data_recolha"])
+            voz = [{"entidade": e["id"], "anuncios_meta": sum(1 for a in ads_t if a["marca"] == e["id"] and not a["data_fim"]), "noticias": None} for e in ents]
+        else:
+            blocos["voz"] = _bloco("pendente", "Voz no tema", None, "Por ligar: Meta Ad Library e notícias por entidade", None, None)
+            voz = [{"entidade": e["id"], "anuncios_meta": None, "noticias": None} for e in ents]
 
     # --- sinais e pistas
     series_prim = {s["id"]: s["valores"] for s in (procura or [])}
     if tipo == "concorrencia":
-        sg, ps = signals.sinais_concorrencia(ents, ad_aggr[0], ad_aggr[1], anuncios, plats, lim, z, inicio,
-                                             blocos["anuncios"]["origem"])
+        if ad_aggr:
+            sg, ps = signals.sinais_concorrencia(ents, ad_aggr[0], ad_aggr[1], anuncios, plats, lim, z, inicio,
+                                                 blocos["anuncios"]["origem"])
+        else:
+            sg, ps = [], []
     else:
         sg, ps = signals.sinais_tema(cfg, series_prim, {i["id"]: i for i in indicadores}, lim, z, blocos)
 
     # --- leilão (depende da quota Google de cada marca)
     leilao = None
-    if tipo == "concorrencia":
+    if tipo == "concorrencia" and ad_aggr and "Google" in pn:
         a0 = z - 11
         gs = {e["id"]: mean(ad_aggr[0][e["id"]]["Google"][a0:z + 1]) for e in ents}
         tot = sum(gs[e["id"]] for e in ents if e["incluida"]) or 1
-        leilao = demo_data.leilao_demo(ents, {k: v / tot * 100 for k, v in gs.items()}, int(cfg["demo"]["seed"]))
+        leilao = demo_data.leilao_demo(ents, {k: v / tot * 100 for k, v in gs.items()}, int(demo.get("seed", 1)))
 
     # --- pulso (miniatura da Torre de controlo)
-    if tipo == "concorrencia":
-        pn = [p["id"] for p in plats]
+    if tipo == "concorrencia" and ad_aggr:
         pulso = [sum(ad_aggr[0][e["id"]][p][w] for e in ents if e["incluida"] for p in pn) for w in range(z - 15, z + 1)]
     else:
         pr = cfg.get("trends", {}).get("principais", [])
         pulso = ([v for v in series_prim.get(pr[-1], [])][z - 15:z + 1] if pr else [])
+    pulso = [v for v in pulso if v is not None]
+
+    # --- dados internos do cliente (ex.: chatbot): só mostram o estado; nunca entram no repositório
+    internos = [{"id": k, "nome": v.get("nome", k), "descricao": v.get("descricao", ""), "estado": v.get("estado", "")}
+                for k, v in (cfg.get("dados_internos") or {}).items()]
 
     kpis = cfg.get("kpis") or vert.get("kpis", [])
     return {
@@ -317,7 +361,7 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
                     "vertical_nome": vert["vertical"]["nome"], "tipo_universo": tipo, "geo": cl.get("geo", "PT"),
                     "ficticio": bool(cl.get("ficticio", False))},
         "calendario": {"inicio": inicio, "semanas": n, "semana_atual": z,
-                       "rotulo_semana_atual": "28 set a 4 out 2026"},
+                       "rotulo_semana_atual": rotulo_semana(inicio, z)},
         "plataformas": plats, "formatos": formatos, "territorios": territorios, "canais_offline": ag["canais_offline"],
         "limiares": lim, "entidades": ents, "kpis": kpis, "parametros": {"procura_rotulo": vert.get("procura_rotulo")},
         "blocos": blocos,
@@ -327,7 +371,7 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
         "contexto": {"indicadores": indicadores, "variacoes": variacoes} if indicadores else None,
         "agenda": agenda or None, "eventos": eventos, "sazonalidade": saz, "leilao": {"bloco": "leilao", "itens": leilao} if leilao else None,
         "voz": voz, "sinais": sg, "pistas": ps, "pulso": pulso,
-        "elo": cfg.get("dados_internos", {}).get("elo"),
+        "internos": internos,
     }
 
 
@@ -350,7 +394,7 @@ def build_agency(datasets: list[dict], ag: dict, fontes: dict) -> dict:
                          "origens": sorted({b["origem"] for b in d["blocos"].values()}),
                          "pulso": d["pulso"], "n_entidades": sum(1 for e in d["entidades"] if e["incluida"])})
     return {"versao": 1, "gerado_em": ag["calendario"]["data_referencia"], "agencia": ag["agencia"],
-            "calendario": ag["calendario"], "verticais": list(verts.values()), "clientes": clientes,
+            "calendario": ag["calendario"], "rotulo_semana_atual": rotulo_semana(ag["calendario"]["inicio"], ag["calendario"]["semana_atual"]), "verticais": list(verts.values()), "clientes": clientes,
             "fontes": fontes["fontes"], "temas": temas, "piloto": ag["piloto"]}
 
 

@@ -41,14 +41,15 @@ function mainChartHTML(){
 
 function detailHTML(){
   const W=win();
+  if(!isTema()&&!hasAds())return secHTML("Marcas em comparação","",emptyHTML("Sem anúncios ligados","Liga a Meta Ad Library ou importa um CSV em Fontes de dados."));
   if(hasAds()&&!isTema()){
     const bs=incl(),sv=sov(W.z),svp=W.canP?sov(W.z-W.w):null,sp=bs.map(e=>sumR(spdt,e.id,W.a0,W.z));
     const rows=[...bs].sort((a,b)=>press(b.id,W.z)-press(a.id,W.z)).map(e=>{const a1=act(e.id,W.z),a2=W.canP?act(e.id,W.z-W.w):null,nw=sumR(neu,e.id,W.a0,W.z),i=bs.indexOf(e);
       return`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${dot(e)}${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td class="n">${nf(a1)}</td><td class="n">${a2!=null&&a2>=3?dchip(pctd(a1,a2)):`<span class="muted">—</span>`}</td><td class="n">${nf(sv[e.id],1)}%</td><td class="n">${svp?dchip(sv[e.id]-svp[e.id],"p.p."):`<span class="muted">—</span>`}</td><td class="n">${nf(nw)}</td><td class="n">${eur(sp[i])}</td></tr>`}).join("");
     use("investimento");
     return secHTML("Marcas em comparação","Clica numa marca para ver o detalhe.",`<div class="panel tblwrap"><table><thead><tr><th>Marca</th><th class="n">Anúncios ativos</th><th class="n">Variação</th><th class="n">Quota de voz</th><th class="n">Variação</th><th class="n">Novos no período</th><th class="n">Investimento est.</th></tr></thead><tbody>${rows}</tbody></table></div>`,"anuncios")}
-  use("voz");
-  return secHTML("Quem comunica sobre o tema","Entidades do universo e o que já foi recolhido sobre cada uma.",`<div class="panel tblwrap"><table><thead><tr><th>Entidade</th><th>Papel</th><th>Prioridade</th><th>Anúncios Meta</th><th>Notícias</th></tr></thead><tbody>${D.entidades.map(e=>`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td>${esc(e.papel)}</td><td>${esc(e.prioridade&&e.prioridade!=="cliente"?e.prioridade:"—")}</td><td><span class="ghost">Por recolher</span></td><td><span class="ghost">Por recolher</span></td></tr>`).join("")}</tbody></table></div><p class="t-sm muted" style="margin-top:10px">Estes campos preenchem-se com dados reais (Meta Ad Library, notícias). O Radar nunca inventa números sobre entidades de terceiros.</p>`,"voz")}
+  use("voz");const vz=Object.fromEntries((D.voz||[]).map(v=>[v.entidade,v])),cel=v=>v==null?`<span class="ghost">Por recolher</span>`:nf(v);
+  return secHTML("Quem comunica sobre o tema","Entidades do universo e o que já foi recolhido sobre cada uma.",`<div class="panel tblwrap"><table><thead><tr><th>Entidade</th><th>Papel</th><th>Prioridade</th><th>Anúncios Meta</th><th>Notícias</th></tr></thead><tbody>${D.entidades.map(e=>`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td>${esc(e.papel)}</td><td>${esc(e.prioridade&&e.prioridade!=="cliente"?e.prioridade:"—")}</td><td>${cel((vz[e.id]||{}).anuncios_meta)}</td><td>${cel((vz[e.id]||{}).noticias)}</td></tr>`).join("")}</tbody></table></div><p class="t-sm muted" style="margin-top:10px">Estes campos preenchem-se com dados reais (Meta Ad Library, notícias). O Radar nunca inventa números sobre entidades de terceiros.</p>`,"voz")}
 
 function openEntity(id){
   const e=ebyid(id);if(!e)return;const W=win();let body="";
@@ -71,7 +72,7 @@ function pageVisao(){
   const sg=D.sinais.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
    ${kpisHTML()}
-   ${secHTML("O que mudou esta semana","O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
+   ${secHTML("O que mudou esta semana","O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
    ${detailHTML()}`;
   return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),leadText())+body}

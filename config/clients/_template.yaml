@@ -29,6 +29,8 @@ noticias:                # LIGAÇÃO[news-rss]
 
 canais_observados: [meta, google_search, youtube, tiktok, tv, radio, ooh, imprensa]
 
+dados_internos: {}       # dados do cliente que só entram com autorização, ex.: {chatbot: {nome: ..., descricao: ..., estado: Bloqueado, pasta: data/raw/internal/chatbot/}}
+
 limiares: {}             # sobrepõe os valores de config/agencia.yaml (pesquisas_variacao_vs_media_8s, anuncios_variacao_4s, ...)
 
 # kpis: [...]            # opcional; por defeito vem da vertical

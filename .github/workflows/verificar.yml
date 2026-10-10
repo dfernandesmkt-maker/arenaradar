@@ -1,0 +1,22 @@
+name: Verificar
+# A cada alteração: gera os datasets, aplica a regra de ouro dos dados e confirma que o protótipo gerado está atualizado.
+on:
+  push:
+  pull_request:
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyyaml
+      - name: Gerar datasets
+        run: python3 scripts/build_dataset.py
+      - name: Regra de ouro dos dados
+        run: python3 scripts/check_dataset.py
+      - name: Gerar o protótipo
+        run: python3 prototype/build_preview.py
+      - name: Confirmar que o que está no repositório está atualizado
+        run: git diff --exit-code -- data/processed prototype/arena-radar-v3-preview.html

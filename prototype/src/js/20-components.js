@@ -9,8 +9,8 @@ const tag=t=>`<span class="tag">${t}</span>`;
 const dchip=(d,unit="%")=>{if(d===null||d===undefined||isNaN(d))return`<span class="dchip">—</span>`;const up=d>0.5,dn=d<-0.5;return`<span class="dchip ${up?"up":dn?"dn":""}">${up?"▲":dn?"▼":"•"} ${sgn(Math.round(d*10)/10,Math.abs(d)<10&&unit!=="%"?1:0)}${unit==="%"?"%":" "+unit}</span>`};
 
 /* ---------- Selo de dados (um por página; o detalhe abre ao clicar) ---------- */
-let SEAL_OV=null;   // páginas de Agência definem o seu próprio selo (agregado de clientes)
-function sealHTML(ids){const s=SEAL_OV||sealInfo(ids);return`<button class="seal" id="seal" data-o="${s.o}" aria-haspopup="dialog" aria-label="Origem dos dados desta página: ${esc(s.t)}">${esc(s.t)}<svg class="ic"><use href="#i-chev"/></svg></button>`}
+let SEAL_OV=null, SEAL_HIDE=false;   // páginas de Agência definem o seu próprio selo (agregado de clientes)
+function sealHTML(ids){if(SEAL_HIDE)return"";const s=SEAL_OV||sealInfo(ids);return`<button class="seal" id="seal" data-o="${s.o}" aria-haspopup="dialog" aria-label="Origem dos dados desta página: ${esc(s.t)}">${esc(s.t)}<svg class="ic"><use href="#i-chev"/></svg></button>`}
 function renderSeal(){const el=$("#seal");if(el)el.outerHTML=sealHTML(USED)}
 const SEALTXT={demo:"Todos os blocos desta página usam dados de demonstração. Quando as fontes forem ligadas, o selo muda sozinho.",real:"Todos os blocos desta página vêm de fontes ligadas, com fonte e data de recolha.",estimado:"Os blocos desta página são reais ou estimados, com o método indicado.",misto:"Parte dos blocos desta página vem de fontes reais e parte é demonstração.",pendente:"Esta página ainda não tem dados ligados."};
 function openSeal(){const s=SEAL_OV||sealInfo(USED),pop=$("#pop");

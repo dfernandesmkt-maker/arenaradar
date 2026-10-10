@@ -77,9 +77,12 @@ limiares:
   noticias_meios_min: 3
   elo_variacao_semanal: 0.25
 
+# Dados internos do cliente: aparecem na interface só como «bloqueados» até haver parecer de Compliance e autorização.
 dados_internos:
   elo:
-    estado: pendente_autorizacao
+    nome: Utilização do chatbot ELO
+    descricao: Fora do âmbito até haver parecer de Compliance e autorização do cliente. Quando existir, fica fora do repositório.
+    estado: Bloqueado
     pasta: data/raw/internal/elo/
 
 # ---- Contexto de mercado (dados REAIS, com fonte e data de recolha) ----
