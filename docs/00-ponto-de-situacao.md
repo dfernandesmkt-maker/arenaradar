@@ -1,11 +1,11 @@
 # Arena Radar — Ponto de situação
-*Para: Direção Arena Media Portugal · Preparado por: David · Setembro 2026*
+*Para: Direção Arena Media Portugal · Preparado por: David · Outubro 2026*
 
 ---
 
 ## 1. Em síntese
 - O Arena Radar é um produto interno que deteta o que muda no mercado de um cliente, interpreta o que isso significa e aponta à equipa as ações de meios possíveis. A plataforma sugere; a equipa decide.
-- Conceito e experiência estão fechados: existe um protótipo navegável de alta fidelidade. Dados reais, motor de leitura e entrega automática ainda não existem.
+- Conceito e experiência estão fechados: existe um protótipo navegável de alta fidelidade, multi-cliente, com vista Equipa e vista Cliente. Dados reais, motor de leitura e entrega automática ainda não existem.
 - Proposta: um piloto de 6 semanas com um cliente real a escolher, sem desenvolvimento técnico pesado, para provar valor antes de pedir investimento.
 
 ## 2. O problema que resolve
@@ -24,6 +24,17 @@
 
 Três modos de entrega: alertas apenas para eventos materiais, briefing semanal à segunda-feira e pedidos pontuais. A máquina deteta; a equipa só entra no momento de decidir.
 
+## 3.1 O que o protótipo já mostra
+Protótipo em HTML único, que abre no browser sem servidor, com quatro **clientes fictícios** (Lumio, Vael, Kob e Verdia) em quatro verticais.
+- **Torre de controlo** (Agência › Vertical › Cliente): sinais acima do limiar, fila de decisões e estado de publicação por cliente.
+- **Um padrão de página para todos os clientes:** filtros → KPIs → o que mudou → gráfico principal → detalhe. Mercado, Procura e notícias, Criativos, Relatórios e Ações.
+- **Duas vistas dos mesmos dados.** Equipa vê sinais, limiares e pistas de ação. Cliente vê só o que a equipa publicou; sem publicação não vê nada.
+- **Pistas de ação com decisão da equipa** (aceitar, ajustar, descartar, atribuir a Performance, Brand ou Account) e módulo Impacto.
+- **Selo de dados em cada página** (Demonstração, Real, Estimado ou Misto) e verificação automática da regra de ouro dos dados (`scripts/check_dataset.py`, também no GitHub).
+- **Agnóstico ao cliente:** clientes, marcas e séries vêm de `config/`, não do código. Acrescentar um cliente é acrescentar um ficheiro (`docs/10-como-acrescentar-um-cliente.md`). Foi provado com clientes novos sem alterar código.
+- **Pontos de ligação** marcados no código (`LIGAÇÃO[...]`, `docs/09-pontos-de-ligacao.md`) onde entram a Meta Ad Library, o Google, o TikTok e a Marktest.
+- Paleta de comandos (Ctrl K), modo apresentação, modo escuro e acessibilidade básica.
+
 ## 4. Percurso até aqui
 | Quando | Marco |
 |---|---|
@@ -31,6 +42,7 @@ Três modos de entrega: alertas apenas para eventos materiais, briefing semanal 
 | Maio 2026 | Radar identificado como ponto em aberto no plano de conta PRIO 2026. |
 | Junho 2026 | Reposicionamento: de "plataforma preditiva" para "antecipação acionável". Produto agnóstico ao cliente. Protótipo v2 ao nível de SaaS e módulo Impacto. |
 | Setembro 2026 | Retoma para ponto de situação. Versão de demonstração com clientes fictícios. |
+| Outubro 2026 | Revisão de UX e de estrutura. Protótipo v3 multi-cliente, orientado por configuração, com Torre de controlo, vistas Equipa e Cliente, publicação pela equipa e verificação automática dos dados. Retirado o cliente real de exemplo (D33). |
 
 Detalhe e registo de decisões em `01-historico-e-decisoes.md`.
 
@@ -38,11 +50,13 @@ Detalhe e registo de decisões em `01-historico-e-decisoes.md`.
 | Componente | Estado | Nota |
 |---|---|---|
 | Conceito e proposta de valor | ✅ Fechado | Três camadas, três modos de entrega |
-| Experiência (protótipo) | ✅ Alta fidelidade | v2 navegável com clientes fictícios; v3 multi-cliente, com clientes fictícios |
-| Recolha de dados | 🟡 Iniciada | Scripts para notícias, Google Trends e Meta Ad Library; por testar em produção |
+| Experiência (protótipo) | ✅ Alta fidelidade | v3 multi-cliente, vistas Equipa e Cliente, só com clientes fictícios |
+| Arquitetura de dados e configuração | ✅ Feita no protótipo | `config/` → `build_dataset.py` → JSON; regra de ouro verificada automaticamente |
+| Recolha de dados | 🟡 Iniciada | Scripts para notícias, Google Trends e Meta Ad Library, ainda sem dados reais (falta token da Meta e acesso de rede nos ambientes de teste) |
+| Persistência e partilha entre a equipa | ⚪ Por construir | Decisões e publicações ficam só no browser de cada pessoa (RB-22) |
 | Motor de leitura e pistas de ação | ⚪ Por construir | Hoje simulado no protótipo |
 | Entrega automática (briefing) | ⚪ Por construir | Formato desenhado, sem automatização |
-| Validação com cliente | ⚪ Não iniciada | Proposta: piloto com um cliente real |
+| Validação com cliente | ⚪ Não iniciada | Proposta: piloto com um cliente real. O uso de nomes de clientes em demonstrações está por responder (Q04) |
 | Modelo de valor | 🟡 Desenhado | Módulo Impacto pronto a medir, sem histórico real |
 | Stack de produção | ⚪ Por decidir | Depende do IT (Microsoft vs. outro) |
 
@@ -78,6 +92,13 @@ Nota: em alguns clientes a "concorrência" é sobretudo disputa de atenção e c
 | Pistas de ação aceites pela equipa | ≥ 1 por semana |
 | Ações levadas ao cliente | ≥ 2 |
 | Ações adotadas pelo cliente | ≥ 1 |
+
+## 7.1 Próximos passos do produto (antes e durante o piloto)
+1. Persistência partilhada pela equipa (decisões e publicações), hoje só no browser (RB-22).
+2. Ligar dados reais: Meta Ad Library (depende de token e de Q10), Google Trends e notícias.
+3. Motor de leitura: passar as regras de sinal do protótipo para o pipeline de produção.
+4. Capturas de ecrã e deck para a direção (RB-10).
+5. Decisão de stack com o IT; documentação técnica já em `docs/dossier/02-tecnico/`.
 
 ## 8. O que pedimos à direção
 1. Aprovação do piloto de 6 semanas, com o cliente a escolher, com o tempo alocado.
