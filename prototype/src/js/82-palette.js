@@ -57,7 +57,7 @@ function closeAsk(){ask.el.classList.remove("on")}
 function runAsk(id,text){const a=ask.list.find(x=>x.id===id),q=text||(a?a.q:id);$("#asksug").hidden=true;const box=$("#ans");box.hidden=false;
   const type=(t,i=0)=>{ask.inp.value=t.slice(0,i);if(i<t.length&&!RM)setTimeout(()=>type(t,i+1),14);else ask.inp.value=t};type(q);
   box.innerHTML=`<div class="q">${esc(q)}</div><div class="dots" aria-label="A pensar"><i></i><i></i><i></i></div>`;
-  setTimeout(()=>{box.innerHTML=`<div class="q">${esc(q)}</div><div class="ansbody">${answer(a||{id:"x"})}</div>`},RM?0:q.length*14+650)}
+  setTimeout(()=>{box.innerHTML=`<div class="q">${esc(q)}</div><div class="ansbody"><div class="anstext">${answer(a||{id:"x"})}</div>${a?`<p class="ansacts"><button class="btn sm" type="button" data-brief-ans><svg class="ic"><use href="#i-mail"/></svg>Adicionar ao briefing</button></p>`:""}</div>`},RM?0:q.length*14+650)}
 function palExec(i){const c=ask.items[i];if(!c)return;if(c.g==="Perguntas"||c.g==="Perguntar"){c.run();return}closeAsk();c.run()}
 $("#askopen").addEventListener("click",()=>openAsk());
 $("#askclose").addEventListener("click",closeAsk);

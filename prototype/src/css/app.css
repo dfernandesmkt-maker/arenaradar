@@ -654,3 +654,20 @@ html[data-present] #toast{bottom:116px}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;background:var(--line-2);padding:1px 5px;border-radius:5px}
 .setm .roles{display:grid;gap:0;margin-bottom:2px}
 .setm .roles .opt{min-height:34px;padding:6px 8px}
+
+/* ações dos cartões de gráfico */
+.card>header .cacts{display:flex;gap:4px;flex:none}
+.card>header .cacts .btn{color:var(--text-2)}
+.card>header .cacts .btn:hover{color:var(--text)}
+@media (max-width:680px){.cacts .btn span{display:none}.cacts .btn .ic{margin:0}}
+.ansacts{margin-top:10px}
+.brx{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:start}
+.brx button{color:var(--text-2);font-size:12px}
+.mail .bsig{display:grid;gap:5px;padding:0 0 14px;border-bottom:1px solid #E1E6E5}
+.mail .bsig:last-child{border-bottom:0;padding-bottom:0}
+.mail .bsig b{font-size:14.5px;font-weight:600}
+.mail .bsig p{font-size:13.5px;color:#34413f}
+.mail .bnw{display:inline-block;padding:0 6px;border-radius:5px;background:#FFDC32;color:#0F2623;font-size:10.5px;font-weight:700;vertical-align:1px}
+.mail .bsig .pk{margin-top:2px}
+.mail .pk span{font-size:13px;display:block}
+.mail .brx{grid-template-columns:minmax(0,1fr) auto}

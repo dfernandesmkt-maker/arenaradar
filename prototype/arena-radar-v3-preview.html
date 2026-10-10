@@ -664,6 +664,23 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;bac
 .setm .roles{display:grid;gap:0;margin-bottom:2px}
 .setm .roles .opt{min-height:34px;padding:6px 8px}
 
+/* ações dos cartões de gráfico */
+.card>header .cacts{display:flex;gap:4px;flex:none}
+.card>header .cacts .btn{color:var(--text-2)}
+.card>header .cacts .btn:hover{color:var(--text)}
+@media (max-width:680px){.cacts .btn span{display:none}.cacts .btn .ic{margin:0}}
+.ansacts{margin-top:10px}
+.brx{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:start}
+.brx button{color:var(--text-2);font-size:12px}
+.mail .bsig{display:grid;gap:5px;padding:0 0 14px;border-bottom:1px solid #E1E6E5}
+.mail .bsig:last-child{border-bottom:0;padding-bottom:0}
+.mail .bsig b{font-size:14.5px;font-weight:600}
+.mail .bsig p{font-size:13.5px;color:#34413f}
+.mail .bnw{display:inline-block;padding:0 6px;border-radius:5px;background:#FFDC32;color:#0F2623;font-size:10.5px;font-weight:700;vertical-align:1px}
+.mail .bsig .pk{margin-top:2px}
+.mail .pk span{font-size:13px;display:block}
+.mail .brx{grid-template-columns:minmax(0,1fr) auto}
+
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
 :root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
   /* Temas e assuntos (notícias, procura por tema): família própria, para a cor nunca sugerir uma marca. Validada: CVD, visão normal e contraste. */
@@ -1041,9 +1058,10 @@ Object.values(CLS).forEach(d=>{
   const pb=sv.pub||{};
   d.pub={paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",pubd:null,hist:Array.isArray(pb.hist)?pb.hist.slice(0,8):[]};
   if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao");
+  d.brief={extras:Array.isArray(sv.brief&&sv.brief.extras)?sv.brief.extras.filter(x=>x&&x.id&&x.t).slice(0,20):[]};
   if(pb.pubd)d.pub.pubd=pubNorm(pb.pubd,d);
   else if(pb.publicada)d.pub.pubd=pubSnapshot(d,"Equipa",pb.quando?pb.quando+"T09:00:00.000Z":null)});   // migra o formato anterior (só «publicada»)
-function saveState(){try{const o={};Object.values(CLS).forEach(d=>{o[d.cliente.id]={pistas:Object.fromEntries(d.pistas.map(p=>[p.id,{t:p.titulo,s:p.s,para:p.para,acao:p.acao,cli:p.cli,res:p.res}])),pub:d.pub}});localStorage.setItem(STKEY,JSON.stringify(o))}catch(e){}}
+function saveState(){try{const o={};Object.values(CLS).forEach(d=>{o[d.cliente.id]={pistas:Object.fromEntries(d.pistas.map(p=>[p.id,{t:p.titulo,s:p.s,para:p.para,acao:p.acao,cli:p.cli,res:p.res}])),pub:d.pub,brief:d.brief}});localStorage.setItem(STKEY,JSON.stringify(o))}catch(e){}}
 const isTema=()=>D.cliente.tipo_universo==="tema";
 const periodos=()=>isTema()?[8,12,26,NW]:[4,8,12,26];
 const ebyid=id=>D.entidades.find(e=>e.id===id);
@@ -1143,7 +1161,9 @@ const emptyHTML=(t,x)=>`<div class="empty"><svg class="ic"><use href="#i-lock"/>
 let KWHY={};
 function kpiHTML(k){const wid=k.why?"k"+Object.keys(KWHY).length:null;if(wid)KWHY[wid]=k;return`<div class="kpi ${k.go?"clk":""}" ${k.src?`data-src="${use(k.src)}"`:""} ${k.go?`data-go="${k.go}" tabindex="0" role="link"`:""}><span class="t-xs">${k.l}${k.help?`<button class="qm" type="button" aria-label="Como se calcula: ${esc(String(k.l).replace(/<[^>]+>/g,""))}" data-tip="${esc(k.help)} <i>Clica para ver como se calcula.</i>" ${wid?`data-kwhy="${wid}"`:""}>?</button>`:""}</span><div class="kv"><span class="big">${k.v}</span>${k.series&&k.series.length>1?`<span class="sp">${spark(k.series,84,34)}</span>`:""}</div><span class="sub">${k.sub||""}</span></div>`}
 function secHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="sec"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
-function cardHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="card"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
+function cardHTML(title,desc,body,src,extra=""){if(src)use(src);
+  const chart=/class="cv"/.test(body)&&!/id="gp"/.test(body),acts=chart?`<div class="cacts no-print"><button class="btn ghost sm" type="button" data-chartimg aria-label="Copiar o gráfico como imagem" data-tip="Copiar como imagem, com título e origem dos dados"><svg class="ic"><use href="#i-copy"/></svg><span>Copiar imagem</span></button>${isCli()?"":`<button class="btn ghost sm" type="button" data-addbrief data-tip="Acrescentar este ponto ao briefing semanal"><svg class="ic"><use href="#i-mail"/></svg><span>Ao briefing</span></button>`}</div>`:"";
+  return`<div class="card" ${src?`data-srcid="${src}"`:""}><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}${acts}</header>${body}${src?foot(src):""}</div>`}
 function pheadHTML(kick,title,lead,{sm=false}={}){return`<div class="phead ${sm?"sm":""}"><div class="kick"><span>${kick}</span><span id="sealslot">${sealHTML(USED)}</span></div><h1 class="t-display">${title}</h1>${lead?`<p class="lead">${lead}</p>`:""}</div>`}
 
 /* ---------- Barra de filtros global (uma linha; cada filtro abre um painel; em telemóvel, uma folha «Filtros») ---------- */
@@ -1697,7 +1717,7 @@ function openCreative(id){
    <p style="font-size:15px;font-weight:600;letter-spacing:-.01em">${esc(c.h)}</p>
    <dl style="margin-top:14px"><dt>Plataforma</dt><dd>${c.p}</dd><dt>Formato</dt><dd>${esc(FM[c.fm])}</dd>${c.th>=0?`<dt>Mensagem</dt><dd>${esc(TH[c.th])}</dd>`:""}${c.camp?`<dt>Campanha</dt><dd>${esc(c.camp)}</dd>`:""}<dt>Início</dt><dd>${dateOf(c)} ${new Date(c.ds).getUTCFullYear()}</dd><dt>Dias no ar</dt><dd>${c.days} (${isOn(c)?"ativo":"terminado"})</dd>${c.reach?`<dt>Alcance UE</dt><dd>${nf(c.reach)}</dd>`:""}<dt>Origem</dt><dd>${esc(orig)}</dd></dl>
    <p class="t-sm muted" style="margin-top:14px">${c.url?"":"Ilustração gerada a partir do texto do anúncio. "}Na versão ligada, mostra o criativo recolhido da Meta Ad Library, do Google Ads Transparency Center ou do TikTok, com a ligação ao original.</p>
-   <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">${c.url?`<a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Abrir na biblioteca</a>`:`<button class="btn" disabled>Abrir na biblioteca</button>`}<button class="btn" data-saveref="1">Guardar em referências</button></div>`)}
+   <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">${c.url?`<a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Abrir na biblioteca</a>`:`<button class="btn" disabled>Abrir na biblioteca</button>`}<button class="btn" data-brief-cr="${esc(c.id)}"><svg class="ic"><use href="#i-mail"/></svg>Adicionar ao briefing</button></div>`)}
 
 document.addEventListener("click",e=>{
   const v=$("#page");if(!v)return;let t;
@@ -1708,7 +1728,7 @@ document.addEventListener("click",e=>{
   if(t=e.target.closest("[data-clrb]")){S.br=null;CUR.refresh();return}
   if(t=e.target.closest("[data-more]")){S.more+=12;CUR.refresh();return}
   if(t=e.target.closest("[data-cr]")){openCreative(t.dataset.cr);return}
-  if(e.target.closest("[data-saveref]"))toast("Guardado em referências (simulação).")});
+  });
 
 /* ============================================================
    Página «Relatórios»: briefing semanal e publicação para o cliente.
@@ -1719,19 +1739,21 @@ document.addEventListener("click",e=>{
 const mondayLabel=()=>{const d=new Date(wDateMs(Z+1));return d.getUTCDate()+" "+MES[d.getUTCMonth()]+" "+d.getUTCFullYear()};
 function briefingHTML(){
   const cli=isCli()||S.bmode==="cliente",q=!!S.bquiet&&!isCli(),mat=D.sinais.filter(s=>s.material),obs=D.sinais.filter(s=>!s.material);
+  const pk=(p,txt)=>`<div class="pk"><b>${txt}</b><span>${esc(p.acao)}</span></div>`;
   let corpo;
   if(cli){
-    const cs=cartoesPub(),pk=pistasPub();
+    const cs=cartoesPub(),ps=pistasPub(),usadas=new Set();
+    const bloco=s=>{const p=s.pista_id?ps.find(x=>x.id===s.pista_id):null;if(p)usadas.add(p.id);return`<div class="bsig" data-src="${use(s.bloco)}"><b>${esc(s.titulo)}</b><p>${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</p>${p?pk(p,"A Arena propõe"):""}</div>`};
+    const lista=cs.map(bloco).join(""),extra=ps.filter(p=>!usadas.has(p.id));
     corpo=`${pubNota()?`<section><h3>Nota da equipa</h3><p style="font-size:14.5px">${esc(pubNota())}</p></section>`:""}
-     <section><h3>O que mudou</h3>${cs.length?`<ul>${cs.map(s=>`<li data-src="${use(s.bloco)}"><span><b>${esc(s.titulo)}</b><br><span style="font-size:13.5px">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</span></span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">${isCli()?"A equipa não destacou nenhum ponto nesta edição.":"Ainda não marcaste cartões para o cliente. Marca-os na Visão geral ou em «Publicar para o cliente»."}</p>`}</section>
-     <section><h3>O que a Arena propõe</h3>${pk.length?`<ul>${pk.map(p=>`<li class="pk"><b>${esc(p.titulo)}</b><span style="font-size:13.5px">${esc(p.acao)}</span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">${isCli()?"Sem propostas nesta edição.":"Ainda não há pistas marcadas para o cliente. Decide em Ações quais levar."}</p>`}</section>`;
+     <section><h3>O que mudou e o que propomos</h3>${cs.length?lista:`<p style="font-size:14.5px;color:#586764">${isCli()?"A equipa não destacou nenhum ponto nesta edição.":"Ainda não marcaste cartões para o cliente. Marca-os na Visão geral ou em «Publicar para o cliente»."}</p>`}</section>
+     ${extra.length?`<section><h3>Outras propostas da Arena</h3>${extra.map(p=>pk(p,esc(p.titulo))).join("")}</section>`:""}`;
   }else{
-    const sigs=q||!D.sinais.length?`<p style="font-size:14.5px">Nenhum sinal ultrapassou o limiar esta semana. O Radar continua a observar, e isso também é informação.</p>`
-     :`<ul>${[...mat,...obs].map(s=>`<li data-src="${use(s.bloco)}"><span><b>${esc(s.titulo)}</b>${s.material?"":' <span style="color:#586764">(em observação)</span>'}</span></li>`).join("")}</ul>`;
-    const first=mat[0]||obs[0],read=q||!first?"":`<p style="font-size:14.5px">${esc(first.leitura)}${first.hipotese?' <span class="tag">Hipótese</span>':""}</p>`;
-    const list=q?[]:D.pistas.filter(p=>p.s!=="descartada");
-    const pk=list.length?`<ul>${list.map(p=>`<li class="pk"><b>${esc(p.titulo)}</b><span style="font-size:13.5px">${esc(p.acao)}</span><span style="font-size:12px;color:#586764">${STL[p.s]}${p.cli?", marcada para o cliente":""}</span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">Sem pistas esta semana.</p>`;
-    corpo=`<section><h3>O que mudou</h3>${sigs}</section><section>${q?"":`<h3>O que significa</h3>${read}`}</section><section><h3>Pistas de ação para a equipa</h3>${pk}</section>`}
+    const lista=q||!D.sinais.length?`<p style="font-size:14.5px">Nenhum sinal ultrapassou o limiar esta semana. O Radar continua a observar, e isso também é informação.</p>`
+     :[...mat,...obs].map(s=>{const p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null;return`<div class="bsig" data-src="${use(s.bloco)}"><b>${esc(s.titulo)}${s.novo?' <span class="bnw">novo</span>':""}${s.material?"":' <span style="color:#586764;font-weight:500">(em observação)</span>'}</b><p>${esc(s.leitura)}${s.hipotese?' <span class="tag">Hipótese</span>':""}</p>${p&&p.s!=="descartada"?pk(p,`Pista para ${esc(p.para)} · ${STL[p.s].toLowerCase()}${p.cli?", marcada para o cliente":""}`):""}</div>`}).join("");
+    const ex=D.brief.extras;
+    corpo=`<section><h3>O que mudou e o que significa</h3>${lista}</section>
+     ${ex.length?`<section><h3>Destaques acrescentados pela equipa</h3>${ex.map(x=>`<div class="bsig brx"><div><b>${esc(x.t)}</b><p>${esc(x.txt)}</p></div><button class="no-print" data-brm="${x.id}" aria-label="Retirar do briefing" data-tip="Retirar do briefing">✕</button></div>`).join("")}</section>`:""}`}
   const sl=sealInfo(new Set(D.sinais.map(s=>s.bloco)));
   return`<header><img alt="" src="${$(".logo-tile img").src}"><div><b>Arena Radar, ${esc(D.cliente.nome)}</b><span>Semana de ${D.calendario.rotulo_semana_atual}</span></div></header>
    <div class="mb">${corpo}
@@ -2035,7 +2057,7 @@ function pageMarca(sub){
     <tr><td>Mensagem principal</td><td class="n">${esc(m.terr||"—")}</td><td class="n">${esc(mo.terr||"—")}</td><td class="n"></td></tr>
     <tr><td>Criativos ativos há 4 semanas ou mais</td><td class="n">${m.keep}</td><td class="n">${mo.keep}</td><td class="n">${diff(m.keep,mo.keep)}</td></tr></tbody></table></div>${foot("anuncios")}</div>`:"";
   const body=`${filterBar({platforms:true})}
-   <div class="cmpbar"><label for="cmpb" class="t-sm muted">Comparar com</label><select id="cmpb"><option value="">Nenhuma marca</option>${incl().filter(x=>x.id!==e.id).map(x=>`<option value="${x.id}" ${S.cmpb===x.id?"selected":""}>${esc(x.nome)}</option>`).join("")}</select></div>
+   <div class="cmpbar"><label for="cmpb" class="t-sm muted">Comparar com</label><select id="cmpb"><option value="">Nenhuma marca</option>${incl().filter(x=>x.id!==e.id).map(x=>`<option value="${x.id}" ${S.cmpb===x.id?"selected":""}>${esc(x.nome)}</option>`).join("")}</select><span style="flex:1"></span><button class="btn sm" data-brief-marca="${e.id}" data-txt="${esc(lead)}"><svg class="ic"><use href="#i-mail"/></svg>Adicionar ao briefing</button></div>
    <div class="kpis k5 five">${marcaKpis(e,m,W).map(kpiHTML).join("")}</div>
    ${ff}
    <div class="sec" style="margin-top:28px">${cardHTML("Anúncios ativos por plataforma",`Só os anúncios de ${esc(e.nome)}. ${ev.length?"As linhas verticais marcam o arranque das campanhas.":""}`,`${legendHTML(ser)}<div class="cv" id="mk1"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}</div>
@@ -2046,6 +2068,65 @@ function pageMarca(sub){
    ${sgs.length?secHTML("O que o Radar apontou sobre esta marca","Sinais desta semana que envolvem a marca.",`<div class="sgs">${sgs.map((s,i)=>sigCard(s,"m"+i)).join("")}</div>`):""}`;
   return pheadHTML(`<button class="lnk" data-go="mercado">← Mercado</button> · ${esc(D.cliente.nome)}`,`${esc(e.nome)}${e.cliente?' <span class="tag" style="vertical-align:middle;margin-left:6px">cliente</span>':""}`,esc(lead),{sm:true})+body}
 document.addEventListener("change",e=>{if(e.target.id==="cmpb"){S.cmpb=e.target.value||null;CUR.refresh()}});
+
+/* ============================================================
+   Levar o Radar para onde a agência trabalha: copiar um gráfico como imagem (com título e origem dos dados)
+   e acrescentar destaques ao briefing semanal. Nada disto sai da agência por si: é a equipa que cola e envia.
+   ============================================================ */
+
+/* ---------- Copiar gráfico como imagem ---------- */
+const wrapCanvas=(ctx,txt,w)=>{const out=[];let l="";String(txt).split(/\s+/).forEach(x=>{const t=l?l+" "+x:x;if(ctx.measureText(t).width>w&&l){out.push(l);l=x}else l=t});if(l)out.push(l);return out};
+async function cardToCanvas(card){
+  const svg=[...card.querySelectorAll(".cv svg")].find(s=>s.getBoundingClientRect().height>100);if(!svg)return null;
+  const r=svg.getBoundingClientRect(),W=Math.round(r.width),H=Math.round(r.height),cs0=getComputedStyle(card);
+  const cl=svg.cloneNode(true),src=[svg,...svg.querySelectorAll("*")],dst=[cl,...cl.querySelectorAll("*")];
+  const props=["fill","stroke","stroke-width","stroke-dasharray","stroke-linecap","stroke-linejoin","opacity","fill-opacity","stroke-opacity","font-family","font-size","font-weight","text-anchor","paint-order","letter-spacing"];
+  src.forEach((s,i)=>{const cs=getComputedStyle(s);props.forEach(p=>{const v=cs.getPropertyValue(p);if(v)dst[i].style.setProperty(p,v)})});
+  cl.querySelectorAll(".hit,.hv,.mk").forEach(n=>n.remove());
+  ["tabindex","role","aria-label"].forEach(a=>cl.removeAttribute(a));cl.removeAttribute("class");
+  cl.setAttribute("xmlns","http://www.w3.org/2000/svg");cl.setAttribute("width",W);cl.setAttribute("height",H);
+  const ff=[...document.styleSheets].flatMap(s=>{try{return[...s.cssRules]}catch(e){return[]}}).find(x=>x.type===5);
+  if(ff){const st=document.createElementNS("http://www.w3.org/2000/svg","style");st.textContent=ff.cssText;cl.insertBefore(st,cl.firstChild)}
+  const img=new Image();img.decoding="sync";
+  await new Promise((ok,ko)=>{img.onload=ok;img.onerror=ko;img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(new XMLSerializer().serializeToString(cl))});
+  try{await document.fonts.load('600 20px Inter');await document.fonts.load('400 13px Inter')}catch(e){}
+  const title=($("header h2",card)||{}).textContent||"",desc=($("header p",card)||{}).textContent||"";
+  const legend=$$(".lgd span",card).map(s=>({t:s.textContent.trim(),c:getComputedStyle($("i",s)).backgroundColor}));
+  const srcId=card.dataset.srcid,s=sealInfo(new Set(srcId?[srcId]:[...USED])),b=srcId?BLK(srcId):null;
+  const origem=`Origem dos dados: ${s.t}${b&&b.origem==="real"&&b.fonte?" · "+b.fonte:""}${b&&b.origem==="estimado"&&b.metodo?" · "+b.metodo:""}`;
+  const rodape=`Arena Radar · ${D.cliente.nome} · semana de ${D.calendario.rotulo_semana_atual}`;
+  const sc=2,pad=28,w=Math.max(W,720)+pad*2,tmp=document.createElement("canvas").getContext("2d");
+  tmp.font="600 20px Inter, system-ui, sans-serif";const tl=wrapCanvas(tmp,title,w-pad*2);
+  tmp.font="400 13.5px Inter, system-ui, sans-serif";const dl=wrapCanvas(tmp,desc,w-pad*2),ol=wrapCanvas(tmp,origem,w-pad*2);
+  let y=pad+tl.length*26+(dl.length?dl.length*19+4:0)+(legend.length?34:8);
+  const cvh=y+H+16+ol.length*17+22+pad,cv=document.createElement("canvas");cv.width=w*sc;cv.height=cvh*sc;
+  const ctx=cv.getContext("2d");ctx.scale(sc,sc);ctx.fillStyle=cs0.backgroundColor&&cs0.backgroundColor!=="rgba(0, 0, 0, 0)"?cs0.backgroundColor:"#fff";ctx.fillRect(0,0,w,cvh);
+  const ink=getComputedStyle(document.body).color,mut=getComputedStyle($(".t-xs")||document.body).color;
+  let yy=pad;ctx.textBaseline="top";ctx.fillStyle=ink;ctx.font="600 20px Inter, system-ui, sans-serif";tl.forEach(l=>{ctx.fillText(l,pad,yy);yy+=26});
+  ctx.fillStyle=mut;ctx.font="400 13.5px Inter, system-ui, sans-serif";dl.forEach(l=>{ctx.fillText(l,pad,yy);yy+=19});
+  if(dl.length)yy+=4;
+  if(legend.length){let x=pad;ctx.font="500 12.5px Inter, system-ui, sans-serif";yy+=6;legend.forEach(l=>{ctx.fillStyle=l.c;ctx.fillRect(x,yy+3,11,11);ctx.fillStyle=mut;ctx.fillText(l.t,x+17,yy+1);x+=17+ctx.measureText(l.t).width+18});yy+=28}else yy+=8;
+  ctx.drawImage(img,pad+(w-pad*2-W)/2,yy,W,H);yy+=H+16;
+  ctx.fillStyle=mut;ctx.font="400 12px Inter, system-ui, sans-serif";ol.forEach(l=>{ctx.fillText(l,pad,yy);yy+=17});
+  ctx.fillText(rodape,pad,yy+3);
+  return cv}
+async function copiarImagem(card){
+  let cv;try{cv=await cardToCanvas(card)}catch(e){cv=null}
+  if(!cv){toast("Este bloco não tem um gráfico para copiar. Usa «Copiar tabela».");return}
+  const blob=await new Promise(ok=>cv.toBlob(ok,"image/png"));
+  try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);toast("Gráfico copiado como imagem, com título e origem dos dados. Cola no PowerPoint ou no e-mail.")}
+  catch(e){const url=cv.toDataURL("image/png");openDrawer(`${drawerHead("Imagem do gráfico")}<p class="t-sm muted" style="margin:8px 0 12px">Neste ambiente não foi possível copiar automaticamente. Clica com o botão direito na imagem e escolhe «Copiar imagem».</p><img alt="Gráfico exportado" src="${url}" style="width:100%;border:1px solid var(--line);border-radius:10px">${EM_ARTEFACTO?"":`<p style="margin-top:12px"><a class="btn" download="arena-radar-grafico.png" href="${url}">Descarregar PNG</a></p>`}`)}}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-chartimg]");if(b){e.preventDefault();copiarImagem(b.closest(".card"))}});
+
+/* ---------- Destaques do briefing (só equipa; o que vai ao cliente passa sempre por «Publicar») ---------- */
+function addBrief(t,txt){if(isCli())return;const L=D.brief.extras;if(L.some(x=>x.t===t&&x.txt===txt)){toast("Já está no briefing.");return}if(L.length>=20){toast("O briefing já tem 20 destaques. Retira alguns em Relatórios.");return}L.unshift({id:Date.now().toString(36)+Math.floor(Math.random()*1e3),t:String(t).slice(0,140),txt:String(txt).slice(0,420),q:new Date().toISOString()});saveState();toast("Adicionado ao briefing. Vê em Relatórios › Briefing semanal.")}
+const textOf=h=>{const d=document.createElement("div");d.innerHTML=h;$$("button,svg,.t-xs,.spark",d).forEach(n=>n.remove());return d.textContent.replace(/\s+/g," ").trim()};
+document.addEventListener("click",e=>{let t;
+  if(t=e.target.closest("[data-addbrief]")){const c=t.closest(".card");addBrief($("header h2",c).textContent,($("header p",c)||{textContent:""}).textContent);return}
+  if(t=e.target.closest("[data-brief-ans]")){const b=t.closest(".ansbody"),q=$(".q",b.parentNode);addBrief(q?q.textContent:"Pergunta ao Radar",textOf($(".anstext",b).innerHTML));return}
+  if(t=e.target.closest("[data-brief-cr]")){const c=ADS.find(x=>String(x.id)===t.dataset.briefCr);if(c){const em=ebyid(c.b),nm=em?em.nome:(c.bn||c.b);addBrief(`Criativo de ${nm}`,`«${c.h}» · ${FM[c.fm]} em ${c.p}${c.th>=0?", mensagem "+TH[c.th].toLowerCase():""}, ${c.days} dias no ar (${isOn(c)?"ativo":"terminado"}).`)}return}
+  if(t=e.target.closest("[data-brief-marca]")){const em=ebyid(t.dataset.briefMarca);addBrief("Ficha de "+em.nome,t.dataset.txt);return}
+  if(t=e.target.closest("[data-brm]")){const L=D.brief.extras,i=L.findIndex(x=>x.id===t.dataset.brm);if(i>=0){L.splice(i,1);saveState();CUR.refresh()}}});
 
 /* ============================================================
    Definições (ícone no topo): aparência (claro/escuro), cor do tema e controlos de demonstração.
@@ -2151,7 +2232,7 @@ function closeAsk(){ask.el.classList.remove("on")}
 function runAsk(id,text){const a=ask.list.find(x=>x.id===id),q=text||(a?a.q:id);$("#asksug").hidden=true;const box=$("#ans");box.hidden=false;
   const type=(t,i=0)=>{ask.inp.value=t.slice(0,i);if(i<t.length&&!RM)setTimeout(()=>type(t,i+1),14);else ask.inp.value=t};type(q);
   box.innerHTML=`<div class="q">${esc(q)}</div><div class="dots" aria-label="A pensar"><i></i><i></i><i></i></div>`;
-  setTimeout(()=>{box.innerHTML=`<div class="q">${esc(q)}</div><div class="ansbody">${answer(a||{id:"x"})}</div>`},RM?0:q.length*14+650)}
+  setTimeout(()=>{box.innerHTML=`<div class="q">${esc(q)}</div><div class="ansbody"><div class="anstext">${answer(a||{id:"x"})}</div>${a?`<p class="ansacts"><button class="btn sm" type="button" data-brief-ans><svg class="ic"><use href="#i-mail"/></svg>Adicionar ao briefing</button></p>`:""}</div>`},RM?0:q.length*14+650)}
 function palExec(i){const c=ask.items[i];if(!c)return;if(c.g==="Perguntas"||c.g==="Perguntar"){c.run();return}closeAsk();c.run()}
 $("#askopen").addEventListener("click",()=>openAsk());
 $("#askclose").addEventListener("click",closeAsk);
@@ -2175,7 +2256,7 @@ const hoje=()=>new Date().toISOString().slice(0,10);
 /* Repor o estado da equipa (decisões e publicações) para recomeçar a demonstração */
 function resetEstado(){
   try{localStorage.removeItem(STKEY)}catch(e){}
-  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub=pubDefault()});
+  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub=pubDefault();d.brief={extras:[]}});
   Object.values(SESS).forEach(s=>{s.bquiet=false;s.bmode="equipa"});
   toast("Demonstração reposta: pistas por decidir e nada publicado.");CUR.refresh()}
 

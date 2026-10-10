@@ -10,7 +10,7 @@ const hoje=()=>new Date().toISOString().slice(0,10);
 /* Repor o estado da equipa (decisões e publicações) para recomeçar a demonstração */
 function resetEstado(){
   try{localStorage.removeItem(STKEY)}catch(e){}
-  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub=pubDefault()});
+  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub=pubDefault();d.brief={extras:[]}});
   Object.values(SESS).forEach(s=>{s.bquiet=false;s.bmode="equipa"});
   toast("Demonstração reposta: pistas por decidir e nada publicado.");CUR.refresh()}
 

@@ -52,7 +52,7 @@ function pageMarca(sub){
     <tr><td>Mensagem principal</td><td class="n">${esc(m.terr||"—")}</td><td class="n">${esc(mo.terr||"—")}</td><td class="n"></td></tr>
     <tr><td>Criativos ativos há 4 semanas ou mais</td><td class="n">${m.keep}</td><td class="n">${mo.keep}</td><td class="n">${diff(m.keep,mo.keep)}</td></tr></tbody></table></div>${foot("anuncios")}</div>`:"";
   const body=`${filterBar({platforms:true})}
-   <div class="cmpbar"><label for="cmpb" class="t-sm muted">Comparar com</label><select id="cmpb"><option value="">Nenhuma marca</option>${incl().filter(x=>x.id!==e.id).map(x=>`<option value="${x.id}" ${S.cmpb===x.id?"selected":""}>${esc(x.nome)}</option>`).join("")}</select></div>
+   <div class="cmpbar"><label for="cmpb" class="t-sm muted">Comparar com</label><select id="cmpb"><option value="">Nenhuma marca</option>${incl().filter(x=>x.id!==e.id).map(x=>`<option value="${x.id}" ${S.cmpb===x.id?"selected":""}>${esc(x.nome)}</option>`).join("")}</select><span style="flex:1"></span><button class="btn sm" data-brief-marca="${e.id}" data-txt="${esc(lead)}"><svg class="ic"><use href="#i-mail"/></svg>Adicionar ao briefing</button></div>
    <div class="kpis k5 five">${marcaKpis(e,m,W).map(kpiHTML).join("")}</div>
    ${ff}
    <div class="sec" style="margin-top:28px">${cardHTML("Anúncios ativos por plataforma",`Só os anúncios de ${esc(e.nome)}. ${ev.length?"As linhas verticais marcam o arranque das campanhas.":""}`,`${legendHTML(ser)}<div class="cv" id="mk1"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}</div>

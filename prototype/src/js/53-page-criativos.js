@@ -33,7 +33,7 @@ function openCreative(id){
    <p style="font-size:15px;font-weight:600;letter-spacing:-.01em">${esc(c.h)}</p>
    <dl style="margin-top:14px"><dt>Plataforma</dt><dd>${c.p}</dd><dt>Formato</dt><dd>${esc(FM[c.fm])}</dd>${c.th>=0?`<dt>Mensagem</dt><dd>${esc(TH[c.th])}</dd>`:""}${c.camp?`<dt>Campanha</dt><dd>${esc(c.camp)}</dd>`:""}<dt>Início</dt><dd>${dateOf(c)} ${new Date(c.ds).getUTCFullYear()}</dd><dt>Dias no ar</dt><dd>${c.days} (${isOn(c)?"ativo":"terminado"})</dd>${c.reach?`<dt>Alcance UE</dt><dd>${nf(c.reach)}</dd>`:""}<dt>Origem</dt><dd>${esc(orig)}</dd></dl>
    <p class="t-sm muted" style="margin-top:14px">${c.url?"":"Ilustração gerada a partir do texto do anúncio. "}Na versão ligada, mostra o criativo recolhido da Meta Ad Library, do Google Ads Transparency Center ou do TikTok, com a ligação ao original.</p>
-   <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">${c.url?`<a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Abrir na biblioteca</a>`:`<button class="btn" disabled>Abrir na biblioteca</button>`}<button class="btn" data-saveref="1">Guardar em referências</button></div>`)}
+   <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">${c.url?`<a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Abrir na biblioteca</a>`:`<button class="btn" disabled>Abrir na biblioteca</button>`}<button class="btn" data-brief-cr="${esc(c.id)}"><svg class="ic"><use href="#i-mail"/></svg>Adicionar ao briefing</button></div>`)}
 
 document.addEventListener("click",e=>{
   const v=$("#page");if(!v)return;let t;
@@ -44,4 +44,4 @@ document.addEventListener("click",e=>{
   if(t=e.target.closest("[data-clrb]")){S.br=null;CUR.refresh();return}
   if(t=e.target.closest("[data-more]")){S.more+=12;CUR.refresh();return}
   if(t=e.target.closest("[data-cr]")){openCreative(t.dataset.cr);return}
-  if(e.target.closest("[data-saveref]"))toast("Guardado em referências (simulação).")});
+  });

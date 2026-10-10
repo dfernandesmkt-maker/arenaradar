@@ -7,19 +7,21 @@
 const mondayLabel=()=>{const d=new Date(wDateMs(Z+1));return d.getUTCDate()+" "+MES[d.getUTCMonth()]+" "+d.getUTCFullYear()};
 function briefingHTML(){
   const cli=isCli()||S.bmode==="cliente",q=!!S.bquiet&&!isCli(),mat=D.sinais.filter(s=>s.material),obs=D.sinais.filter(s=>!s.material);
+  const pk=(p,txt)=>`<div class="pk"><b>${txt}</b><span>${esc(p.acao)}</span></div>`;
   let corpo;
   if(cli){
-    const cs=cartoesPub(),pk=pistasPub();
+    const cs=cartoesPub(),ps=pistasPub(),usadas=new Set();
+    const bloco=s=>{const p=s.pista_id?ps.find(x=>x.id===s.pista_id):null;if(p)usadas.add(p.id);return`<div class="bsig" data-src="${use(s.bloco)}"><b>${esc(s.titulo)}</b><p>${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</p>${p?pk(p,"A Arena propõe"):""}</div>`};
+    const lista=cs.map(bloco).join(""),extra=ps.filter(p=>!usadas.has(p.id));
     corpo=`${pubNota()?`<section><h3>Nota da equipa</h3><p style="font-size:14.5px">${esc(pubNota())}</p></section>`:""}
-     <section><h3>O que mudou</h3>${cs.length?`<ul>${cs.map(s=>`<li data-src="${use(s.bloco)}"><span><b>${esc(s.titulo)}</b><br><span style="font-size:13.5px">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</span></span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">${isCli()?"A equipa não destacou nenhum ponto nesta edição.":"Ainda não marcaste cartões para o cliente. Marca-os na Visão geral ou em «Publicar para o cliente»."}</p>`}</section>
-     <section><h3>O que a Arena propõe</h3>${pk.length?`<ul>${pk.map(p=>`<li class="pk"><b>${esc(p.titulo)}</b><span style="font-size:13.5px">${esc(p.acao)}</span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">${isCli()?"Sem propostas nesta edição.":"Ainda não há pistas marcadas para o cliente. Decide em Ações quais levar."}</p>`}</section>`;
+     <section><h3>O que mudou e o que propomos</h3>${cs.length?lista:`<p style="font-size:14.5px;color:#586764">${isCli()?"A equipa não destacou nenhum ponto nesta edição.":"Ainda não marcaste cartões para o cliente. Marca-os na Visão geral ou em «Publicar para o cliente»."}</p>`}</section>
+     ${extra.length?`<section><h3>Outras propostas da Arena</h3>${extra.map(p=>pk(p,esc(p.titulo))).join("")}</section>`:""}`;
   }else{
-    const sigs=q||!D.sinais.length?`<p style="font-size:14.5px">Nenhum sinal ultrapassou o limiar esta semana. O Radar continua a observar, e isso também é informação.</p>`
-     :`<ul>${[...mat,...obs].map(s=>`<li data-src="${use(s.bloco)}"><span><b>${esc(s.titulo)}</b>${s.material?"":' <span style="color:#586764">(em observação)</span>'}</span></li>`).join("")}</ul>`;
-    const first=mat[0]||obs[0],read=q||!first?"":`<p style="font-size:14.5px">${esc(first.leitura)}${first.hipotese?' <span class="tag">Hipótese</span>':""}</p>`;
-    const list=q?[]:D.pistas.filter(p=>p.s!=="descartada");
-    const pk=list.length?`<ul>${list.map(p=>`<li class="pk"><b>${esc(p.titulo)}</b><span style="font-size:13.5px">${esc(p.acao)}</span><span style="font-size:12px;color:#586764">${STL[p.s]}${p.cli?", marcada para o cliente":""}</span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">Sem pistas esta semana.</p>`;
-    corpo=`<section><h3>O que mudou</h3>${sigs}</section><section>${q?"":`<h3>O que significa</h3>${read}`}</section><section><h3>Pistas de ação para a equipa</h3>${pk}</section>`}
+    const lista=q||!D.sinais.length?`<p style="font-size:14.5px">Nenhum sinal ultrapassou o limiar esta semana. O Radar continua a observar, e isso também é informação.</p>`
+     :[...mat,...obs].map(s=>{const p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null;return`<div class="bsig" data-src="${use(s.bloco)}"><b>${esc(s.titulo)}${s.novo?' <span class="bnw">novo</span>':""}${s.material?"":' <span style="color:#586764;font-weight:500">(em observação)</span>'}</b><p>${esc(s.leitura)}${s.hipotese?' <span class="tag">Hipótese</span>':""}</p>${p&&p.s!=="descartada"?pk(p,`Pista para ${esc(p.para)} · ${STL[p.s].toLowerCase()}${p.cli?", marcada para o cliente":""}`):""}</div>`}).join("");
+    const ex=D.brief.extras;
+    corpo=`<section><h3>O que mudou e o que significa</h3>${lista}</section>
+     ${ex.length?`<section><h3>Destaques acrescentados pela equipa</h3>${ex.map(x=>`<div class="bsig brx"><div><b>${esc(x.t)}</b><p>${esc(x.txt)}</p></div><button class="no-print" data-brm="${x.id}" aria-label="Retirar do briefing" data-tip="Retirar do briefing">✕</button></div>`).join("")}</section>`:""}`}
   const sl=sealInfo(new Set(D.sinais.map(s=>s.bloco)));
   return`<header><img alt="" src="${$(".logo-tile img").src}"><div><b>Arena Radar, ${esc(D.cliente.nome)}</b><span>Semana de ${D.calendario.rotulo_semana_atual}</span></div></header>
    <div class="mb">${corpo}

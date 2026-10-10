@@ -58,9 +58,10 @@ Object.values(CLS).forEach(d=>{
   const pb=sv.pub||{};
   d.pub={paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",pubd:null,hist:Array.isArray(pb.hist)?pb.hist.slice(0,8):[]};
   if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao");
+  d.brief={extras:Array.isArray(sv.brief&&sv.brief.extras)?sv.brief.extras.filter(x=>x&&x.id&&x.t).slice(0,20):[]};
   if(pb.pubd)d.pub.pubd=pubNorm(pb.pubd,d);
   else if(pb.publicada)d.pub.pubd=pubSnapshot(d,"Equipa",pb.quando?pb.quando+"T09:00:00.000Z":null)});   // migra o formato anterior (só «publicada»)
-function saveState(){try{const o={};Object.values(CLS).forEach(d=>{o[d.cliente.id]={pistas:Object.fromEntries(d.pistas.map(p=>[p.id,{t:p.titulo,s:p.s,para:p.para,acao:p.acao,cli:p.cli,res:p.res}])),pub:d.pub}});localStorage.setItem(STKEY,JSON.stringify(o))}catch(e){}}
+function saveState(){try{const o={};Object.values(CLS).forEach(d=>{o[d.cliente.id]={pistas:Object.fromEntries(d.pistas.map(p=>[p.id,{t:p.titulo,s:p.s,para:p.para,acao:p.acao,cli:p.cli,res:p.res}])),pub:d.pub,brief:d.brief}});localStorage.setItem(STKEY,JSON.stringify(o))}catch(e){}}
 const isTema=()=>D.cliente.tipo_universo==="tema";
 const periodos=()=>isTema()?[8,12,26,NW]:[4,8,12,26];
 const ebyid=id=>D.entidades.find(e=>e.id===id);
