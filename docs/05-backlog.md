@@ -41,7 +41,7 @@ Mostrar em Observar o limiar de cada bloco (de `04-dados-e-fontes.md`). Quando n
 Interruptor que esconde ⌘K, skeletons e animações acessórias, aumenta a tipografia e deixa quatro ecrãs: Visão geral, Observar, Briefing, Impacto.
 **Aceitação:** percorrível em 3 minutos numa reunião, sem cliques perdidos.
 
-### RB-09 · Ligar dados reais ao protótipo
+### RB-09 · Ligar dados reais ao protótipo *(feito em out. 2026: `scripts/build_dataset.py`; falta correr as recolhas reais, RB-76)*
 Criar `scripts/build_dataset.py`: lê `data/raw/**`, agrega por semana e gera `data/processed/spv.json` com proveniência. Um passo de build injeta o JSON no HTML v3.
 **Aceitação:** correr os coletores + build atualiza o protótipo sem editar o HTML à mão.
 
@@ -87,11 +87,11 @@ Para a v3 de demonstração, a proposta é limitar-se a três ideias de valor: R
 
 ## Reestruturação UX e multi-cliente (out. 2026; decisões D26 a D29)
 Especificação em `docs/08-especificacao-ux.md`. Por fases:
-- **RB-70** *(fase C)* Seletor de âmbito e menu único para todos os clientes.
-- **RB-71** *(fase C)* Barra de filtros global (período, comparação, plataforma, marcas) em Visão geral, Mercado e Procura e notícias.
-- **RB-72** *(fase C)* Componentes reutilizáveis: KPI, cartão-conclusão, gráfico, tabela, gaveta, estado vazio.
-- **RB-73** *(fase C)* Dados por cliente: `config/` → `scripts/build_dataset.py` (RB-09) → JSON lido pelo protótipo; remover clientes e marcas escritos no código. Criar `config/verticals/` (RB-40).
-- **RB-74** *(fase C)* Selo de dados por página (depende da D27).
+- **RB-70** ✅ *(fase C, out. 2026)* Seletor de âmbito e menu único para todos os clientes.
+- **RB-71** ✅ *(fase C)* Barra de filtros global (período, comparação, plataforma, marcas) onde afeta o conteúdo: Visão geral, Mercado (concorrência), Procura e notícias, Criativos.
+- **RB-72** ✅ *(fase C)* Componentes reutilizáveis: KPI, cartão-conclusão, gráfico, tabela, gaveta, estado vazio (`prototype/src/js/20-components.js`, `30-charts.js`).
+- **RB-73** ✅ *(fase C)* Dados por cliente: `config/` → `scripts/build_dataset.py` (RB-09) → JSON lido pelo protótipo; clientes e marcas já não estão no código. `config/verticals/` criado (RB-40). Quatro clientes: SPV (tema, real) e Lumio, Vael, Kob (concorrência, fictícios).
+- **RB-74** ✅ *(fase C)* Selo de dados por página (D27 confirmada).
 - **RB-75** *(fase D)* Vista Cliente e publicação pela equipa (depende de Q09).
 - **RB-76** *(fase E)* Dados reais nos blocos Procura e Notícias para a home; Meta quando houver token (Q10).
 

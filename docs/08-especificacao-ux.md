@@ -1,6 +1,6 @@
 # Especificação de UX/UI — padrão de página e componentes
 
-**Estado:** Rascunho para validação do David · **Fase:** B (especificação, antes de reestruturar o protótipo) · **Ponto de partida:** `07-revisao-ux-e-estrutura.md`
+**Estado:** Aprovada pelo David; implementada na fase C (out. 2026) · **Fase:** B → C · **Ponto de partida:** `07-revisao-ux-e-estrutura.md`
 
 Decisões de base (D26 a D28, em `docs/dossier/04-registos/decisoes.md`): duas vistas (Equipa e Cliente), menu único com seletor de âmbito e selo de dados por página.
 
@@ -109,33 +109,36 @@ Cada página mostra **um** selo junto ao título, em vez de uma etiqueta por blo
 | `Demonstração` | Todos os blocos da página são simulados | Lista de blocos e a origem de cada um |
 | `Real · atualizado a 4 out` | Todos os blocos vêm de fontes ligadas | Lista de fontes, datas e método |
 | `Misto · 3 de 5 blocos reais` | Parte real, parte simulada | Que blocos são reais e quais simulados |
+| `Demonstração e estimado` · `Real e estimado` · `Estimado` | Sem blocos reais mas com estimativas assumidas, ou real com estimativas | Método de cada estimativa |
+| `Por ligar` | A página ainda não tem nenhum bloco com dados | O que falta ligar |
 
 - O selo calcula-se a partir da origem de cada registo (`origem` continua obrigatória no dado).
 - Quando as fontes forem ligadas, o selo passa sozinho de «Demonstração» a «Real», sem mudar a interface.
 - Em qualquer número, passar o cursor ou abrir a gaveta mostra origem, fonte, data de recolha e método.
 - **Limite mantido:** dado simulado nunca é atribuído a uma entidade real de terceiros (regra 4 do CLAUDE.md). Para essas entidades, dado real ou nada («por recolher»).
 
-*Esta secção depende da confirmação da D27 pelo David.*
+*D27 confirmada pelo David e implementada. Em dados reais ou estimados, cada bloco mostra também a fonte e a data de recolha num rodapé discreto (convenção de reporting).*
 
-## 7. Modelo de dados por cliente (alvo da fase C)
-```json
-{
-  "cliente": { "id": "spv", "nome": "…", "vertical": "ambiente", "tipo_universo": "tema", "tema": "spv" },
-  "periodo": { "inicio": "2026-01-05", "fim": "2026-10-04" },
-  "entidades": [{ "id": "novo-verde", "nome": "Novo Verde", "papel": "…", "prioridade": "alta" }],
-  "series":   [{ "bloco": "procura", "entidade": "…", "semana": "2026-09-28", "valor": 41,
-                 "origem": "real", "fonte": "Google Trends", "data_recolha": "…", "metodo": "…" }],
-  "anuncios": [ /* contrato de 09-pontos-de-ligacao.md */ ],
-  "sinais":   [ /* gerados pelas regras de limiar */ ]
-}
-```
-Gerado por `scripts/build_dataset.py` (RB-09) a partir de `config/` e `data/raw/`. Acrescentar um cliente passa a ser criar um ficheiro de configuração.
+## 7. Modelo de dados por cliente (implementado)
+Gerado por `scripts/build_dataset.py` a partir de `config/` e `data/raw/`; um ficheiro por cliente em `data/processed/<cliente>.json`, mais `agencia.json`.
+
+| Chave | Conteúdo |
+|---|---|
+| `cliente` | id, nome, setor, vertical, tipo de universo (`concorrencia` ou `tema`), se é fictício |
+| `calendario`, `plataformas`, `formatos`, `territorios`, `limiares` | Parâmetros herdados da agência, da vertical e do cliente |
+| `entidades` | O cliente e os outros do universo (concorrentes herdados da vertical, sugeridos pelo Radar) |
+| `blocos` | **Registo de proveniência**: para cada bloco de dados, origem (`real`, `estimado`, `demo`, `pendente`), fonte, data de recolha, método |
+| `anuncios`, `procura`, `noticias`, `contexto`, `agenda`, `eventos`, `sazonalidade`, `leilao`, `voz` | Os dados de cada bloco (ausente = a página mostra «por ligar») |
+| `sinais`, `pistas` | Gerados pelas regras de limiar (`scripts/signals.py`); para universos de tema, o conteúdo vem de `sinais_modelo` no YAML do cliente |
+| `kpis` | Que KPIs mostrar na Visão geral (catálogo em `prototype/src/js/40-metrics.js`) |
 
 ## 8. Critérios de aceitação da fase C
-- Trocar de cliente no seletor muda **todo** o conteúdo e o menu mantém-se igual.
-- Dois clientes de tipos diferentes (um *tema*, um *concorrência*) usam as mesmas páginas e componentes.
-- Os filtros de período e comparação existem em Visão geral, Mercado e Procura e notícias.
-- Nenhum cliente, marca ou série está escrito no código: tudo vem do JSON do cliente.
-- A vista Cliente só mostra conteúdo publicado.
-- Consola sem erros; zero pedidos externos; contraste AA nos temas.
-- Cada fonte tem o seu `LIGAÇÃO[<id>]` (ver `09-pontos-de-ligacao.md`).
+| Critério | Estado |
+|---|---|
+| Trocar de cliente no seletor muda **todo** o conteúdo e o menu mantém-se igual | ✅ |
+| Dois clientes de tipos diferentes (*tema* e *concorrência*) usam as mesmas páginas e componentes | ✅ SPV (tema) e Lumio, Vael, Kob (concorrência) |
+| Filtros de período e comparação onde afetam o conteúdo | ✅ Visão geral, Mercado (concorrência), Procura e notícias e Criativos. Em Mercado de um universo de tema não há filtros porque nada nessa vista depende do período |
+| Nenhum cliente, marca ou série escrito no código | ✅ Tudo vem do JSON do cliente |
+| A vista Cliente só mostra conteúdo publicado | ⏳ Fase D (RB-75). Hoje o Briefing já tem a versão Cliente, só com as pistas marcadas pela equipa |
+| Consola sem erros; zero pedidos externos; contraste AA nos temas | ✅ Verificado em todas as páginas de todos os clientes, em ecrã largo e em telemóvel |
+| Cada fonte tem o seu `LIGAÇÃO[<id>]` | ✅ `grep -rn "LIGAÇÃO\[" prototype/src scripts config` |

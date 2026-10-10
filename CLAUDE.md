@@ -24,7 +24,7 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 2. Dado `real` tem sempre `fonte` (emissor identificado) e `data_recolha`.
 3. Dado `estimado` explica o método num campo `metodo`.
 4. Dado `demo` nunca é atribuído a uma entidade terceira real (Novo Verde, Electrão, SDR Portugal, etc.). Para terceiros: dado real ou nada.
-5. A interface mostra a origem de cada dado (etiqueta visível + fonte ao passar o cursor). *Proposta D27, por confirmar: um selo de dados por página (Demonstração, Real ou Misto) com o detalhe ao abrir e em cada número. Até o David confirmar, mantêm-se as etiquetas por bloco.*
+5. A interface mostra a origem de cada dado (etiqueta visível + fonte ao passar o cursor). *D27 (confirmada pelo David): um **selo de dados por página** (Demonstração, Real, Estimado ou Misto) em vez de etiquetas por bloco; o detalhe abre ao clicar no selo e em cada número ao passar o cursor. `origem` continua obrigatória em cada bloco de dados.*
 6. Dados internos de clientes (ex.: utilização do chatbot ELO) ficam em `data/raw/internal/`, que está no `.gitignore`. Nunca fazer commit destes dados.
 
 ## Marca Arena Media
@@ -56,8 +56,9 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 - **Leitura tipo dashboard de reporting.** Cada página segue a ordem filtros → KPIs → o que mudou → gráfico principal → detalhe (ver `docs/08`).
 - **Pontos de ligação (D29).** Onde uma fonte real entra no código, deixar um comentário `LIGAÇÃO[<id>]` e atualizar `docs/09-pontos-de-ligacao.md`. Listar com `grep -rn "LIGAÇÃO\[" prototype/src scripts`.
 - **Uso interno primeiro (D23, ajustada por D26).** O foco é a visão do mercado e da concorrência por vertical e cliente: o que os concorrentes anunciam (Meta, Google, YouTube, TikTok), criativos, formatos, mensagens, campanhas, investimento estimado e quota de voz. As pistas de ação servem Performance, Brand e Account; levar algo ao cliente é opcional e secundário.
-- **Fontes como módulos (D25).** Cada fonte é um módulo em «Fontes de dados». Importações CSV passam pela validação de proveniência.
-- **Gráficos:** SVG próprio, cores categóricas fixas por marca (validadas para daltonismo), rampa azul ordinal para plataformas e formatos, dica ao passar o cursor, vista em tabela e navegação por teclado. Código em `prototype/src/competition.js`.
+- **Fontes como módulos (D25).** Cada fonte é um módulo em «Fontes de dados» (`config/fontes.yaml`). Importações CSV passam pela validação de proveniência.
+- **Navegação (D28).** Seletor de âmbito Agência › Vertical › Cliente e menu único: Visão geral, Mercado, Procura e notícias, Criativos (se houver anúncios), Relatórios, Ações. Cada página: filtros → KPIs → o que mudou → gráfico principal → detalhe.
+- **Gráficos:** SVG próprio, cores categóricas fixas por marca (validadas para daltonismo), rampa azul ordinal para plataformas e formatos, dica ao passar o cursor, vista em tabela e navegação por teclado. Código em `prototype/src/js/30-charts.js`.
 
 ## Conceito (resumo; detalhe em `docs/02-produto.md`)
 - Três camadas: **Observar** (o que mudou), **Ler** (o que significa), **Pistas de ação** (o que podemos fazer).
@@ -74,6 +75,7 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 - Stack de produção por decidir com o IT (Microsoft Power BI / Copilot Studio / Power Automate vs. outro). Manter dados em formatos simples (CSV/JSON) para migrar sem retrabalho.
 
 ## Convenções
-- Protótipos: `prototype/arena-radar-v2.html` (referência da versão de junho, não editar; recuperar manualmente), `prototype/arena-radar-v3-preview.html` (pré-visualização atual, ponto de partida visual da v3). A fonte é `prototype/src/preview.template.html`; gerar com `python3 prototype/build_preview.py`. Não editar o HTML gerado à mão.
+- Protótipos: `prototype/arena-radar-v2.html` (referência da versão de junho, não editar; recuperar manualmente) e `prototype/arena-radar-v3-preview.html` (atual, multi-cliente). A fonte está em `prototype/src/` (`index.template.html`, `css/`, `js/`); gerar com `python3 scripts/build_dataset.py && python3 prototype/build_preview.py`. Não editar o HTML gerado à mão.
+- **A interface não tem clientes, marcas nem séries escritos no código.** Tudo vem de `config/` (agência, verticais, clientes, temas, fontes) → `scripts/build_dataset.py` → `data/processed/*.json`. Acrescentar um cliente = um ficheiro (ver `docs/10-como-acrescentar-um-cliente.md`).
 - Um commit por tarefa do backlog, mensagem em PT-PT com o ID (ex.: `RB-03 etiquetas de proveniência`).
 - Antes de dar uma tarefa por concluída: abrir o HTML, verificar consola sem erros, confirmar que nenhum dado sem origem aparece na interface.

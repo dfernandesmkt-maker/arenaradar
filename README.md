@@ -21,11 +21,12 @@ Conceito e protótipo de alta fidelidade concluídos. Dados reais, motor de leit
 | `docs/07-revisao-ux-e-estrutura.md` | Revisão de UX/UI e de estrutura, com proposta de solução (rascunho) |
 | `docs/08-especificacao-ux.md` | Especificação do padrão de página, componentes e vistas Equipa/Cliente |
 | `docs/09-pontos-de-ligacao.md` | Onde ligar cada fonte (Meta, Google, TikTok, Marktest…) e contrato de dados |
+| `docs/10-como-acrescentar-um-cliente.md` | Acrescentar um cliente = um ficheiro de configuração |
 | `docs/legacy/` | Documentos antigos (documento estratégico de abril) |
-| `config/clients/` | Configuração por cliente (o Radar é agnóstico ao cliente) |
+| `config/` | Configuração: `agencia.yaml`, `verticals/`, `clients/` (um ficheiro por cliente), `themes/`, `fontes.yaml` |
 | `scripts/` | Recolha de dados: notícias, Google Trends, Meta Ad Library |
 | `data/` | Dados recolhidos, sempre com proveniência |
-| `prototype/` | Protótipos HTML (v2 de junho a colocar aqui; v3 SPV a construir) |
+| `prototype/` | Protótipo HTML (v3, multi-cliente) e o seu código-fonte em `src/` |
 | `assets/` | Logo oficial Arena Media Portugal |
 
 ## Arranque rápido
@@ -36,4 +37,6 @@ cp .env.example .env        # preencher o token da Meta, se já existir
 python scripts/collect_news.py --client spv
 python scripts/collect_trends.py --client spv
 python scripts/collect_meta_ads.py --client spv
+python scripts/build_dataset.py          # gera os datasets de todos os clientes
+python prototype/build_preview.py        # gera o protótipo (abre o HTML no navegador)
 ```
