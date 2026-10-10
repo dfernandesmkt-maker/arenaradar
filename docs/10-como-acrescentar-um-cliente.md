@@ -22,6 +22,9 @@
 ## O que fica em demonstração até ligar as fontes
 Enquanto uma fonte não estiver ligada, o bloco correspondente usa dados de **demonstração** (marcas fictícias) e o selo da página diz «Demonstração». Quando houver dados em `data/raw/` (recolhidos pelos scripts), `build_dataset.py` usa-os e o selo muda para «Real» ou «Misto», sem alterar a interface. Ver `docs/09-pontos-de-ligacao.md`.
 
+## Vista do cliente
+Cada cliente tem automaticamente a pré-visualização da vista do cliente («Equipa | Cliente»). Nada aparece ao cliente até a equipa publicar em Relatórios › Publicar para o cliente. Opcionalmente, `cliente.tema: <id de config/themes>` dá ao cliente o seu tema de cor, usado só na vista do cliente; só deve usar-se depois de a Q09 estar respondida.
+
 ## Regras que se mantêm
 - Dados de demonstração só para entidades **fictícias** (campo `ficticia`) ou ao nível de um tema. Para entidades reais de terceiros: dado real ou «por recolher».
 - Dados internos de clientes ficam em `data/raw/internal/`, fora do Git.

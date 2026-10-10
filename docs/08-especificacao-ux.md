@@ -88,17 +88,23 @@ Regras:
 
 Os componentes já existem em parte no preview (KPIs, cartões, gráficos SVG, gaveta, etiquetas); a fase C extrai-os e uniformiza-os.
 
-## 5. Duas vistas
+## 5. Duas vistas (implementado na fase D)
 
 | | **Equipa** | **Cliente** |
 |---|---|---|
-| Menu | Completo, com Ações | Visão geral, Mercado, Procura e notícias, Criativos, Relatórios |
-| Pistas e atribuições | Sim | Só as publicadas, assinadas pela Arena |
-| Tema | Arena | Tema do cliente, se aprovado (Q09) |
-| Notas internas e limiares | Visíveis | Ocultos |
+| Menu | Completo, com Ações, Torre de controlo e Fontes | Só as páginas que a equipa publicou (Visão geral, Mercado, Procura e notícias, Criativos, Relatório semanal) |
+| Pistas e atribuições | Sim | Só as marcadas para o cliente e aceites pela equipa, como «A Arena propõe», sem atribuição a Performance, Brand ou Account |
+| Cartões «O que mudou» | Todos, com limiares e hipóteses | Só os que a equipa escolheu, sem limiares nem rótulos internos |
+| Conjunto competitivo | Editável; o Radar sugere marcas | Só de leitura; as sugestões não aceites não aparecem |
+| Pergunta ao Radar, Torre, Fontes, Ações | Sim | Não |
+| Tema | Arena | Tema do cliente, se configurado (`cliente.tema`) e aprovado (Q09) |
 | Como o conteúdo chega | Automático a partir dos dados | **Só por publicação da equipa**; nada é automático |
 
-Alternância no topo («Equipa | Cliente»). Na vista Cliente aparece uma faixa discreta «Pré-visualização do que o cliente vê» enquanto a equipa a usar.
+**Como se publica.** Em Relatórios › «Publicar para o cliente» a equipa escolhe as páginas visíveis, os cartões, as pistas (só as aceites ou ajustadas) e uma nota opcional, e carrega em «Publicar». Enquanto não publicar, a vista do cliente mostra «Ainda não há relatório publicado». Marcar cartões ou pistas **não** publica. A publicação pode ser retirada. O que sai é assinado pela Arena Media, sem autoria individual (D03).
+
+**Alternância.** O botão «Equipa | Cliente» no topo abre a **pré-visualização** da vista do cliente, com uma faixa a lembrá-lo. A entrega real ao cliente (acesso, convite, autenticação) não está construída: decide-se com IT e Compliance.
+
+**Persistência.** As decisões sobre pistas e a publicação ficam guardadas no navegador (localStorage), para a equipa preparar e retomar. A persistência em ficheiro ou base de dados, partilhada pela equipa, é a tarefa RB-22.
 
 ## 6. Selo de dados (substitui as etiquetas em cada bloco)
 
@@ -139,6 +145,6 @@ Gerado por `scripts/build_dataset.py` a partir de `config/` e `data/raw/`; um fi
 | Dois clientes de tipos diferentes (*tema* e *concorrência*) usam as mesmas páginas e componentes | ✅ SPV (tema) e Lumio, Vael, Kob (concorrência) |
 | Filtros de período e comparação onde afetam o conteúdo | ✅ Visão geral, Mercado (concorrência), Procura e notícias e Criativos. Em Mercado de um universo de tema não há filtros porque nada nessa vista depende do período |
 | Nenhum cliente, marca ou série escrito no código | ✅ Tudo vem do JSON do cliente |
-| A vista Cliente só mostra conteúdo publicado | ⏳ Fase D (RB-75). Hoje o Briefing já tem a versão Cliente, só com as pistas marcadas pela equipa |
+| A vista Cliente só mostra conteúdo publicado | ✅ Fase D (RB-75). Verificado de ponta a ponta: sem publicar o cliente não vê nada; publicado, não vê limiares, hipóteses, atribuições, Ações nem marcas por aceitar |
 | Consola sem erros; zero pedidos externos; contraste AA nos temas | ✅ Verificado em todas as páginas de todos os clientes, em ecrã largo e em telemóvel |
 | Cada fonte tem o seu `LIGAÇÃO[<id>]` | ✅ `grep -rn "LIGAÇÃO\[" prototype/src scripts config` |

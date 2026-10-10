@@ -92,7 +92,7 @@ Especificação em `docs/08-especificacao-ux.md`. Por fases:
 - **RB-72** ✅ *(fase C)* Componentes reutilizáveis: KPI, cartão-conclusão, gráfico, tabela, gaveta, estado vazio (`prototype/src/js/20-components.js`, `30-charts.js`).
 - **RB-73** ✅ *(fase C)* Dados por cliente: `config/` → `scripts/build_dataset.py` (RB-09) → JSON lido pelo protótipo; clientes e marcas já não estão no código. `config/verticals/` criado (RB-40). Quatro clientes: SPV (tema, real) e Lumio, Vael, Kob (concorrência, fictícios).
 - **RB-74** ✅ *(fase C)* Selo de dados por página (D27 confirmada).
-- **RB-75** *(fase D)* Vista Cliente e publicação pela equipa (depende de Q09).
+- **RB-75** ✅ *(fase D, out. 2026)* Vista Cliente e publicação pela equipa. O tema de cor por cliente está pronto (`cliente.tema`) mas não é usado até a Q09 ser respondida. Falta a entrega real ao cliente (acesso e autenticação), a decidir com IT e Compliance.
 - **RB-76** *(fase E)* Dados reais nos blocos Procura e Notícias para a home; Meta quando houver token (Q10). **Estado:** o ambiente cloud não tem acesso de rede a `news.google.com`, `trends.google.com` nem `graph.facebook.com`; importador de exportações manuais do Trends pronto (`scripts/import_trends_csv.py`). Falta correr a recolha (ver `docs/09`, «Ligar a SPV a dados reais»).
 
 ## Concorrência e fontes (out. 2026)
