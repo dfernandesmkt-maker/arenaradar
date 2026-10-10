@@ -34,7 +34,8 @@ function comandos(){
   AG.clientes.forEach(c=>L.push({g:"Mudar de cliente",t:c.nome,i:"i-radar",k:`${c.vertical_nome} cliente`,run:()=>go(`${c.id}/${cli&&ROUTE.page!=="criativos"?ROUTE.page:"visao"}`)}));
   L.push({g:"Ações",t:"Alternar modo claro e escuro",i:isDark()?"i-sun":"i-moon",k:"tema aparência",run:()=>setMode(isDark()?"light":"dark")});
   if(tourSteps().length)L.push({g:"Ações",t:"Apresentar: roteiro guiado",i:"i-play",k:"demonstração modo apresentação",run:()=>tourStart()});
-  if(cli){L.push({g:"Ações",t:"Pré-visualizar a vista do cliente",i:"i-eye",k:"cliente publicar",run:()=>go(`${CID}/${ROUTE.page==="acoes"?"visao":ROUTE.page}?v=cliente`)});
+  if(cli){L.push({g:"Ações",t:"Ver o que o cliente vê (publicado)",i:"i-eye",k:"cliente publicar pré-visualizar",run:()=>go(`${CID}/${ROUTE.page==="acoes"?"visao":ROUTE.page}?v=cliente`)});
+    L.push({g:"Ações",t:"Pré-visualizar o rascunho do cliente",i:"i-eye",k:"cliente rascunho publicar",run:()=>go(`${CID}/${ROUTE.page==="acoes"?"visao":ROUTE.page}?v=cliente&rasc=1`)});
     L.push({g:"Ações",t:"Simular semana sem sinais",i:"i-flask",k:"demonstração vazio",run:()=>{S.bquiet=!S.bquiet;CUR.refresh()}})}
   L.push({g:"Ações",t:"Repor demonstração",i:"i-x",k:"limpar decisões publicações",run:()=>resetEstado()});
   if(cli)ask.list.forEach(a=>L.push({g:"Perguntas",t:a.q,i:"i-search",k:"pergunta radar",run:()=>runAsk(a.id)}));

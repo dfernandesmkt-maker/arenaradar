@@ -37,7 +37,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("#pistas [data-a]
   else if(a==="descartar"){p.s="descartada";toast("Pista descartada. Fica registada no Impacto.")}
   else if(a==="para"){p.para=b.dataset.v;saveState();toast("Pista atribuída a "+p.para+".");refreshPista(p.id);return}
   else if(a==="repor"){p.s="sugerida";p.cli=false}
-  else if(a==="cliente"){p.cli=!p.cli;toast(p.cli?"Marcada para a versão do briefing para o cliente. Nada sai sem a equipa o enviar.":"Retirada da versão para o cliente.")}
+  else if(a==="cliente"){p.cli=!p.cli;toast(p.cli?"Marcada para o rascunho da vista do cliente. Só chega ao cliente quando publicares em Relatórios.":"Retirada do rascunho da vista do cliente.")}
   else if(a==="research"){p.res=true;toast("Pedido de aprofundamento enviado à Research (simulação).")}
   else if(a==="ajustar"){const pa=$("[data-act]",el);pa.innerHTML=`<textarea class="edit" aria-label="Ação possível">${esc(p.acao)}</textarea><div style="margin-top:8px;display:flex;gap:8px"><button class="btn pri" data-a="guardar"><svg class="ic"><use href="#i-check"/></svg>Guardar ajuste</button><button class="btn ghost" data-a="cancelar">Cancelar</button></div>`;$("textarea",pa).focus();return}
   else if(a==="guardar"){p.acao=$("textarea",el).value.trim()||p.acao;p.s="ajustada";toast("Ajuste guardado. A pista fica aceite com a tua versão.")}

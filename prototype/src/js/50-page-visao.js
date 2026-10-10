@@ -13,13 +13,13 @@ function sigGo(s){
   if(s.serie&&s.serie.tipo==="quota_voz")return"mercado/voz";
   return"mercado/ativ"}
 function sigCardCli(s,i){
-  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),pp=p&&p.cli&&(p.s==="aceite"||p.s==="ajustada");
+  const e=s.entidade?ebyid(s.entidade):null,ch=sigChart(s),pp=s.pista_id?pistasPub().find(x=>x.id===s.pista_id):null;
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   return`<article class="sg" data-src="${use(s.bloco)}">
    <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</p>
-   ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(p.acao)}</span></div>`:""}
+   ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(pp.acao)}</span></div>`:""}
   </article>`}
 function sigMeter(s){
   if(s.limiar==null||s.valor==null||!+s.limiar)return"";
@@ -29,7 +29,7 @@ function sigMeter(s){
    <div class="ml"><span><b>${nf(v,d)}${u}</b> ${s.janela_curta?(s.janela_curta.startsWith("vs")?s.janela_curta:"em "+s.janela_curta):"observado"}</span><span>limiar ${nf(l,d)}${u}</span></div></div>`}
 function sigCard(s,i){
   if(isCli())return sigCardCli(s,i);
-  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),pub=D.pub.cartoes.includes(s.id);
+  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),noRasc=D.pub.cartoes.includes(s.id),noPub=!!(D.pub.pubd&&D.pub.pubd.cartoes.includes(s.id)),pub=noRasc;
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
@@ -38,9 +38,9 @@ function sigCard(s,i){
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
    <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}
-    ${pub?`<span class="tag ok" data-tip="Publicado para a vista do cliente">Cliente</span>`:""}
+    ${noRasc&&noPub?`<span class="tag ok" data-tip="Este cartão faz parte do que o cliente vê agora.">No cliente</span>`:noRasc?`<span class="tag" data-tip="Está no rascunho da vista do cliente. Só chega ao cliente quando publicares.">No rascunho</span>`:noPub?`<span class="tag warn" data-tip="O cliente ainda vê este cartão. Sai quando publicares as alterações.">A retirar</span>`:""}
     <div class="more"><button class="btn ghost ico" data-cardmenu aria-haspopup="menu" aria-expanded="false" aria-label="Mais ações"><svg class="ic"><use href="#i-dots"/></svg></button>
-     <div class="mm" role="menu" hidden>${p?`<button role="menuitem" ${det}>${dl}</button>`:""}<button role="menuitem" data-pubsg="${s.id}"><svg class="ic"><use href="#i-send"/></svg>${pub?"Retirar da vista do cliente":"Publicar para o cliente"}</button>${p?`<button role="menuitem" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg><span>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</span></button>`:""}</div></div></div>
+     <div class="mm" role="menu" hidden>${p?`<button role="menuitem" ${det}>${dl}</button>`:""}<button role="menuitem" data-pubsg="${s.id}"><svg class="ic"><use href="#i-send"/></svg>${pub?"Retirar do rascunho para o cliente":"Adicionar ao rascunho para o cliente"}</button>${p?`<button role="menuitem" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg><span>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</span></button>`:""}</div></div></div>
   </article>`}
 document.addEventListener("click",e=>{
   const mb=e.target.closest("[data-cardmenu]");
@@ -104,7 +104,7 @@ function pageVisao(){
    ${detailHTML()}`;
   return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),esc(leadText()))+body}
 
-document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão marcado para a vista do cliente. Só sai quando publicares em Relatórios.":"Cartão retirado da vista do cliente.");CUR.refresh()});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão adicionado ao rascunho da vista do cliente. Só chega ao cliente quando publicares em Relatórios.":"Cartão retirado do rascunho da vista do cliente.");CUR.refresh()});
 
 
 /* Copiar tabela (TSV, cola direto no Excel) */

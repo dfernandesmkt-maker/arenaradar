@@ -578,6 +578,36 @@ html[data-present] #toast{bottom:116px}
 .rhead{display:grid;grid-template-columns:24px 118px minmax(0,1fr) 62px 74px;gap:10px;font-size:11.5px;font-weight:500;color:var(--text-2);padding-bottom:4px;border-bottom:1px solid var(--line-2);margin-bottom:2px}
 .rhead .num{text-align:right}
 @media (max-width:680px){.rhead{grid-template-columns:20px 86px minmax(0,1fr) 54px}.rhead .dlh{display:none}}
+.tag.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn-ink)}
+.vbacts{display:flex;gap:8px;flex-wrap:wrap}
+.emptyacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+/* Publicar: escolhas à esquerda, pré-visualização ao lado */
+.pubgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:30px;align-items:start}
+.pubmain{min-width:0}
+.pubprev{position:sticky;top:84px}
+.pvcap{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;font-size:13.5px}
+.pvw{border:1px solid var(--line);border-radius:14px;background:#fff;color:#0F2623;overflow:hidden;box-shadow:var(--sh);font-size:12.5px}
+.pvh{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid #E1E6E5}
+.pvh img{width:30px;height:30px}
+.pvh b{display:block;font-size:13px;font-weight:650}
+.pvh span{font-size:11.5px;color:#586764}
+.pvn{margin:12px 14px 0;padding:8px 10px;border-radius:8px;background:#FFF7CC;font-size:12.5px}
+.pvs{padding:12px 14px 0}
+.pvs h5{font-size:11px;font-weight:600;color:#586764;margin-bottom:6px;letter-spacing:.02em}
+.pvc{display:grid;gap:2px;padding:8px 10px;border-radius:8px;background:#F6F8FA;border:1px solid #E1E6E5;margin-bottom:6px}
+.pvc b{font-size:12.5px;font-weight:600}
+.pvc span{font-size:12px;color:#586764}
+.pvc.pk{background:#E8F1FD;border-color:#CFE0F8}
+.pve{font-size:12px;color:#586764;padding:2px 0 6px}
+.pvp{display:flex;gap:5px;flex-wrap:wrap}
+.pvp span{padding:2px 8px;border-radius:99px;background:#EDF0EF;font-size:11px;font-weight:500}
+.pvf{margin:12px 14px 12px;padding-top:10px;border-top:1px solid #E1E6E5;font-size:11px;color:#586764}
+.pubacts{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.pubsum{margin-top:8px;display:grid;gap:2px;color:var(--text)}
+.pubtools{display:flex;gap:6px;align-items:center}
+.pubrow.hist{cursor:default;align-items:baseline}
+.pubrow.hist .hq{min-width:128px;font-size:12.5px;color:var(--text-2);font-variant-numeric:tabular-nums}
+@media (max-width:1100px){.pubgrid{grid-template-columns:minmax(0,1fr)}.pubprev{position:static;order:-1}}
 
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
 :root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
@@ -906,6 +936,7 @@ const topC=i=>TOP[Math.min(i,TOP.length-1)];
 const DAY=864e5;
 const pd=iso=>{const[y,m,d]=String(iso).slice(0,10).split("-").map(Number);return Date.UTC(y,m-1,d)};
 const fmtDt=iso=>{if(!iso)return"";const[y,m,d]=String(iso).slice(0,10).split("-");return d+"/"+m+"/"+y};
+const fmtDT=iso=>{if(!iso)return"";try{return new Intl.DateTimeFormat("pt-PT",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso)).replace(",","")}catch(e){return fmtDt(iso)}};
 const fmtShort=iso=>{if(!iso)return"";const d=new Date(pd(iso));return d.getUTCDate()+" "+MES[d.getUTCMonth()]};
 
 /* ---------- Cliente ativo ---------- */
@@ -913,18 +944,43 @@ let D=null, S=null, W0=0, NW=0, Z=0, PL=[], PW={}, PC={}, FM=[], TH=[], ADS=[], 
 const SESS={};
 let VIEW="equipa";                      // vista ativa: «equipa» (completa) ou «cliente» (só o que a equipa publicou)
 
+/* ---------- Preferências da pessoa (função e última visita): só neste navegador ---------- */
+const PKEY="radar-prefs-v1";
+let PREFS={role:"todos",visit:{}};try{PREFS=Object.assign(PREFS,JSON.parse(localStorage.getItem(PKEY)||"{}"))}catch(e){}
+const savePrefs=()=>{try{localStorage.setItem(PKEY,JSON.stringify(PREFS))}catch(e){}};
+const ROLES=[["todos","Toda a equipa"],["performance","Performance"],["brand","Brand"],["account","Account"],["direcao","Direção"]];
+const ROLE_PARA={performance:"Performance",brand:"Brand",account:"Account"};   // a que atribuição de pistas corresponde
+const roleLabel=()=>(ROLES.find(r=>r[0]===PREFS.role)||ROLES[0])[1];
+
 /* ---------- Estado da equipa: decisões sobre pistas e publicação para o cliente ----------
    Guardado só neste navegador (localStorage). A persistência em ficheiro/base de dados é a tarefa RB-22.
-   Só se reaproveita o que ainda corresponde aos dados atuais (o título da pista tem de coincidir). */
+   Só se reaproveita o que ainda corresponde aos dados atuais (o título da pista tem de coincidir).
+   Publicação (D34): o RASCUNHO (paginas, cartoes, nota e pistas marcadas) é o que a equipa está a preparar;
+   o PUBLICADO (pubd) é uma cópia do rascunho no momento de publicar e é a única coisa que o cliente vê.
+   Alterar o rascunho depois de publicar não muda o que o cliente vê até haver novo «Publicar». */
 const STKEY="radar-estado-v1";
 let SAVED={};try{SAVED=JSON.parse(localStorage.getItem(STKEY)||"{}")}catch(e){}
 const PAGINAS_CLIENTE=["visao","mercado","procura","criativos","relatorios"];
+const pubOk=p=>p.s==="aceite"||p.s==="ajustada";
+const pubDefault=()=>({paginas:[...PAGINAS_CLIENTE],cartoes:[],nota:"",pubd:null,hist:[]});
+function pubRasc(d=D){return{paginas:[...d.pub.paginas],cartoes:[...d.pub.cartoes],pistas:d.pistas.filter(p=>p.cli&&pubOk(p)).map(p=>({id:p.id,titulo:p.titulo,acao:p.acao})),nota:String(d.pub.nota||"").trim()}}
+function pubSnapshot(d,por,quando){return{...pubRasc(d),quando:quando||new Date().toISOString(),por:por||roleLabel(),semana:d.calendario.rotulo_semana_atual}}
+function pubNorm(o,d){return{paginas:(o.paginas||[]).filter(x=>PAGINAS_CLIENTE.includes(x)),cartoes:(o.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),pistas:(o.pistas||[]).filter(x=>x&&x.id&&d.pistas.some(p=>p.id===x.id)).map(x=>({id:x.id,titulo:String(x.titulo||""),acao:String(x.acao||"")})),nota:String(o.nota||""),quando:o.quando||null,por:o.por||"Equipa",semana:o.semana||d.calendario.rotulo_semana_atual}}
+const pubKey=x=>JSON.stringify([[...x.paginas].sort(),[...x.cartoes].sort(),x.pistas.map(p=>[p.id,p.acao]).sort(),x.nota]);
+const pubPend=(d=D)=>!!d.pub.pubd&&pubKey(d.pub.pubd)!==pubKey(pubRasc(d));          // publicado, mas o rascunho já é outro
+const isPubd=(d=D)=>!!d.pub.pubd;
+function pubHist(d,ev,por,s){d.pub.hist.unshift({q:new Date().toISOString(),por:por||roleLabel(),ev,n:s?{p:s.paginas.length,c:s.cartoes.length,k:s.pistas.length}:null});d.pub.hist=d.pub.hist.slice(0,8)}
+function pubPublicar(d,por){const novo=!d.pub.pubd,s=pubSnapshot(d,por);d.pub.pubd=s;pubHist(d,novo?"publicou":"atualizou",s.por,s);saveState();return s}
+function pubRetirar(d,por){if(!d.pub.pubd)return;d.pub.pubd=null;pubHist(d,"retirou",por,null);saveState()}
+function pubDescartar(d){const a=d.pub.pubd;if(!a)return;d.pub.paginas=[...a.paginas];if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao");d.pub.cartoes=[...a.cartoes];d.pub.nota=a.nota;d.pistas.forEach(p=>{p.cli=a.pistas.some(x=>x.id===p.id)});saveState()}
 Object.values(CLS).forEach(d=>{
   const sv=SAVED[d.cliente.id]||{},pk=sv.pistas||{};
   d.pistas.forEach(p=>{p.acao0=p.acao;p.para0=p.para;p.s="sugerida";p.cli=false;p.res=false;const o=pk[p.id];if(o&&o.t===p.titulo){p.s=o.s||"sugerida";p.cli=!!o.cli;p.res=!!o.res;if(o.para)p.para=o.para;if(o.acao)p.acao=o.acao}});
   const pb=sv.pub||{};
-  d.pub={publicada:!!pb.publicada,paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",quando:pb.quando||null};
-  if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao")});
+  d.pub={paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",pubd:null,hist:Array.isArray(pb.hist)?pb.hist.slice(0,8):[]};
+  if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao");
+  if(pb.pubd)d.pub.pubd=pubNorm(pb.pubd,d);
+  else if(pb.publicada)d.pub.pubd=pubSnapshot(d,"Equipa",pb.quando?pb.quando+"T09:00:00.000Z":null)});   // migra o formato anterior (só «publicada»)
 function saveState(){try{const o={};Object.values(CLS).forEach(d=>{o[d.cliente.id]={pistas:Object.fromEntries(d.pistas.map(p=>[p.id,{t:p.titulo,s:p.s,para:p.para,acao:p.acao,cli:p.cli,res:p.res}])),pub:d.pub}});localStorage.setItem(STKEY,JSON.stringify(o))}catch(e){}}
 const isTema=()=>D.cliente.tipo_universo==="tema";
 const periodos=()=>isTema()?[8,12,26,NW]:[4,8,12,26];
@@ -934,9 +990,11 @@ const me=()=>D.entidades.find(e=>e.cliente);
 const col=e=>e?CAT[e.cor%5]:"#6b7a77";
 const hasAds=()=>!!(D&&D.anuncios&&D.anuncios.itens.length);
 const isCli=()=>VIEW==="cliente";
-const paginasCliente=()=>D.pub.publicada?PAGINAS_CLIENTE.filter(p=>D.pub.paginas.includes(p)&&(p!=="criativos"||hasAds())):[];
-const cartoesPub=()=>D.sinais.filter(s=>D.pub.cartoes.includes(s.id));
-const pistasPub=()=>D.pistas.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada"));
+const pubView=()=>!isCli()?pubRasc():(ROUTE&&ROUTE.rasc?pubRasc():D.pub.pubd);      // o que a vista mostra: publicado (cliente) ou rascunho (pré-visualização)
+const paginasCliente=()=>{const v=pubView();return v?PAGINAS_CLIENTE.filter(p=>v.paginas.includes(p)&&(p!=="criativos"||hasAds())):[]};
+const cartoesPub=()=>{const v=pubView();return v?D.sinais.filter(s=>v.cartoes.includes(s.id)):[]};
+const pistasPub=()=>{const v=pubView();return v?v.pistas:[]};
+const pubNota=()=>{const v=pubView();return v?v.nota:""};
 
 function wDateMs(i){return W0+i*7*DAY}
 function wLab(i){const d=new Date(wDateMs(i));return d.getUTCDate()+" "+MES[d.getUTCMonth()]}
@@ -1207,7 +1265,7 @@ function kpisHTML(){const ks=D.kpis.filter(k=>!KP_ADS.has(k.metrica)||hasAds()).
 const sinaisMat=()=>D.sinais.filter(s=>s.material);
 const semDados=()=>Object.values(D.blocos).every(b=>b.origem==="pendente");   // nenhuma fonte ligada nem demonstração
 function headline(){if(S.bquiet&&!isCli())return"Sem sinais materiais esta semana";if(isCli()){const c=cartoesPub();return c.length?c[0].titulo:"Resumo da semana de "+D.cliente.nome}if(semDados())return"Ainda sem dados ligados";const m=sinaisMat();return m.length?m[0].titulo:"Sem sinais materiais esta semana"}
-function leadText(){if(S.bquiet&&!isCli())return"Simulação: nenhum sinal ultrapassou o limiar. O Radar continua a observar, e isso também é informação.";if(isCli())return D.pub.nota?D.pub.nota:"Resumo preparado pela equipa Arena Media com os dados desta semana.";if(semDados())return"Liga as fontes em Fontes de dados. Enquanto não houver dados, o Radar não mostra números.";const m=sinaisMat().length,o=D.sinais.length-m;return m?`${m===1?"Um sinal acima":nf(m)+" sinais acima"} do limiar${o?` e ${o===1?"um":nf(o)} em observação`:""}. A equipa decide o que fazer com cada um.`:"O Radar continua a observar, e isso também é informação. A equipa decide o que fazer a seguir."}
+function leadText(){if(S.bquiet&&!isCli())return"Simulação: nenhum sinal ultrapassou o limiar. O Radar continua a observar, e isso também é informação.";if(isCli())return pubNota()||"Resumo preparado pela equipa Arena Media com os dados desta semana.";if(semDados())return"Liga as fontes em Fontes de dados. Enquanto não houver dados, o Radar não mostra números.";const m=sinaisMat().length,o=D.sinais.length-m;return m?`${m===1?"Um sinal acima":nf(m)+" sinais acima"} do limiar${o?` e ${o===1?"um":nf(o)} em observação`:""}. A equipa decide o que fazer com cada um.`:"O Radar continua a observar, e isso também é informação. A equipa decide o que fazer a seguir."}
 function sigChart(s){if(!s.serie)return null;const a=Math.max(0,Z-11),r=range(a,Z),xl=i=>wLab(a+i);
   if(s.serie.tipo==="anuncios_ativos"){const e=ebyid(s.serie.id);return{series:[{n:e.nome,c:col(e),d:r.map(w=>PL.reduce((q,p)=>q+AD[e.id][p][w],0))}],xl,fmt:v=>nf(v)+" anúncios",aria:"Anúncios ativos nas últimas 12 semanas"}}
   if(s.serie.tipo==="quota_voz"){const e=ebyid(s.serie.id);return{series:[{n:e.nome,c:col(e),d:r.map(w=>sov(w)[e.id])}],xl,fmt:v=>nf(v,1)+"%",aria:"Quota de voz nas últimas 12 semanas"}}
@@ -1234,13 +1292,13 @@ function sigGo(s){
   if(s.serie&&s.serie.tipo==="quota_voz")return"mercado/voz";
   return"mercado/ativ"}
 function sigCardCli(s,i){
-  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),pp=p&&p.cli&&(p.s==="aceite"||p.s==="ajustada");
+  const e=s.entidade?ebyid(s.entidade):null,ch=sigChart(s),pp=s.pista_id?pistasPub().find(x=>x.id===s.pista_id):null;
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   return`<article class="sg" data-src="${use(s.bloco)}">
    <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</p>
-   ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(p.acao)}</span></div>`:""}
+   ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(pp.acao)}</span></div>`:""}
   </article>`}
 function sigMeter(s){
   if(s.limiar==null||s.valor==null||!+s.limiar)return"";
@@ -1250,7 +1308,7 @@ function sigMeter(s){
    <div class="ml"><span><b>${nf(v,d)}${u}</b> ${s.janela_curta?(s.janela_curta.startsWith("vs")?s.janela_curta:"em "+s.janela_curta):"observado"}</span><span>limiar ${nf(l,d)}${u}</span></div></div>`}
 function sigCard(s,i){
   if(isCli())return sigCardCli(s,i);
-  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),pub=D.pub.cartoes.includes(s.id);
+  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),noRasc=D.pub.cartoes.includes(s.id),noPub=!!(D.pub.pubd&&D.pub.pubd.cartoes.includes(s.id)),pub=noRasc;
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
@@ -1259,9 +1317,9 @@ function sigCard(s,i){
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
    <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}
-    ${pub?`<span class="tag ok" data-tip="Publicado para a vista do cliente">Cliente</span>`:""}
+    ${noRasc&&noPub?`<span class="tag ok" data-tip="Este cartão faz parte do que o cliente vê agora.">No cliente</span>`:noRasc?`<span class="tag" data-tip="Está no rascunho da vista do cliente. Só chega ao cliente quando publicares.">No rascunho</span>`:noPub?`<span class="tag warn" data-tip="O cliente ainda vê este cartão. Sai quando publicares as alterações.">A retirar</span>`:""}
     <div class="more"><button class="btn ghost ico" data-cardmenu aria-haspopup="menu" aria-expanded="false" aria-label="Mais ações"><svg class="ic"><use href="#i-dots"/></svg></button>
-     <div class="mm" role="menu" hidden>${p?`<button role="menuitem" ${det}>${dl}</button>`:""}<button role="menuitem" data-pubsg="${s.id}"><svg class="ic"><use href="#i-send"/></svg>${pub?"Retirar da vista do cliente":"Publicar para o cliente"}</button>${p?`<button role="menuitem" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg><span>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</span></button>`:""}</div></div></div>
+     <div class="mm" role="menu" hidden>${p?`<button role="menuitem" ${det}>${dl}</button>`:""}<button role="menuitem" data-pubsg="${s.id}"><svg class="ic"><use href="#i-send"/></svg>${pub?"Retirar do rascunho para o cliente":"Adicionar ao rascunho para o cliente"}</button>${p?`<button role="menuitem" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg><span>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</span></button>`:""}</div></div></div>
   </article>`}
 document.addEventListener("click",e=>{
   const mb=e.target.closest("[data-cardmenu]");
@@ -1325,7 +1383,7 @@ function pageVisao(){
    ${detailHTML()}`;
   return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),esc(leadText()))+body}
 
-document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão marcado para a vista do cliente. Só sai quando publicares em Relatórios.":"Cartão retirado da vista do cliente.");CUR.refresh()});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão adicionado ao rascunho da vista do cliente. Só chega ao cliente quando publicares em Relatórios.":"Cartão retirado do rascunho da vista do cliente.");CUR.refresh()});
 
 
 /* Copiar tabela (TSV, cola direto no Excel) */
@@ -1555,7 +1613,7 @@ function briefingHTML(){
   let corpo;
   if(cli){
     const cs=cartoesPub(),pk=pistasPub();
-    corpo=`${D.pub.nota?`<section><h3>Nota da equipa</h3><p style="font-size:14.5px">${esc(D.pub.nota)}</p></section>`:""}
+    corpo=`${pubNota()?`<section><h3>Nota da equipa</h3><p style="font-size:14.5px">${esc(pubNota())}</p></section>`:""}
      <section><h3>O que mudou</h3>${cs.length?`<ul>${cs.map(s=>`<li data-src="${use(s.bloco)}"><span><b>${esc(s.titulo)}</b><br><span style="font-size:13.5px">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</span></span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">${isCli()?"A equipa não destacou nenhum ponto nesta edição.":"Ainda não marcaste cartões para o cliente. Marca-os na Visão geral ou em «Publicar para o cliente»."}</p>`}</section>
      <section><h3>O que a Arena propõe</h3>${pk.length?`<ul>${pk.map(p=>`<li class="pk"><b>${esc(p.titulo)}</b><span style="font-size:13.5px">${esc(p.acao)}</span></li>`).join("")}</ul>`:`<p style="font-size:14.5px;color:#586764">${isCli()?"Sem propostas nesta edição.":"Ainda não há pistas marcadas para o cliente. Decide em Ações quais levar."}</p>`}</section>`;
   }else{
@@ -1570,21 +1628,41 @@ function briefingHTML(){
    <div class="mb">${corpo}
    <p class="ft">${cli?"Proposta da Arena Media, validada pela equipa de conta.":"Versão interna. Nada é enviado ao cliente sem decisão da equipa."} Origem dos dados: ${esc(sl.t.toLowerCase())}.</p></div>`}
 
-/* ---------- Publicar para o cliente (só vista Equipa) ---------- */
+/* ---------- Publicar para o cliente (só vista Equipa): rascunho, pré-visualização ao lado, publicado e histórico ---------- */
 const PGN={visao:"Visão geral",mercado:"Mercado",procura:"Procura e notícias",criativos:"Criativos",relatorios:"Relatório semanal"};
-function pubResumo(){const pu=D.pub,nPk=D.pistas.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada")).length;
-  return`${pu.publicada?"O cliente vê":"Ao publicar, o cliente verá"}: <b>${pu.paginas.length}</b> ${pu.paginas.length===1?"página":"páginas"}, <b>${pu.cartoes.length}</b> ${pu.cartoes.length===1?"cartão":"cartões"}, <b>${nPk}</b> ${nPk===1?"pista":"pistas"}${pu.nota&&pu.nota.trim()?" e a nota da equipa":", sem nota"}.`}
-const updPubSum=()=>{const s=$(".pubsum");if(s)s.innerHTML=pubResumo()};
+const cnt=(n,s,p)=>`<b>${n}</b> ${n===1?s:p}`;
+const resumoDe=v=>`${cnt(v.paginas.length,"página","páginas")}, ${cnt(v.cartoes.length,"cartão","cartões")}, ${cnt(v.pistas.length,"pista","pistas")}${v.nota?" e a nota da equipa":", sem nota"}`;
+function pubResumo(){const pu=D.pub,r=pubRasc();
+  return pu.pubd?`<span class="pl">Publicado: ${resumoDe(pu.pubd)}.</span><span class="pl">Rascunho: ${resumoDe(r)}.</span>`:`<span class="pl">Ao publicar, o cliente verá: ${resumoDe(r)}.</span>`}
+function pubHeadHTML(){
+  const pu=D.pub,pend=pubPend(),pb=!!pu.pubd,id=D.cliente.id;
+  const estado=pb?(pend?`<span class="seal" data-o="estimado">Alterações por publicar</span>`:`<span class="seal" data-o="real">Publicado a ${fmtDT(pu.pubd.quando)}</span>`):`<span class="seal" data-o="demo">Por publicar</span>`;
+  const acts=pb?(pend?`<button class="btn pri" id="pubgo"><svg class="ic"><use href="#i-send"/></svg>Publicar alterações</button><button class="btn" id="pubrev">Descartar alterações</button>`:"")+`<button class="btn ghost" id="pubundo">Retirar publicação</button>`:`<button class="btn pri" id="pubgo"><svg class="ic"><use href="#i-send"/></svg>Publicar</button>`;
+  return`<div><b style="font-weight:650">Vista do cliente</b> ${estado}<p class="t-sm muted" style="margin-top:6px;max-width:64ch">O cliente só vê o que foi publicado. Alterar o rascunho não muda nada até voltares a publicar, e o que sai é assinado pela Arena Media, sem autoria individual.</p><div class="pubsum t-sm" aria-live="polite">${pubResumo()}</div></div>
+   <div class="pubacts">${acts}<button class="btn" data-go="${id}/visao?v=cliente&rasc=1"><svg class="ic"><use href="#i-eye"/></svg>Pré-visualizar rascunho</button>${pb?`<button class="btn" data-go="${id}/visao?v=cliente"><svg class="ic"><use href="#i-eye"/></svg>Ver o que o cliente vê</button>`:""}</div>`}
+function pubPreviewHTML(){
+  const v=pubRasc(),cs=D.sinais.filter(s=>v.cartoes.includes(s.id)),pg=PAGINAS_CLIENTE.filter(x=>(x!=="criativos"||hasAds())&&v.paginas.includes(x));
+  return`<div class="pvh"><img alt="" src="${$(".logo-tile img").src}"><div><b>Arena Radar · ${esc(D.cliente.nome)}</b><span>Semana de ${D.calendario.rotulo_semana_atual}</span></div></div>
+   ${v.nota?`<p class="pvn">${esc(v.nota)}</p>`:""}
+   <div class="pvs"><h5>O que mudou</h5>${cs.length?cs.map(s=>`<div class="pvc"><b>${esc(s.titulo)}</b><span>${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</span></div>`).join(""):`<p class="pve">Nenhum cartão escolhido.</p>`}</div>
+   <div class="pvs"><h5>O que a Arena propõe</h5>${v.pistas.length?v.pistas.map(x=>`<div class="pvc pk"><b>${esc(x.titulo)}</b><span>${esc(x.acao)}</span></div>`).join(""):`<p class="pve">Nenhuma pista escolhida.</p>`}</div>
+   <div class="pvs"><h5>Páginas</h5><div class="pvp">${pg.map(x=>`<span>${PGN[x]}</span>`).join("")}</div></div>
+   <p class="pvf">Proposta da Arena Media, validada pela equipa de conta.</p>`}
+const pubLive=()=>{const h=$("#pubhead"),w=$("#pvw");if(h)h.innerHTML=pubHeadHTML();if(w)w.innerHTML=pubPreviewHTML();const s=$("#pubstate");if(s)s.hidden=!(D.pub.pubd&&pubPend())};
+function pubHistHTML(){const h=D.pub.hist;return h.length?`<div class="panel publ">${h.map(x=>`<div class="pubrow hist"><span class="hq">${fmtDT(x.q)}</span><span><b>${x.ev==="publicou"?"Publicou":x.ev==="atualizou"?"Publicou alterações":"Retirou a publicação"}</b>${x.n?` · ${x.n.p} ${x.n.p===1?"página":"páginas"}, ${x.n.c} ${x.n.c===1?"cartão":"cartões"}, ${x.n.k} ${x.n.k===1?"pista":"pistas"}`:""}<br><span class="t-sm muted">${esc(x.por)}</span></span></div>`).join("")}</div>`:emptyHTML("Sem histórico","Ainda não publicaste nada para este cliente.")}
 function pPublicar(){
-  const pu=D.pub,pgs=PAGINAS_CLIENTE.filter(p=>p!=="criativos"||hasAds()),pk=D.pistas,ok=p=>p.s==="aceite"||p.s==="ajustada";
-  const estado=pu.publicada?`<span class="seal" data-o="real" style="background:color-mix(in srgb,var(--ok) 15%,transparent)">Publicado${pu.quando?" a "+fmtDt(pu.quando):""}</span>`:`<span class="seal" data-o="demo">Por publicar</span>`;
+  const pu=D.pub,pgs=PAGINAS_CLIENTE.filter(p=>p!=="criativos"||hasAds()),pk=D.pistas;
   use("anuncios");
-  return`<div class="pubbox"><div><b style="font-weight:650">Vista do cliente</b> ${estado}<p class="t-sm muted" style="margin-top:6px;max-width:64ch">O cliente só vê o que escolheres aqui. Nada é automático, e o que sai é assinado pela Arena Media, sem autoria individual. <span class="pubsum" aria-live="polite" style="display:block;margin-top:8px;color:var(--text)">${pubResumo()}</span>Esta é uma pré-visualização: a forma de entrega ao cliente (acesso, convite) decide-se com IT e Compliance.</p></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-go="${D.cliente.id}/visao?v=cliente"><svg class="ic"><use href="#i-eye"/></svg>Pré-visualizar como cliente</button>${pu.publicada?`<button class="btn" id="pubundo">Retirar publicação</button>`:`<button class="btn pri" id="pubgo"><svg class="ic"><use href="#i-send"/></svg>Publicar</button>`}</div></div>
+  return`<div class="pubgrid"><div class="pubmain">
+   <div class="pubbox" id="pubhead">${pubHeadHTML()}</div>
    ${secHTML("Páginas visíveis ao cliente","A Visão geral é sempre incluída. Liga ou desliga as restantes.",`<div class="chips">${pgs.map(p=>`<button class="tgl" data-pubpg="${p}" aria-pressed="${pu.paginas.includes(p)}" ${p==="visao"?"disabled":""}>${PGN[p]}</button>`).join("")}</div>`)}
-   ${secHTML("Cartões «O que mudou»","Escolhe os pontos que o cliente vê. Os limiares e as hipóteses internas não aparecem na vista do cliente.",D.sinais.length?`<div class="panel publ">${D.sinais.map(s=>`<label class="pubrow"><input type="checkbox" data-pubsgc="${s.id}" ${pu.cartoes.includes(s.id)?"checked":""}><span><b>${esc(s.titulo)}</b><br><span class="t-sm muted">${esc(s.categoria)} · ${s.material?"acima do limiar":"em observação"}</span></span></label>`).join("")}</div>`:emptyHTML("Sem cartões","Ainda não há sinais para destacar."))}
-   ${secHTML("Pistas de ação","Só podes levar ao cliente pistas que a equipa aceitou ou ajustou.",pk.length?`<div class="panel publ">${pk.map(p=>`<label class="pubrow ${ok(p)?"":"off"}"><input type="checkbox" data-pubpkc="${p.id}" ${p.cli&&ok(p)?"checked":""} ${ok(p)?"":"disabled"}><span><b>${esc(p.titulo)}</b><br><span class="t-sm muted">${ok(p)?esc(p.acao):"Por decidir em Ações: aceita ou ajusta primeiro."}</span></span></label>`).join("")}</div>`:emptyHTML("Sem pistas","Não há pistas para esta semana."))}
-   ${secHTML("Nota da equipa","Opcional. Aparece no topo da vista do cliente e no relatório.",`<textarea class="edit" id="pubnota" placeholder="Ex.: Segue o ponto de situação desta semana. Falamos na reunião de acompanhamento." aria-label="Nota da equipa">${esc(pu.nota)}</textarea><p class="t-xs" style="margin-top:6px">Guardado neste navegador.</p>`)}`}
+   ${secHTML("Cartões «O que mudou»","Escolhe os pontos que o cliente vê. Os limiares e as hipóteses internas não aparecem na vista do cliente.",D.sinais.length?`<div class="panel publ">${D.sinais.map(s=>`<label class="pubrow"><input type="checkbox" data-pubsgc="${s.id}" ${pu.cartoes.includes(s.id)?"checked":""}><span><b>${esc(s.titulo)}</b><br><span class="t-sm muted">${esc(s.categoria)} · ${s.material?"acima do limiar":"em observação"}</span></span></label>`).join("")}</div>`:emptyHTML("Sem cartões","Ainda não há sinais para destacar."),null,`<div class="pubtools"><button class="btn sm" id="pubsug" data-tip="Escolhe os cartões acima do limiar. Podes ajustar a seguir.">Usar seleção sugerida</button><button class="btn sm ghost" id="pubclr">Limpar</button></div>`)}
+   ${secHTML("Pistas de ação","Só podes levar ao cliente pistas que a equipa aceitou ou ajustou.",pk.length?`<div class="panel publ">${pk.map(p=>`<label class="pubrow ${pubOk(p)?"":"off"}"><input type="checkbox" data-pubpkc="${p.id}" ${p.cli&&pubOk(p)?"checked":""} ${pubOk(p)?"":"disabled"}><span><b>${esc(p.titulo)}</b><br><span class="t-sm muted">${pubOk(p)?esc(p.acao):`Por decidir em Ações: aceita ou ajusta primeiro. <a href="#" data-go="${D.cliente.id}/acoes/pistas#${p.id}" style="color:var(--brand-ink);font-weight:600">Abrir a pista</a>`}</span></span></label>`).join("")}</div>`:emptyHTML("Sem pistas","Não há pistas para esta semana."))}
+   ${secHTML("Nota da equipa","Opcional. Aparece no topo da vista do cliente e no relatório.",`<textarea class="edit" id="pubnota" placeholder="Ex.: Segue o ponto de situação desta semana. Falamos na reunião de acompanhamento." aria-label="Nota da equipa">${esc(pu.nota)}</textarea><p class="t-xs" style="margin-top:6px">Rascunho guardado neste navegador.</p>`)}
+   ${secHTML("Histórico de publicações","Quem publicou ou retirou, e quando.",pubHistHTML())}
+   <p class="t-sm muted" style="margin-top:22px;max-width:64ch">Esta é uma pré-visualização: a forma de entrega ao cliente (acesso, convite) decide-se com IT e Compliance.</p>
+  </div>
+  <aside class="pubprev" aria-label="Pré-visualização do que o cliente vê"><div class="pvcap"><b>O que o cliente verá</b><span class="t-xs">Rascunho, atualizado ao escolher</span></div><div class="pvw" id="pvw">${pubPreviewHTML()}</div><button class="btn" style="width:100%;justify-content:center;margin-top:10px" data-go="${D.cliente.id}/visao?v=cliente&rasc=1"><svg class="ic"><use href="#i-eye"/></svg>Abrir pré-visualização completa</button></aside></div>`}
 
 const RTABS=[["briefing","Briefing semanal"],["publicar","Publicar para o cliente"]];
 function pageRelatorios(sub){
@@ -1600,13 +1678,19 @@ function pageRelatorios(sub){
 document.addEventListener("click",e=>{let t;
   if(t=e.target.closest("#bseg button")){S.bmode=t.dataset.b;CUR.refresh();return}
   if(e.target.closest("#bprint")){window.print();return}
-  if(t=e.target.closest("[data-pubpg]")){const p=t.dataset.pubpg,a=D.pub.paginas,i=a.indexOf(p);i<0?a.push(p):a.splice(i,1);saveState();CUR.refresh();return}
-  if(e.target.closest("#pubgo")){D.pub.publicada=true;D.pub.quando=new Date().toISOString().slice(0,10);saveState();toast("Publicado para a vista do cliente (pré-visualização). Nada sai da agência: a entrega é uma decisão com IT e Compliance.");CUR.refresh();return}
-  if(e.target.closest("#pubundo")){D.pub.publicada=false;saveState();toast("Publicação retirada. O cliente deixa de ver o relatório.");CUR.refresh();return}});
+  if(t=e.target.closest("[data-pubpg]")){const p=t.dataset.pubpg,a=D.pub.paginas,i=a.indexOf(p);i<0?a.push(p):a.splice(i,1);t.setAttribute("aria-pressed",String(i<0));saveState();pubLive();return}
+  if(e.target.closest("#pubgo")){const nv=!D.pub.pubd;pubPublicar(D);toast(nv?"Publicado para a vista do cliente (pré-visualização). Nada sai da agência: a entrega é uma decisão com IT e Compliance.":"Alterações publicadas. O cliente passa a ver a nova versão.");CUR.refresh();return}
+  if(e.target.closest("#pubundo")){pubRetirar(D);toast("Publicação retirada. O cliente deixa de ver o relatório; o rascunho mantém-se.");CUR.refresh();return}
+  if(e.target.closest("#pubrev")){pubDescartar(D);toast("Alterações descartadas. O rascunho voltou ao que está publicado.");CUR.refresh();return}
+  if(e.target.closest("#pubsug")){pubSugerir(true);toast("Escolhidos os cartões acima do limiar. Ajusta como quiseres.");CUR.refresh();return}
+  if(e.target.closest("#pubclr")){D.pub.cartoes=[];saveState();CUR.refresh();return}
+  if(e.target.closest("[data-sugerir]")){pubSugerir(false);go(`${D.cliente.id}/visao?v=cliente&rasc=1`);return}});
+/* Seleção sugerida: os cartões acima do limiar. Só preenche o rascunho vazio, salvo se «forcar». */
+function pubSugerir(forcar){if(!forcar&&D.pub.cartoes.length)return;D.pub.cartoes=D.sinais.filter(s=>s.material).map(s=>s.id);saveState()}
 document.addEventListener("change",e=>{let t;
-  if(t=e.target.closest("[data-pubsgc]")){const id=t.dataset.pubsgc,a=D.pub.cartoes;t.checked?(a.includes(id)||a.push(id)):a.splice(a.indexOf(id),1);saveState();updPubSum();return}
-  if(t=e.target.closest("[data-pubpkc]")){const p=D.pistas.find(x=>x.id===t.dataset.pubpkc);if(p){p.cli=t.checked;saveState();updPubSum();syncCounts&&syncCounts()}}});
-document.addEventListener("input",e=>{if(e.target.id==="pubnota"){D.pub.nota=e.target.value;saveState();updPubSum()}});
+  if(t=e.target.closest("[data-pubsgc]")){const id=t.dataset.pubsgc,a=D.pub.cartoes;t.checked?(a.includes(id)||a.push(id)):a.splice(a.indexOf(id),1);saveState();pubLive();return}
+  if(t=e.target.closest("[data-pubpkc]")){const p=D.pistas.find(x=>x.id===t.dataset.pubpkc);if(p){p.cli=t.checked;saveState();pubLive();syncCounts&&syncCounts()}}});
+document.addEventListener("input",e=>{if(e.target.id==="pubnota"){D.pub.nota=e.target.value;saveState();pubLive()}});
 
 /* ============================================================
    Página «Ações» (só vista Equipa): pistas de ação e impacto.
@@ -1647,7 +1731,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("#pistas [data-a]
   else if(a==="descartar"){p.s="descartada";toast("Pista descartada. Fica registada no Impacto.")}
   else if(a==="para"){p.para=b.dataset.v;saveState();toast("Pista atribuída a "+p.para+".");refreshPista(p.id);return}
   else if(a==="repor"){p.s="sugerida";p.cli=false}
-  else if(a==="cliente"){p.cli=!p.cli;toast(p.cli?"Marcada para a versão do briefing para o cliente. Nada sai sem a equipa o enviar.":"Retirada da versão para o cliente.")}
+  else if(a==="cliente"){p.cli=!p.cli;toast(p.cli?"Marcada para o rascunho da vista do cliente. Só chega ao cliente quando publicares em Relatórios.":"Retirada do rascunho da vista do cliente.")}
   else if(a==="research"){p.res=true;toast("Pedido de aprofundamento enviado à Research (simulação).")}
   else if(a==="ajustar"){const pa=$("[data-act]",el);pa.innerHTML=`<textarea class="edit" aria-label="Ação possível">${esc(p.acao)}</textarea><div style="margin-top:8px;display:flex;gap:8px"><button class="btn pri" data-a="guardar"><svg class="ic"><use href="#i-check"/></svg>Guardar ajuste</button><button class="btn ghost" data-a="cancelar">Cancelar</button></div>`;$("textarea",pa).focus();return}
   else if(a==="guardar"){p.acao=$("textarea",el).value.trim()||p.acao;p.s="ajustada";toast("Ajuste guardado. A pista fica aceite com a tua versão.")}
@@ -1663,6 +1747,7 @@ function agSeal(){
   const o=real.length===0?"demo":real.length===all?"real":"misto",t=o==="demo"?"Demonstração":o==="real"?"Real":`Misto · ${real.length} de ${all} clientes com dados reais`;
   const rows=cs.map(c=>{const r=c.origens.includes("real"),d=c.origens.includes("demo");const so=r&&d?"misto":r?"real":"demo";return`<div class="bl"><b>${esc(c.nome)}</b><span class="seal" data-o="${so}" style="height:22px;font-size:11px">${so==="misto"?"Misto":so==="real"?"Real":"Demonstração"}</span><span class="m">${c.ficticio?"Cliente fictício de demonstração.":"Cliente real: contexto com fonte e data; séries ainda simuladas onde a fonte não está ligada."}</span></div>`}).join("");
   return{o,t,pop:`<h3>Origem dos dados desta página</h3><p class="s">A Torre agrega todos os clientes. Cada cliente mostra o seu próprio selo nas suas páginas.</p>${rows}`}}
+const pubSeal=d=>d.pub.pubd?(pubPend(d)?`<span class="seal" data-o="estimado" style="height:22px;font-size:11px">Alterações por publicar</span>`:`<span class="seal" data-o="real" style="height:22px;font-size:11px">Publicada a ${fmtShort(d.pub.pubd.quando)}</span>`):`<span class="muted t-sm">Por publicar</span>`;
 function pageTorre(){
   SEAL_OV=agSeal();
   const cs=AG.clientes,live=cs.map(c=>CLS[c.id]),sg=cs.reduce((s,c)=>s+c.sinais_material,0),pend=live.reduce((s,d)=>s+pistasPend(d),0);
@@ -1672,7 +1757,7 @@ function pageTorre(){
   const vert=AG.verticais.map(v=>{const c0=cs.find(c=>c.id===v.clientes[0]),n=v.clientes.reduce((s,id)=>s+cs.find(c=>c.id===id).sinais_material,0),nm=v.clientes.map(id=>cs.find(c=>c.id===id).nome).join(", ");
     later(()=>{const h=$(`.spark[data-v="${v.id}"]`);if(h)h.innerHTML=spark(c0.pulso,160,34)});
     return`<button class="vert" data-go="${c0.id}/visao"><div class="tt"><span class="t-h3">${esc(v.nome)}</span></div><span class="t-sm muted">${esc(nm)}<br>${c0.tipo_universo==="tema"?"Tema":"Concorrência, "+c0.n_entidades+" marcas"}</span><div class="spark" data-v="${v.id}"></div><span class="t-sm" style="font-weight:600">${n?`${n} ${n===1?"sinal":"sinais"} acima do limiar`:"Sem sinais acima do limiar"}</span></button>`}).join("");
-  const rows=cs.map(c=>{const o=c.origens.includes("real")&&c.origens.includes("demo")?"misto":c.origens.includes("real")?"real":"demo";return`<tr class="go" data-go="${c.id}/visao"><td style="font-weight:600">${esc(c.nome)}${c.ficticio?' <span class="tag">fictício</span>':""}</td><td>${esc(c.vertical_nome)}</td><td>${c.tipo_universo==="tema"?"Tema":"Concorrência"}</td><td class="n">${c.sinais_material}</td><td class="n">${pistasPend(CLS[c.id])}</td><td>${CLS[c.id].pub.publicada?`<span class="seal" data-o="real" style="height:22px;font-size:11px">Publicada${CLS[c.id].pub.quando?" a "+fmtShort(CLS[c.id].pub.quando):""}</span>`:`<span class="muted t-sm">Por publicar</span>`}</td><td><span class="seal" data-o="${o}" style="height:22px;font-size:11px">${o==="misto"?"Misto":o==="real"?"Real":"Demonstração"}</span></td></tr>`}).join("");
+  const rows=cs.map(c=>{const o=c.origens.includes("real")&&c.origens.includes("demo")?"misto":c.origens.includes("real")?"real":"demo";return`<tr class="go" data-go="${c.id}/visao"><td style="font-weight:600">${esc(c.nome)}${c.ficticio?' <span class="tag">fictício</span>':""}</td><td>${esc(c.vertical_nome)}</td><td>${c.tipo_universo==="tema"?"Tema":"Concorrência"}</td><td class="n">${c.sinais_material}</td><td class="n">${pistasPend(CLS[c.id])}</td><td>${pubSeal(CLS[c.id])}</td><td><span class="seal" data-o="${o}" style="height:22px;font-size:11px">${o==="misto"?"Misto":o==="real"?"Real":"Demonstração"}</span></td></tr>`}).join("");
   const fila=cs.flatMap(c=>CLS[c.id].pistas.filter(p=>p.s==="sugerida").map(p=>({c,p}))),
    filaHTML=fila.length?`<div class="panel tblwrap"><table><thead><tr><th>Cliente</th><th>Pista</th><th>Atribuída a</th><th></th></tr></thead><tbody>${fila.map(({c,p})=>`<tr class="go" data-go="${c.id}/acoes/pistas#${p.id}"><td style="font-weight:600">${esc(c.nome)}</td><td>${esc(p.titulo)}</td><td>${esc(p.para)}</td><td class="n"><span class="muted t-sm">Decidir</span></td></tr>`).join("")}</tbody></table></div>`:emptyHTML("Tudo decidido","Não há pistas à espera da equipa.");
   const body=`<div class="kpis k5">${kp.map(k=>kpiHTML({l:k[0],v:`<span ${typeof k[1]==="number"?`data-count="${k[1]}"`:""}>${k[1]}</span>`,sub:`<span class="muted">${k[2]}</span>`})).join("")}</div>
@@ -1831,7 +1916,8 @@ function comandos(){
   AG.clientes.forEach(c=>L.push({g:"Mudar de cliente",t:c.nome,i:"i-radar",k:`${c.vertical_nome} cliente`,run:()=>go(`${c.id}/${cli&&ROUTE.page!=="criativos"?ROUTE.page:"visao"}`)}));
   L.push({g:"Ações",t:"Alternar modo claro e escuro",i:isDark()?"i-sun":"i-moon",k:"tema aparência",run:()=>setMode(isDark()?"light":"dark")});
   if(tourSteps().length)L.push({g:"Ações",t:"Apresentar: roteiro guiado",i:"i-play",k:"demonstração modo apresentação",run:()=>tourStart()});
-  if(cli){L.push({g:"Ações",t:"Pré-visualizar a vista do cliente",i:"i-eye",k:"cliente publicar",run:()=>go(`${CID}/${ROUTE.page==="acoes"?"visao":ROUTE.page}?v=cliente`)});
+  if(cli){L.push({g:"Ações",t:"Ver o que o cliente vê (publicado)",i:"i-eye",k:"cliente publicar pré-visualizar",run:()=>go(`${CID}/${ROUTE.page==="acoes"?"visao":ROUTE.page}?v=cliente`)});
+    L.push({g:"Ações",t:"Pré-visualizar o rascunho do cliente",i:"i-eye",k:"cliente rascunho publicar",run:()=>go(`${CID}/${ROUTE.page==="acoes"?"visao":ROUTE.page}?v=cliente&rasc=1`)});
     L.push({g:"Ações",t:"Simular semana sem sinais",i:"i-flask",k:"demonstração vazio",run:()=>{S.bquiet=!S.bquiet;CUR.refresh()}})}
   L.push({g:"Ações",t:"Repor demonstração",i:"i-x",k:"limpar decisões publicações",run:()=>resetEstado()});
   if(cli)ask.list.forEach(a=>L.push({g:"Perguntas",t:a.q,i:"i-search",k:"pergunta radar",run:()=>runAsk(a.id)}));
@@ -1875,14 +1961,14 @@ const hoje=()=>new Date().toISOString().slice(0,10);
 /* Repor o estado da equipa (decisões e publicações) para recomeçar a demonstração */
 function resetEstado(){
   try{localStorage.removeItem(STKEY)}catch(e){}
-  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub={publicada:false,paginas:[...PAGINAS_CLIENTE],cartoes:[],nota:"",quando:null}});
+  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub=pubDefault()});
   Object.values(SESS).forEach(s=>{s.bquiet=false;s.bmode="equipa"});
   toast("Demonstração reposta: pistas por decidir e nada publicado.");CUR.refresh()}
 
 function tourPreparar(cid,tipo){
   const d=CLS[cid];if(!d||!tipo)return;
   if(tipo==="demo-pistas"){const p=d.pistas[0];if(p){p.s="aceite";p.cli=true}d.pub.cartoes=d.sinais.slice(0,2).map(s=>s.id)}
-  if(tipo==="demo-publicar"){d.pub.publicada=true;d.pub.quando=hoje()}
+  if(tipo==="demo-publicar"&&!d.pub.pubd){pubPublicar(d,"Equipa")}
   saveState()}
 function tourRender(){
   const st=tourSteps(),s=st[TOUR.i],n=st.length,last=TOUR.i===n-1,t=$("#tour");
@@ -1918,9 +2004,15 @@ const PAGES={
   relatorios:{n:"Relatórios",i:"i-mail",f:pageRelatorios},
   acoes:{n:"Ações",i:"i-spark",f:pageAcoes}};
 const AGPAGES={torre:{n:"Torre de controlo",i:"i-grid",f:pageTorre},fontes:{n:"Fontes de dados",i:"i-plug",f:pageFontes}};
-let ROUTE={scope:"cliente",view:"equipa",cid:null,page:"visao",sub:null,focus:null};
+let ROUTE={scope:"cliente",view:"equipa",rasc:false,cid:null,page:"visao",sub:null,focus:null};
 const PAGE_CLI_VAZIO={n:"Relatório",f:pageClienteVazio};
-function pageClienteVazio(){return pheadHTML(`${esc(D.cliente.nome)} · vista do cliente`,"Ainda não há relatório publicado","A equipa Arena ainda não publicou o relatório desta semana. Nada é mostrado ao cliente sem essa decisão.")+`<div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>Sem publicação</b><br>Prepara o que o cliente vê em Relatórios, «Publicar para o cliente». <button class="btn" style="margin-left:8px" data-go="${D.cliente.id}/relatorios/publicar?v=equipa">Preparar publicação</button></div></div>`}
+function pageClienteVazio(){SEAL_HIDE=true;return pheadHTML(`${esc(D.cliente.nome)} · vista do cliente`,"Ainda não há relatório publicado","A equipa Arena ainda não publicou o relatório desta semana. O cliente não vê nada sem essa decisão.")+`<div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>Sem publicação</b><br>Prepara o que o cliente vê em Relatórios, «Publicar para o cliente», ou vê já como ficaria com a seleção sugerida.<div class="emptyacts"><button class="btn pri" data-sugerir="1"><svg class="ic"><use href="#i-eye"/></svg>Ver como ficaria</button><button class="btn" data-go="${D.cliente.id}/relatorios/publicar?v=equipa">Preparar publicação</button></div></div></div>`}
+function viewBanner(r){
+  if(!(VIEW==="cliente"&&r.scope==="cliente"))return"";
+  const id=D.cliente.id,pg=r.page==="vazio"?"visao":r.page,pb=D.pub.pubd,pend=pubPend(),back=`<button class="btn" data-go="${id}/${pg}?v=equipa">Voltar à vista Equipa</button>`;
+  if(r.rasc)return`<div class="vbanner no-print"><span><b>Pré-visualização do rascunho.</b> ${pb?"É o que o cliente verá depois de publicares as alterações.":"O cliente ainda não vê nada: só vê o que for publicado."}</span><span class="vbacts">${pb?`<button class="btn" data-go="${id}/${pg}?v=cliente">Ver o publicado</button>`:""}<button class="btn pri" id="bnpub">${pb?"Publicar alterações":"Publicar"}</button><button class="btn" data-go="${id}/relatorios/publicar?v=equipa">Editar rascunho</button></span></div>`;
+  return`<div class="vbanner no-print"><span><b>Pré-visualização da vista do cliente.</b> É assim que o cliente vê o que a equipa publicou${pb?" (a "+fmtDT(pb.quando)+")":""}.${pend?" Há alterações por publicar.":""}</span><span class="vbacts">${pend?`<button class="btn" data-go="${id}/${pg}?v=cliente&rasc=1">Ver rascunho</button>`:""}${back}</span></div>`}
+document.addEventListener("click",e=>{if(!e.target.closest("#bnpub"))return;const nv=!D.pub.pubd;pubPublicar(D);toast(nv?"Publicado para a vista do cliente (pré-visualização). Nada sai da agência: a entrega é uma decisão com IT e Compliance.":"Alterações publicadas. O cliente passa a ver a nova versão.");go(`${D.cliente.id}/${ROUTE.page==="vazio"?"visao":ROUTE.page}?v=cliente`)});
 
 /* ---------- Menu único (o mesmo para todos os clientes) e seletor de âmbito ---------- */
 function buildNav(){
@@ -1950,16 +2042,16 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 
 /* ---------- Router ---------- */
 function parse(hash){
-  const h=(hash||"").replace(/^#\/?/,""),[pth,focus]=h.split("#"),[path,q]=pth.split("?"),p=path.split("/").filter(Boolean),view=/(^|&)v=cliente/.test(q||"")?"cliente":"equipa";
-  if(p[0]==="agencia")return{scope:"agencia",view:"equipa",cid:CID,page:AGPAGES[p[1]]?p[1]:"torre",sub:null,focus};
-  if(p[0]&&CLS[p[0]])return{scope:"cliente",view,cid:p[0],page:PAGES[p[1]]?p[1]:"visao",sub:p[2]||null,focus};
-  return{scope:"cliente",view:"equipa",cid:CID||AG.cliente_inicial||AG.clientes[0].id,page:"visao",sub:null,focus:null}}
-function href(r){return r.scope==="agencia"?"#/agencia/"+r.page:`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${r.view==="cliente"?"?v=cliente":""}${r.focus?"#"+r.focus:""}`}
+  const h=(hash||"").replace(/^#\/?/,""),[pth,focus]=h.split("#"),[path,q]=pth.split("?"),p=path.split("/").filter(Boolean),view=/(^|&)v=cliente/.test(q||"")?"cliente":"equipa",rasc=view==="cliente"&&/(^|&)rasc=1/.test(q||"");
+  if(p[0]==="agencia")return{scope:"agencia",view:"equipa",rasc:false,cid:CID,page:AGPAGES[p[1]]?p[1]:"torre",sub:null,focus};
+  if(p[0]&&CLS[p[0]])return{scope:"cliente",view,rasc,cid:p[0],page:PAGES[p[1]]?p[1]:"visao",sub:p[2]||null,focus};
+  return{scope:"cliente",view:"equipa",rasc:false,cid:CID||AG.cliente_inicial||AG.clientes[0].id,page:"visao",sub:null,focus:null}}
+function href(r){return r.scope==="agencia"?"#/agencia/"+r.page:`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${r.view==="cliente"?"?v=cliente"+(r.rasc?"&rasc=1":""):""}${r.focus?"#"+r.focus:""}`}
 function go(path){
   const first=path.split(/[\/#]/)[0];
   if(first!=="agencia"&&!CLS[first])path=CID+"/"+path;      // relativo ao cliente ativo
   const r=parse("#/"+path);
-  if(!/\?v=/.test(path))r.view=r.scope==="cliente"?VIEW:"equipa";      // a vista mantém-se ao navegar
+  if(!/\?v=/.test(path)){r.view=r.scope==="cliente"?VIEW:"equipa";r.rasc=r.view==="cliente"&&!!(ROUTE&&ROUTE.rasc)}      // a vista (e o rascunho) mantêm-se ao navegar
   if(href(r)===location.hash&&!r.focus){render(r,false);return}
   try{history.pushState(null,"",href(r))}catch(e){}render(r,true)}
 addEventListener("popstate",()=>render(parse(location.hash),true));
@@ -1971,7 +2063,7 @@ render.n=0;
 function render(r,scrollTop){
   stopRace();stopPlay();closeDrawer();closeMenu();closeFpop();$("#pop").classList.remove("on");CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;
   if(r.cid){CID=r.cid}if(!D||D.cliente.id!==CID)setClient(CID);else if(!S)setClient(CID);
-  VIEW=r.view;document.documentElement.dataset.view=VIEW;
+  VIEW=r.view;document.documentElement.dataset.view=VIEW;ROUTE=r;
   let pg;
   if(r.scope==="agencia")pg=AGPAGES[r.page];
   else if(VIEW==="cliente"){            // o cliente só vê o que a equipa publicou
@@ -1982,7 +2074,7 @@ function render(r,scrollTop){
   ROUTE=r;
   const th=VIEW+"|"+CID;if(th!==render.th){render.th=th;const tid=VIEW==="cliente"&&D.cliente.tema&&AG.temas.some(x=>x.id===D.cliente.tema)?D.cliente.tema:AG.temas[0].id;applyTheme(tid,false)}   // tema do cliente só na vista do cliente (Q09)
   const t=$("#page");t.classList.remove("on");
-  const banner=VIEW==="cliente"&&r.scope==="cliente"?`<div class="vbanner no-print"><span><b>Pré-visualização da vista do cliente.</b> É assim que o cliente vê o que a equipa publicou. Nada sai da agência sem publicação.</span><button class="btn" data-go="${D.cliente.id}/${r.page==="vazio"?"visao":r.page}?v=equipa">Voltar à vista Equipa</button></div>`:"";
+  const banner=viewBanner(r);
   const html=banner+pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
   buildNav();buildScope();$("#viewseg").hidden=r.scope==="agencia";$$("#viewseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===VIEW));
   document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n+(VIEW==="cliente"?" (vista do cliente)":""));

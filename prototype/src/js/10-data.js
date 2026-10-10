@@ -14,6 +14,7 @@ const topC=i=>TOP[Math.min(i,TOP.length-1)];
 const DAY=864e5;
 const pd=iso=>{const[y,m,d]=String(iso).slice(0,10).split("-").map(Number);return Date.UTC(y,m-1,d)};
 const fmtDt=iso=>{if(!iso)return"";const[y,m,d]=String(iso).slice(0,10).split("-");return d+"/"+m+"/"+y};
+const fmtDT=iso=>{if(!iso)return"";try{return new Intl.DateTimeFormat("pt-PT",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso)).replace(",","")}catch(e){return fmtDt(iso)}};
 const fmtShort=iso=>{if(!iso)return"";const d=new Date(pd(iso));return d.getUTCDate()+" "+MES[d.getUTCMonth()]};
 
 /* ---------- Cliente ativo ---------- */
@@ -21,18 +22,43 @@ let D=null, S=null, W0=0, NW=0, Z=0, PL=[], PW={}, PC={}, FM=[], TH=[], ADS=[], 
 const SESS={};
 let VIEW="equipa";                      // vista ativa: «equipa» (completa) ou «cliente» (só o que a equipa publicou)
 
+/* ---------- Preferências da pessoa (função e última visita): só neste navegador ---------- */
+const PKEY="radar-prefs-v1";
+let PREFS={role:"todos",visit:{}};try{PREFS=Object.assign(PREFS,JSON.parse(localStorage.getItem(PKEY)||"{}"))}catch(e){}
+const savePrefs=()=>{try{localStorage.setItem(PKEY,JSON.stringify(PREFS))}catch(e){}};
+const ROLES=[["todos","Toda a equipa"],["performance","Performance"],["brand","Brand"],["account","Account"],["direcao","Direção"]];
+const ROLE_PARA={performance:"Performance",brand:"Brand",account:"Account"};   // a que atribuição de pistas corresponde
+const roleLabel=()=>(ROLES.find(r=>r[0]===PREFS.role)||ROLES[0])[1];
+
 /* ---------- Estado da equipa: decisões sobre pistas e publicação para o cliente ----------
    Guardado só neste navegador (localStorage). A persistência em ficheiro/base de dados é a tarefa RB-22.
-   Só se reaproveita o que ainda corresponde aos dados atuais (o título da pista tem de coincidir). */
+   Só se reaproveita o que ainda corresponde aos dados atuais (o título da pista tem de coincidir).
+   Publicação (D34): o RASCUNHO (paginas, cartoes, nota e pistas marcadas) é o que a equipa está a preparar;
+   o PUBLICADO (pubd) é uma cópia do rascunho no momento de publicar e é a única coisa que o cliente vê.
+   Alterar o rascunho depois de publicar não muda o que o cliente vê até haver novo «Publicar». */
 const STKEY="radar-estado-v1";
 let SAVED={};try{SAVED=JSON.parse(localStorage.getItem(STKEY)||"{}")}catch(e){}
 const PAGINAS_CLIENTE=["visao","mercado","procura","criativos","relatorios"];
+const pubOk=p=>p.s==="aceite"||p.s==="ajustada";
+const pubDefault=()=>({paginas:[...PAGINAS_CLIENTE],cartoes:[],nota:"",pubd:null,hist:[]});
+function pubRasc(d=D){return{paginas:[...d.pub.paginas],cartoes:[...d.pub.cartoes],pistas:d.pistas.filter(p=>p.cli&&pubOk(p)).map(p=>({id:p.id,titulo:p.titulo,acao:p.acao})),nota:String(d.pub.nota||"").trim()}}
+function pubSnapshot(d,por,quando){return{...pubRasc(d),quando:quando||new Date().toISOString(),por:por||roleLabel(),semana:d.calendario.rotulo_semana_atual}}
+function pubNorm(o,d){return{paginas:(o.paginas||[]).filter(x=>PAGINAS_CLIENTE.includes(x)),cartoes:(o.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),pistas:(o.pistas||[]).filter(x=>x&&x.id&&d.pistas.some(p=>p.id===x.id)).map(x=>({id:x.id,titulo:String(x.titulo||""),acao:String(x.acao||"")})),nota:String(o.nota||""),quando:o.quando||null,por:o.por||"Equipa",semana:o.semana||d.calendario.rotulo_semana_atual}}
+const pubKey=x=>JSON.stringify([[...x.paginas].sort(),[...x.cartoes].sort(),x.pistas.map(p=>[p.id,p.acao]).sort(),x.nota]);
+const pubPend=(d=D)=>!!d.pub.pubd&&pubKey(d.pub.pubd)!==pubKey(pubRasc(d));          // publicado, mas o rascunho já é outro
+const isPubd=(d=D)=>!!d.pub.pubd;
+function pubHist(d,ev,por,s){d.pub.hist.unshift({q:new Date().toISOString(),por:por||roleLabel(),ev,n:s?{p:s.paginas.length,c:s.cartoes.length,k:s.pistas.length}:null});d.pub.hist=d.pub.hist.slice(0,8)}
+function pubPublicar(d,por){const novo=!d.pub.pubd,s=pubSnapshot(d,por);d.pub.pubd=s;pubHist(d,novo?"publicou":"atualizou",s.por,s);saveState();return s}
+function pubRetirar(d,por){if(!d.pub.pubd)return;d.pub.pubd=null;pubHist(d,"retirou",por,null);saveState()}
+function pubDescartar(d){const a=d.pub.pubd;if(!a)return;d.pub.paginas=[...a.paginas];if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao");d.pub.cartoes=[...a.cartoes];d.pub.nota=a.nota;d.pistas.forEach(p=>{p.cli=a.pistas.some(x=>x.id===p.id)});saveState()}
 Object.values(CLS).forEach(d=>{
   const sv=SAVED[d.cliente.id]||{},pk=sv.pistas||{};
   d.pistas.forEach(p=>{p.acao0=p.acao;p.para0=p.para;p.s="sugerida";p.cli=false;p.res=false;const o=pk[p.id];if(o&&o.t===p.titulo){p.s=o.s||"sugerida";p.cli=!!o.cli;p.res=!!o.res;if(o.para)p.para=o.para;if(o.acao)p.acao=o.acao}});
   const pb=sv.pub||{};
-  d.pub={publicada:!!pb.publicada,paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",quando:pb.quando||null};
-  if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao")});
+  d.pub={paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",pubd:null,hist:Array.isArray(pb.hist)?pb.hist.slice(0,8):[]};
+  if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao");
+  if(pb.pubd)d.pub.pubd=pubNorm(pb.pubd,d);
+  else if(pb.publicada)d.pub.pubd=pubSnapshot(d,"Equipa",pb.quando?pb.quando+"T09:00:00.000Z":null)});   // migra o formato anterior (só «publicada»)
 function saveState(){try{const o={};Object.values(CLS).forEach(d=>{o[d.cliente.id]={pistas:Object.fromEntries(d.pistas.map(p=>[p.id,{t:p.titulo,s:p.s,para:p.para,acao:p.acao,cli:p.cli,res:p.res}])),pub:d.pub}});localStorage.setItem(STKEY,JSON.stringify(o))}catch(e){}}
 const isTema=()=>D.cliente.tipo_universo==="tema";
 const periodos=()=>isTema()?[8,12,26,NW]:[4,8,12,26];
@@ -42,9 +68,11 @@ const me=()=>D.entidades.find(e=>e.cliente);
 const col=e=>e?CAT[e.cor%5]:"#6b7a77";
 const hasAds=()=>!!(D&&D.anuncios&&D.anuncios.itens.length);
 const isCli=()=>VIEW==="cliente";
-const paginasCliente=()=>D.pub.publicada?PAGINAS_CLIENTE.filter(p=>D.pub.paginas.includes(p)&&(p!=="criativos"||hasAds())):[];
-const cartoesPub=()=>D.sinais.filter(s=>D.pub.cartoes.includes(s.id));
-const pistasPub=()=>D.pistas.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada"));
+const pubView=()=>!isCli()?pubRasc():(ROUTE&&ROUTE.rasc?pubRasc():D.pub.pubd);      // o que a vista mostra: publicado (cliente) ou rascunho (pré-visualização)
+const paginasCliente=()=>{const v=pubView();return v?PAGINAS_CLIENTE.filter(p=>v.paginas.includes(p)&&(p!=="criativos"||hasAds())):[]};
+const cartoesPub=()=>{const v=pubView();return v?D.sinais.filter(s=>v.cartoes.includes(s.id)):[]};
+const pistasPub=()=>{const v=pubView();return v?v.pistas:[]};
+const pubNota=()=>{const v=pubView();return v?v.nota:""};
 
 function wDateMs(i){return W0+i*7*DAY}
 function wLab(i){const d=new Date(wDateMs(i));return d.getUTCDate()+" "+MES[d.getUTCMonth()]}

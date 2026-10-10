@@ -10,14 +10,14 @@ const hoje=()=>new Date().toISOString().slice(0,10);
 /* Repor o estado da equipa (decisões e publicações) para recomeçar a demonstração */
 function resetEstado(){
   try{localStorage.removeItem(STKEY)}catch(e){}
-  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub={publicada:false,paginas:[...PAGINAS_CLIENTE],cartoes:[],nota:"",quando:null}});
+  Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub=pubDefault()});
   Object.values(SESS).forEach(s=>{s.bquiet=false;s.bmode="equipa"});
   toast("Demonstração reposta: pistas por decidir e nada publicado.");CUR.refresh()}
 
 function tourPreparar(cid,tipo){
   const d=CLS[cid];if(!d||!tipo)return;
   if(tipo==="demo-pistas"){const p=d.pistas[0];if(p){p.s="aceite";p.cli=true}d.pub.cartoes=d.sinais.slice(0,2).map(s=>s.id)}
-  if(tipo==="demo-publicar"){d.pub.publicada=true;d.pub.quando=hoje()}
+  if(tipo==="demo-publicar"&&!d.pub.pubd){pubPublicar(d,"Equipa")}
   saveState()}
 function tourRender(){
   const st=tourSteps(),s=st[TOUR.i],n=st.length,last=TOUR.i===n-1,t=$("#tour");
