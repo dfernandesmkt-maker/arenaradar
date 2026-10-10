@@ -1,0 +1,25 @@
+# Modelo para um novo cliente. Copiar para <id>.yaml e preencher.
+cliente:
+  id:
+  nome:
+  setor:
+  geo: PT
+  idioma: pt-PT
+  tipo_universo: concorrencia   # ou "tema"
+
+universo: []      # lista de entidades: id, nome, papel, prioridade, meta_search_terms, meta_page_ids
+
+trends:
+  geo: PT
+  periodo: today 5-y
+  clusters: {}    # nome_cluster: [até 5 termos]
+
+noticias:
+  queries: []
+
+canais_observados: [meta, google_search, youtube, tiktok, tv, radio, ooh, imprensa]
+
+limiares:
+  pesquisas_variacao_vs_media_8s: 0.30
+  anuncios_dias_ativo_min: 3
+  noticias_meios_min: 3

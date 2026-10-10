@@ -1,0 +1,69 @@
+# Arena Radar — configuração do cliente Sociedade Ponto Verde
+# Tudo o que é específico do cliente vive aqui. O código não deve ter nada "hardcoded" sobre a SPV.
+
+cliente:
+  id: spv
+  nome: Sociedade Ponto Verde
+  setor: Gestão de resíduos de embalagens (SIGRE)
+  geo: PT
+  idioma: pt-PT
+  tipo_universo: tema   # "concorrencia" (ex.: PRIO) ou "tema" (disputa de atenção e clareza de mensagem)
+
+universo:
+  - id: spv
+    nome: Sociedade Ponto Verde
+    papel: cliente
+    prioridade: cliente
+    meta_search_terms: ["Ponto Verde"]
+    meta_page_ids: []          # a preencher após confirmar na Ad Library
+  - id: novo-verde
+    nome: Novo Verde
+    papel: entidade gestora SIGRE
+    prioridade: alta
+    meta_search_terms: ["Novo Verde"]
+    meta_page_ids: []
+  - id: electrao
+    nome: Electrão
+    papel: entidade gestora SIGRE
+    prioridade: alta
+    meta_search_terms: ["Electrão"]
+    meta_page_ids: []
+  - id: sdr-volta
+    nome: SDR Portugal / Volta
+    papel: sistema de depósito e reembolso
+    prioridade: alta
+    meta_search_terms: ["Volta embalagens", "SDR Portugal"]
+    meta_page_ids: []
+
+# Google Trends: máximo 5 termos por cluster (limite da ferramenta).
+# Termos a validar primeiro na interface do Google Trends (volume suficiente em PT).
+trends:
+  geo: PT
+  periodo: today 5-y
+  clusters:
+    volta: ["máquinas volta", "volta garrafas", "depósito garrafas", "10 cêntimos garrafas"]
+    ecoponto: ["ecoponto amarelo", "ecoponto azul", "ecoponto verde", "como separar o lixo", "reciclagem"]
+    duvidas: ["caixa de pizza reciclar", "esferovite reciclar", "tetra pak reciclar", "guardanapos reciclar"]
+    marcas: ["ponto verde", "novo verde", "electrão"]
+
+noticias:
+  queries:
+    - "Sociedade Ponto Verde"
+    - "Novo Verde reciclagem"
+    - "Electrão embalagens"
+    - "sistema Volta embalagens"
+    - "reciclagem embalagens Portugal"
+    - "ecopontos recolha seletiva"
+
+canais_observados: [meta, google_search, youtube, tiktok, tv, radio, ooh, imprensa]
+
+limiares:
+  pesquisas_variacao_vs_media_8s: 0.30
+  anuncios_dias_ativo_min: 3
+  noticias_meios_min: 3
+  elo_variacao_semanal: 0.25
+
+dados_internos:
+  elo:
+    estado: pendente_autorizacao
+    pasta: data/raw/internal/elo/

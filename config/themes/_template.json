@@ -1,0 +1,11 @@
+{
+  "_nota": "Modelo de tema de cliente. Copiar para <id>.json. Só mudam as cores de marca; o resto herda de arena.json. Ligar ao cliente em config/clients/<id>.yaml (campo tema).",
+  "id": "",
+  "nome": "",
+  "herda": "arena",
+  "marca": {
+    "primaria": "",
+    "escura": "",
+    "destaque": ""
+  }
+}

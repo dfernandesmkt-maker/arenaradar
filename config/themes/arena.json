@@ -1,0 +1,46 @@
+{
+  "_nota": "Tokens de tema. Cores de marca vêm das Brand Guidelines Arena (nov. 2023); neutros e superfícies são proposta a validar no protótipo. Temas de cliente copiam este ficheiro e só alteram as cores de marca. Toda a UI lê estes valores como variáveis CSS (--token). Validar contraste WCAG AA (texto 4,5:1) antes de aceitar um tema.",
+  "id": "arena",
+  "nome": "Arena Media",
+  "modo_por_defeito": "claro",
+  "marca": {
+    "primaria": "#328CF5",
+    "escura": "#0F2623",
+    "destaque": "#FFDC32"
+  },
+  "semanticas": {
+    "positivo": "#00B89B",
+    "negativo": "#E60000",
+    "neutro_info": "#733478"
+  },
+  "claro": {
+    "fundo": "#F7F8FA",
+    "superficie": "#FFFFFF",
+    "texto": "#0F2623",
+    "texto_secundario": "#5B6B68",
+    "linha": "#E3E7E6"
+  },
+  "escuro": {
+    "fundo": "#0B1B19",
+    "superficie": "#12302C",
+    "texto": "#F2F5F4",
+    "texto_secundario": "#9DB0AC",
+    "linha": "#1F433E"
+  },
+  "tipografia": {
+    "familia": "Inter",
+    "ficheiro": "prototype/fonts/inter-latin-wght-normal.woff2",
+    "fallback": "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+    "numeros": "tabular-nums",
+    "pesos": {
+      "titulo_pagina": 650,
+      "titulo_seccao": 600,
+      "corpo": 400,
+      "etiqueta_navegacao": 500,
+      "navegacao_ativa": 600,
+      "botao_badge": 600,
+      "numero_grande": 700
+    },
+    "nota": "Inter em todo o Radar (interface, apresentações e documentos do Radar), decisão D22. Ficheiros servidos localmente (sem Google Fonts CDN). Poppins das Brand Guidelines fica nos restantes materiais da Arena."
+  }
+}
