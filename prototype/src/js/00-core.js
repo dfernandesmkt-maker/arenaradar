@@ -6,7 +6,7 @@
 const EM_ARTEFACTO={{EM_ARTEFACTO}};
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const nf=(n,d=0)=>new Intl.NumberFormat("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);
+const nf=(n,d=0)=>new Intl.NumberFormat("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"}).format(n);
 const sgn=(n,d=0)=>(n>0?"+":n<0?"−":"")+nf(Math.abs(n),d);
 const sum=a=>a.reduce((x,y)=>x+(y||0),0);
 const mean=a=>a.length?sum(a)/a.length:0;
