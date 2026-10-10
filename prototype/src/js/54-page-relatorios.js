@@ -27,11 +27,14 @@ function briefingHTML(){
 
 /* ---------- Publicar para o cliente (só vista Equipa) ---------- */
 const PGN={visao:"Visão geral",mercado:"Mercado",procura:"Procura e notícias",criativos:"Criativos",relatorios:"Relatório semanal"};
+function pubResumo(){const pu=D.pub,nPk=D.pistas.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada")).length;
+  return`O cliente verá: <b>${pu.paginas.length}</b> ${pu.paginas.length===1?"página":"páginas"}, <b>${pu.cartoes.length}</b> ${pu.cartoes.length===1?"cartão":"cartões"}, <b>${nPk}</b> ${nPk===1?"pista":"pistas"}${pu.nota&&pu.nota.trim()?" e a nota da equipa":", sem nota"}.`}
+const updPubSum=()=>{const s=$(".pubsum");if(s)s.innerHTML=pubResumo()};
 function pPublicar(){
   const pu=D.pub,pgs=PAGINAS_CLIENTE.filter(p=>p!=="criativos"||hasAds()),pk=D.pistas,ok=p=>p.s==="aceite"||p.s==="ajustada";
   const estado=pu.publicada?`<span class="seal" data-o="real" style="background:color-mix(in srgb,var(--ok) 15%,transparent)">Publicado${pu.quando?" a "+fmtDt(pu.quando):""}</span>`:`<span class="seal" data-o="demo">Por publicar</span>`;
   use("anuncios");
-  return`<div class="pubbox"><div><b style="font-weight:650">Vista do cliente</b> ${estado}<p class="t-sm muted" style="margin-top:6px;max-width:64ch">O cliente só vê o que escolheres aqui. Nada é automático, e o que sai é assinado pela Arena Media, sem autoria individual. Esta é uma pré-visualização: a forma de entrega ao cliente (acesso, convite) decide-se com IT e Compliance.</p></div>
+  return`<div class="pubbox"><div><b style="font-weight:650">Vista do cliente</b> ${estado}<p class="t-sm muted" style="margin-top:6px;max-width:64ch">O cliente só vê o que escolheres aqui. Nada é automático, e o que sai é assinado pela Arena Media, sem autoria individual. <span class="pubsum" aria-live="polite" style="display:block;margin-top:8px;color:var(--text)">${pubResumo()}</span>Esta é uma pré-visualização: a forma de entrega ao cliente (acesso, convite) decide-se com IT e Compliance.</p></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-go="${D.cliente.id}/visao?v=cliente"><svg class="ic"><use href="#i-eye"/></svg>Pré-visualizar como cliente</button>${pu.publicada?`<button class="btn" id="pubundo">Retirar publicação</button>`:`<button class="btn pri" id="pubgo"><svg class="ic"><use href="#i-send"/></svg>Publicar</button>`}</div></div>
    ${secHTML("Páginas visíveis ao cliente","A Visão geral é sempre incluída. Liga ou desliga as restantes.",`<div class="chips">${pgs.map(p=>`<button class="fchip" data-pubpg="${p}" aria-pressed="${pu.paginas.includes(p)}" ${p==="visao"?"disabled":""}>${PGN[p]}</button>`).join("")}</div>`)}
    ${secHTML("Cartões «O que mudou»","Escolhe os pontos que o cliente vê. Os limiares e as hipóteses internas não aparecem na vista do cliente.",D.sinais.length?`<div class="panel publ">${D.sinais.map(s=>`<label class="pubrow"><input type="checkbox" data-pubsgc="${s.id}" ${pu.cartoes.includes(s.id)?"checked":""}><span><b>${esc(s.titulo)}</b><br><span class="t-sm muted">${esc(s.categoria)} · ${s.material?"acima do limiar":"em observação"}</span></span></label>`).join("")}</div>`:emptyHTML("Sem cartões","Ainda não há sinais para destacar."))}
@@ -58,6 +61,6 @@ document.addEventListener("click",e=>{let t;
   if(e.target.closest("#pubgo")){D.pub.publicada=true;D.pub.quando=new Date().toISOString().slice(0,10);saveState();toast("Publicado para a vista do cliente (pré-visualização). Nada sai da agência: a entrega é uma decisão com IT e Compliance.");CUR.refresh();return}
   if(e.target.closest("#pubundo")){D.pub.publicada=false;saveState();toast("Publicação retirada. O cliente deixa de ver o relatório.");CUR.refresh();return}});
 document.addEventListener("change",e=>{let t;
-  if(t=e.target.closest("[data-pubsgc]")){const id=t.dataset.pubsgc,a=D.pub.cartoes;t.checked?(a.includes(id)||a.push(id)):a.splice(a.indexOf(id),1);saveState();return}
-  if(t=e.target.closest("[data-pubpkc]")){const p=D.pistas.find(x=>x.id===t.dataset.pubpkc);if(p){p.cli=t.checked;saveState();syncCounts&&syncCounts()}}});
-document.addEventListener("input",e=>{if(e.target.id==="pubnota"){D.pub.nota=e.target.value;saveState()}});
+  if(t=e.target.closest("[data-pubsgc]")){const id=t.dataset.pubsgc,a=D.pub.cartoes;t.checked?(a.includes(id)||a.push(id)):a.splice(a.indexOf(id),1);saveState();updPubSum();return}
+  if(t=e.target.closest("[data-pubpkc]")){const p=D.pistas.find(x=>x.id===t.dataset.pubpkc);if(p){p.cli=t.checked;saveState();updPubSum();syncCounts&&syncCounts()}}});
+document.addEventListener("input",e=>{if(e.target.id==="pubnota"){D.pub.nota=e.target.value;saveState();updPubSum()}});

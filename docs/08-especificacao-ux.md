@@ -75,10 +75,10 @@ Regras:
 | Componente | Conteúdo | Dados de que precisa | Estados |
 |---|---|---|---|
 | **Seletor de âmbito** | Agência › Vertical › Cliente | Lista de verticais e clientes (config) | Fechado, aberto, sem permissões |
-| **Barra de filtros** | Período, comparação, plataforma, marcas | Intervalos e listas do cliente | Por defeito, alterado, a repor |
+| **Barra de filtros** | Quatro botões compactos (período, comparação, plataformas, marcas) que abrem um painel; em telemóvel, uma folha inferior | Intervalos e listas do cliente | Por defeito, alterado, a repor |
 | **Selo de dados** | Origem da página (secção 6) | Origem de cada bloco | Demonstração · Real · Estimado · Misto |
-| **KPI** | Valor, variação vs. comparação, mini-gráfico | Série temporal + período de comparação | Normal, sem dados, abaixo do limiar |
-| **Cartão-conclusão** | Frase, mini-gráfico, ação «Ver detalhe»; pista (só Equipa) | Sinal calculado + texto da leitura | Novo, visto, decidido |
+| **KPI** | Valor, variação vs. comparação, mini-gráfico, «?» com o que a métrica mede | Série temporal + período de comparação | Normal, sem dados, abaixo do limiar |
+| **Cartão-conclusão** | Frase, mini-gráfico, leitura (máx. 3 linhas), medidor do valor face ao limiar e pista (só Equipa); ação principal «Ver pista» ou «Ver detalhe» e menu «⋯» com as restantes (publicar, aprofundar); altura igual na linha | Sinal calculado + texto da leitura | Novo, visto, decidido |
 | **Gráfico** (linha, barras, empilhado) | Série(s), eventos anotados, dica, vista em tabela | Séries por marca/plataforma | Normal, sem dados, a carregar |
 | **Tabela de detalhe** | Linhas por marca/plataforma/formato com barras e variação | Agregados | Ordenável; vazia |
 | **Gaveta de detalhe** | Anúncio, notícia ou série com origem completa | Registo individual | Aberta/fechada; teclado |
@@ -87,6 +87,10 @@ Regras:
 | **Publicar para o cliente** *(Equipa)* | Marca um cartão ou relatório como visível ao cliente | Cartão + autor | Rascunho, publicado, retirado |
 
 Os componentes já existem em parte no preview (KPIs, cartões, gráficos SVG, gaveta, etiquetas); a fase C extrai-os e uniformiza-os.
+
+**Comandos e definições.** A barra superior só tem a pergunta/comando (Ctrl K), «Apresentar», o seletor Equipa/Cliente e as definições (aparência, cor do tema, controlos de demonstração). A paleta Ctrl K junta navegação, mudar de cliente, ações e perguntas ao Radar; não existe na vista do cliente.
+
+**Acessibilidade.** Ligação «Saltar para o conteúdo», foco no título ao mudar de página, anúncio da página numa região `aria-live`, alvos mínimos de 44 px em ecrãs tácteis, menus e painéis fecham com Esc.
 
 ## 5. Duas vistas (implementado na fase D)
 

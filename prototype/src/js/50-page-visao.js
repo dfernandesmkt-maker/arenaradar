@@ -21,18 +21,33 @@ function sigCardCli(s,i){
    <p class="rd">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</p>
    ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(p.acao)}</span></div>`:""}
   </article>`}
+function sigMeter(s){
+  if(s.limiar==null||s.valor==null||!+s.limiar)return"";
+  const v=Math.abs(s.valor),l=Math.abs(s.limiar),pc=clamp(v/(l*2)*100,3,100),d=v<10?1:0,u=s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%";
+  return`<div class="meter" role="meter" aria-valuemin="0" aria-valuemax="${nf(l*2,d)}" aria-valuenow="${nf(v,d)}" aria-label="Valor face ao limiar" data-tip="Valor observado face ao limiar definido para este tipo de sinal">
+   <div class="mb"><i class="${v>=l?"ok":""}" style="width:${pc.toFixed(0)}%"></i><u></u></div>
+   <div class="ml"><span><b>${nf(v,d)}${u}</b> observado</span><span>limiar ${nf(l,d)}${u}</span></div></div>`}
 function sigCard(s,i){
   if(isCli())return sigCardCli(s,i);
-  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s);
+  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),pub=D.pub.cartoes.includes(s.id);
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
-  const lim=s.limiar!=null&&s.valor!=null?`<span class="lim">Valor ${nf(Math.abs(s.valor),Math.abs(s.valor)<10?1:0)}${s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%"} · limiar ${nf(Math.abs(s.limiar),Math.abs(s.limiar)<10?1:0)}</span>`:"";
+  const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
    <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
-   <p class="rd">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${lim}
-   ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
-   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:""}<button class="btn ${p?"ghost":""}" ${s.entidade&&s.categoria==="Lançamento"?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`}>${s.categoria==="Lançamento"?"Ver criativos":"Ver detalhe"}</button><button class="btn ghost" data-pubsg="${s.id}" aria-pressed="${D.pub.cartoes.includes(s.id)}"><svg class="ic"><use href="#i-send"/></svg>${D.pub.cartoes.includes(s.id)?"Publicado para o cliente":"Publicar para o cliente"}</button>${p?`<button class="btn ghost" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</button>`:""}</div>
+   <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
+   ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
+   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}
+    ${pub?`<span class="tag ok" data-tip="Publicado para a vista do cliente">Cliente</span>`:""}
+    <div class="more"><button class="btn ghost ico" data-cardmenu aria-haspopup="menu" aria-expanded="false" aria-label="Mais ações"><svg class="ic"><use href="#i-dots"/></svg></button>
+     <div class="mm" role="menu" hidden>${p?`<button role="menuitem" ${det}>${dl}</button>`:""}<button role="menuitem" data-pubsg="${s.id}"><svg class="ic"><use href="#i-send"/></svg>${pub?"Retirar da vista do cliente":"Publicar para o cliente"}</button>${p?`<button role="menuitem" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg><span>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</span></button>`:""}</div></div></div>
   </article>`}
+document.addEventListener("click",e=>{
+  const mb=e.target.closest("[data-cardmenu]");
+  $$(".mm:not([hidden])").forEach(m=>{if(!mb||m.parentNode!==mb.parentNode){m.hidden=true;m.parentNode.querySelector("[data-cardmenu]").setAttribute("aria-expanded","false")}});
+  if(mb){const m=mb.parentNode.querySelector(".mm");m.hidden=!m.hidden;mb.setAttribute("aria-expanded",String(!m.hidden));if(!m.hidden){const f=m.querySelector("button:not([disabled])");f&&f.focus()}}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const o=$(".mm:not([hidden])");if(o){o.hidden=true;const b=o.parentNode.querySelector("[data-cardmenu]");b.setAttribute("aria-expanded","false");b.focus()}}
+  if((e.key==="ArrowDown"||e.key==="ArrowUp")&&e.target.closest&&e.target.closest(".mm")){e.preventDefault();const bs=$$("button:not([disabled])",e.target.closest(".mm")),i=bs.indexOf(e.target);bs[(i+(e.key==="ArrowDown"?1:-1)+bs.length)%bs.length].focus()}});
 
 function mainChartHTML(){
   const W=win();
@@ -40,7 +55,9 @@ function mainChartHTML(){
     const pls=PL.filter(p=>S.pl.has(p)),bs=incl(),xl=i=>wLab(W.a0+i);
     const ser=pls.map(p=>({id:p,n:p,c:rampOf(p),d:range(W.a0,W.z).map(w=>bs.reduce((s,e)=>s+AD[e.id][p][w],0))}));
     const last=ser.map(s=>s.d[s.d.length-1]),tot=sum(last)||1,top=ser.map((s,i)=>({n:s.n,v:last[i]})).sort((a,b)=>b.v-a.v)[0];
-    later(()=>tsChart($("#mc"),{series:ser,type:"area",stack:true,end:true,xl,fmt:nf,aria:"Anúncios ativos por plataforma"},true));
+    const cp={};ADS.filter(a=>a.camp&&bs.some(e=>e.id===a.b)&&PL.includes(a.p)).forEach(a=>{const k=a.b+"|"+a.camp,c=cp[k]||(cp[k]={b:a.b,n:a.camp,st:a.st,k:0});c.st=Math.min(c.st,a.st);c.k++});
+    const ev=Object.values(cp).filter(c=>c.st>W.a0&&c.st<=W.z&&c.k>=3).sort((x,y)=>y.k-x.k).slice(0,4).sort((x,y)=>x.st-y.st).filter((c,j,r)=>j===0||c.st-r[j-1].st>=4).slice(0,3).map(c=>({i:c.st-W.a0,t:`${ebyid(c.b).nome} lança «${c.n}»`}));
+    later(()=>tsChart($("#mc"),{series:ser,type:"area",stack:true,end:true,events:ev,xl,fmt:nf,aria:"Anúncios ativos por plataforma"},true));
     return cardHTML("Anúncios ativos por plataforma",`Soma das marcas do conjunto. ${top?`<b>${top.n}</b> concentra ${nf(top.v/tot*100)}% dos anúncios ativos esta semana.`:""}`,`${legendHTML(ser)}<div class="cv" id="mc"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}
   if(D.procura){
     const pr=D.procura.principais||D.procura.series.map(s=>s.id),ser=D.procura.series.filter(s=>pr.includes(s.id)),a0=W.a0,xl=i=>wLab(a0+i);
@@ -57,7 +74,7 @@ function detailHTML(){
     const rows=[...bs].sort((a,b)=>press(b.id,W.z)-press(a.id,W.z)).map(e=>{const a1=act(e.id,W.z),a2=W.canP?act(e.id,W.z-W.w):null,nw=sumR(neu,e.id,W.a0,W.z),i=bs.indexOf(e);
       return`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${dot(e)}${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td class="n">${nf(a1)}</td><td class="n">${a2!=null&&a2>=3?dchip(pctd(a1,a2)):`<span class="muted">—</span>`}</td><td class="n">${nf(sv[e.id],1)}%</td><td class="n">${svp?dchip(sv[e.id]-svp[e.id],"p.p."):`<span class="muted">—</span>`}</td><td class="n">${nf(nw)}</td><td class="n">${eur(sp[i])}</td></tr>`}).join("");
     use("investimento");
-    return secHTML("Marcas em comparação","Clica numa marca para ver o detalhe.",`<div class="panel tblwrap"><table><thead><tr><th>Marca</th><th class="n">Anúncios ativos</th><th class="n">Variação</th><th class="n">Quota de voz</th><th class="n">Variação</th><th class="n">Novos no período</th><th class="n">Investimento est.</th></tr></thead><tbody>${rows}</tbody></table></div>`,"anuncios")}
+    return secHTML("Marcas em comparação","Clica numa marca para ver o detalhe.",`<p class="tbtn" style="margin:-4px 0 8px;text-align:right"><button class="btn ghost sm" type="button" data-copytbl>Copiar tabela</button></p><div class="panel tblwrap"><table><thead><tr><th>Marca</th><th class="n">Anúncios ativos</th><th class="n">Variação</th><th class="n">Quota de voz</th><th class="n">Variação</th><th class="n">Novos no período</th><th class="n">Investimento est.</th></tr></thead><tbody>${rows}</tbody></table></div>`,"anuncios")}
   use("voz");const vz=Object.fromEntries((D.voz||[]).map(v=>[v.entidade,v])),cel=v=>v==null?`<span class="ghost">Por recolher</span>`:nf(v);
   return secHTML("Quem comunica sobre o tema","Entidades do universo e o que já foi recolhido sobre cada uma.",`<div class="panel tblwrap"><table><thead><tr><th>Entidade</th><th>Papel</th><th>Prioridade</th><th>Anúncios Meta</th><th>Notícias</th></tr></thead><tbody>${D.entidades.map(e=>`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td>${esc(e.papel)}</td><td>${esc(e.prioridade&&e.prioridade!=="cliente"?e.prioridade:"—")}</td><td>${cel((vz[e.id]||{}).anuncios_meta)}</td><td>${cel((vz[e.id]||{}).noticias)}</td></tr>`).join("")}</tbody></table></div>${BLK("voz").origem==="pendente"?`<p class="t-sm muted" style="margin-top:10px">Estes campos preenchem-se com dados reais (Meta Ad Library, notícias). O Radar nunca inventa números sobre entidades de terceiros.</p>`:""}`,"voz")}
 
@@ -76,7 +93,7 @@ function openEntity(id){
      <div style="margin-top:14px"><button class="btn" data-go="agencia/fontes">Ver fontes de dados</button></div>`;
   openDrawer(`${drawerHead(esc(e.nome))}<p class="t-sm muted" style="margin-top:4px">${esc(e.papel)}</p>${body}`)}
 document.addEventListener("click",e=>{const r=e.target.closest("tr[data-ent]");if(r)openEntity(r.dataset.ent)});
-document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;b.lastChild.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;const sp=b.querySelector("span");if(sp)sp.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
 
 function pageVisao(){
   const lista=isCli()?cartoesPub():S.bquiet?[]:D.sinais,sg=lista.map(sigCard).join("");
@@ -89,3 +106,10 @@ function pageVisao(){
 
 document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão marcado para a vista do cliente. Só sai quando publicares em Relatórios.":"Cartão retirado da vista do cliente.");CUR.refresh()});
 
+
+/* Copiar tabela (TSV, cola direto no Excel) */
+document.addEventListener("click",e=>{const b=e.target.closest("[data-copytbl]");if(!b)return;
+  const tb=b.closest(".tw,.sec")&&(b.closest(".tw")||b.closest(".sec")).querySelector("table");if(!tb)return;
+  const tsv=[...tb.rows].map(r=>[...r.cells].map(c=>c.textContent.replace(/\s+/g," ").trim()).join("\t")).join("\n");
+  const ok=()=>toast("Tabela copiada. Cola no Excel ou no PowerPoint."),fb=()=>{const ta=document.createElement("textarea");ta.value=tsv;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();let r=false;try{r=document.execCommand("copy")}catch(_){}ta.remove();r?ok():toast("Não foi possível copiar neste ambiente.")};
+  try{navigator.clipboard.writeText(tsv).then(ok,fb)}catch(_){fb()}});

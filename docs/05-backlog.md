@@ -94,6 +94,12 @@ Especificação em `docs/08-especificacao-ux.md`. Por fases:
 - **RB-74** ✅ *(fase C)* Selo de dados por página (D27 confirmada).
 - **RB-75** ✅ *(fase D, out. 2026)* Vista Cliente e publicação pela equipa. O tema de cor por cliente está pronto (`cliente.tema`) mas não é usado até a Q09 ser respondida. Falta a entrega real ao cliente (acesso e autenticação), a decidir com IT e Compliance.
 - **RB-76** *(fase E)* Dados reais nos blocos Procura e Notícias para a home; Meta quando houver token (Q10). **Estado:** o ambiente cloud não tem acesso de rede a `news.google.com`, `trends.google.com` nem `graph.facebook.com`; importador de exportações manuais do Trends pronto (`scripts/import_trends_csv.py`). Falta correr a recolha (ver `docs/09`, «Ligar um cliente a dados reais»).
+- **RB-80** ✅ *(out. 2026)* Barra superior simplificada: Apresentar, vista Equipa/Cliente e menu de definições (aparência, cor do tema, controlos de demonstração). Os controlos de demonstração saem da interface do produto.
+- **RB-81** ✅ Paleta de comandos (Ctrl K): navegação, mudar de cliente, ações e perguntas ao Radar na mesma caixa.
+- **RB-82** ✅ Filtros compactos (período, comparação, plataformas, marcas) com painéis e folha inferior em telemóvel; «Repor filtros».
+- **RB-83** ✅ Cartões «O que mudou» redesenhados: altura uniforme, texto contido, medidor de valor face ao limiar, ação principal «Ver pista» e menu «⋯» (detalhe, publicar para o cliente, pedir aprofundamento).
+- **RB-84** ✅ Ajuda «?» nos KPIs, dica «pontos percentuais», marcadores de lançamento de campanha no gráfico principal, «Copiar tabela» (TSV), resumo «O cliente verá…» na publicação, fila de decisões na Torre de controlo, estado vazio do Impacto.
+- **RB-85** ✅ Acessibilidade: ligação «Saltar para o conteúdo», foco no título ao navegar, anúncio da página para leitores de ecrã, alvos de 44 px em ecrãs tácteis.
 
 ## Concorrência e fontes (out. 2026)
 - **RB-60** Ligar a Meta Ad Library (`collect_meta_ads.py`) ao módulo Concorrência: substituir os anúncios simulados pelos recolhidos, com `origem=real`, fonte e data. Depende de Q10.
