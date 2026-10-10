@@ -3,6 +3,7 @@
    LIGAÇÃO[meta-ad-library] LIGAÇÃO[google-ads-transparency] LIGAÇÃO[tiktok-ad-library]:
    cada anúncio do dataset traz a ligação (url) ao original; a gaveta passa a abri-lo quando existir.
    ============================================================ */
+function crCard(c){const e=ebyid(c.b),nm=e?e.nome:(c.bn||c.b);return`<button class="cr" data-cr="${esc(c.id)}" aria-label="Abrir criativo de ${esc(nm)}" data-src="anuncios">${thumb(c)}<div class="cm"><b><i style="background:${e?col(e):"#6b7a77"}"></i>${esc(nm)}</b><div class="r2"><span class="tag">${c.p}</span><span class="tag">${esc(FM[c.fm])}</span>${c.th>=0?`<span class="tag">${esc(TH[c.th])}</span>`:""}</div><span>${isOn(c)?"Ativo":"Terminado"} · desde ${dateOf(c)} · ${c.days} dias</span></div></button>`}
 function pageCriativos(){
   if(!hasAds())return pheadHTML(`${esc(D.cliente.nome)} · Criativos`,"Criativos","")+emptyHTML("Sem anúncios ligados","Liga a Meta Ad Library ou importa um CSV em Fontes de dados.");
   const W=win(),a0=W.a0;
@@ -19,7 +20,7 @@ function pageCriativos(){
     <button class="tgl" data-gon="1" aria-pressed="${S.only}">Só ativos</button>
     ${b?`<button class="tgl" data-clrb="1" aria-pressed="true"><i style="background:${col(b)}"></i>${esc(b.nome)} ✕</button>`:""}
     <span style="flex:1"></span><span class="t-sm muted">${nf(list.length)} criativos</span></div>
-   ${shown.length?`<div class="gal">${shown.map(c=>{const e=ebyid(c.b),nm=e?e.nome:(c.bn||c.b);return`<button class="cr" data-cr="${esc(c.id)}" aria-label="Abrir criativo de ${esc(nm)}" data-src="anuncios">${thumb(c)}<div class="cm"><b><i style="background:${e?col(e):"#6b7a77"}"></i>${esc(nm)}</b><div class="r2"><span class="tag">${c.p}</span><span class="tag">${esc(FM[c.fm])}</span>${c.th>=0?`<span class="tag">${esc(TH[c.th])}</span>`:""}</div><span>${isOn(c)?"Ativo":"Terminado"} · desde ${dateOf(c)} · ${c.days} dias</span></div></button>`}).join("")}</div>
+   ${shown.length?`<div class="gal">${shown.map(crCard).join("")}</div>
    ${list.length>shown.length?`<p style="margin-top:16px"><button class="btn" data-more="1">Ver mais ${Math.min(12,list.length-shown.length)}</button></p>`:""}`:`<div class="lockcard">Nenhum criativo com estes filtros. Alarga o período ou limpa os formatos.</div>`}
    ${secHTML("Quanto tempo vivem os criativos","Criativos que ficam muito tempo no ar costumam funcionar. A duração média dos terminados é uma pista do que cada marca considera vencedor.",`<div class="card"><div class="hb">${lon.map(x=>`<div class="row"><span class="nm"><i style="background:${col(x.e)}"></i>${esc(x.e.nome)}</span><div class="single"><i data-w="${x.av/mxl*100}" style="background:${col(x.e)}" data-tip="<b>${esc(x.e.nome)}</b>: duração média de ${nf(x.av)} dias nos criativos terminados; ${x.keep} ativos há 4 semanas ou mais."></i></div><span class="num2">${nf(x.av)} d</span></div>`).join("")}</div></div>`,"anuncios")}`;
   return pheadHTML(`${esc(D.cliente.nome)} · Criativos`,"O que a concorrência põe no ar","Anúncios do conjunto competitivo, filtrados por período, plataforma, marca e formato. Abre um criativo para ver o detalhe.",{sm:true})+body}

@@ -404,7 +404,7 @@ textarea.edit{width:100%;min-height:78px;border-radius:10px;border:1px solid var
 .sg .rd{font-size:13.5px;color:var(--text-2)}
 .sg .lim{font-size:12px;color:var(--text-2)}
 .sg.obs{background:color-mix(in srgb,var(--surface) 70%,var(--bg))}
-.sgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.sgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .pk2 .ps{margin-left:auto;font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap}
 
 /* ============ Empty state ============ */
@@ -629,3 +629,11 @@ html[data-present] #toast{bottom:116px}
 #drawer .why-dl{grid-template-columns:minmax(0,1fr) auto}
 #drawer .why-dl dd{text-align:right;font-weight:600}
 #drawer .why-dl dt{color:var(--text-2)}
+.sg .who[data-ent]{cursor:pointer}
+.sg .who[data-ent]:hover{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.rrow[data-ent]{cursor:pointer}
+.rrow[data-ent]:hover .nm{text-decoration:underline;text-underline-offset:3px}
+.cmpbar{display:flex;gap:10px;align-items:center;margin:-6px 0 14px}
+.cmpbar select{height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px;font-size:13.5px;color:var(--text)}
+.kpis.five .kpi .big{font-size:28px}
+.kpis.five .kv .sp{width:58px}

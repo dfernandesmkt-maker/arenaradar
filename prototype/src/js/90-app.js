@@ -6,6 +6,7 @@ let CID=null;                          // cliente ativo (último selecionado; ta
 const PAGES={
   visao:{n:"Visão geral",s:"Visão",i:"i-radar",f:pageVisao},
   mercado:{n:"Mercado",i:"i-layers",f:pageMercado},
+  marca:{n:"Ficha de marca",i:"i-layers",f:pageMarca,hide:true,if:()=>hasAds()&&!isTema()},
   procura:{n:"Procura e notícias",s:"Procura",i:"i-trend",f:pageProcura},
   criativos:{n:"Criativos",i:"i-image",f:pageCriativos,if:()=>hasAds()},
   relatorios:{n:"Relatórios",i:"i-mail",f:pageRelatorios},
@@ -24,9 +25,9 @@ document.addEventListener("click",e=>{if(!e.target.closest("#bnpub"))return;cons
 /* ---------- Menu único (o mesmo para todos os clientes) e seletor de âmbito ---------- */
 function buildNav(){
   const cli=ROUTE.scope==="cliente";
-  const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" aria-current="${on}"><svg class="ic"><use href="#${p.i}"/></svg><span class="lg">${p.n}</span><span class="sh">${p.s||p.n}</span>${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
+  const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" ${on?'aria-current="page"':""}><svg class="ic"><use href="#${p.i}"/></svg><span class="lg">${p.n}</span><span class="sh">${p.s||p.n}</span>${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
   if(VIEW==="cliente"&&cli){$("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+paginasCliente().map(k=>item(k,PAGES[k],ROUTE.page===k,`${D.cliente.id}/${k}`,false)).join("");return}
-  $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.if||p.if()).map(([k,p])=>item(k,p,cli&&ROUTE.page===k,`${D.cliente.id}/${k}`,k==="acoes")).join("")+
+  $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.hide&&(!p.if||p.if())).map(([k,p])=>item(k,p,cli&&(ROUTE.page===k||(k==="mercado"&&ROUTE.page==="marca")),`${D.cliente.id}/${k}`,k==="acoes")).join("")+
    `<div class="grp">Agência</div>`+Object.entries(AGPAGES).map(([k,p])=>item(k,p,!cli&&ROUTE.page===k,`agencia/${k}`,false)).join("")}
 let MENU=null;
 function buildScope(){
@@ -43,7 +44,7 @@ function openMenu(kind,btn){closeMenu();
   $("#scope").appendChild(m);m.style.left=(btn.offsetLeft)+"px";MENU=m}
 function closeMenu(){if(MENU){MENU.remove();MENU=null}}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-menu]");if(b){e.stopPropagation();MENU&&MENU.dataset.k===b.dataset.menu?closeMenu():(openMenu(b.dataset.menu,b),MENU.dataset.k=b.dataset.menu);return}
-  const s=e.target.closest("[data-switch]");if(s){closeMenu();const pg=ROUTE.scope==="cliente"?ROUTE.page:"visao";go(s.dataset.switch+"/"+(pg==="criativos"&&!CLS[s.dataset.switch].anuncios?"visao":pg));return}
+  const s=e.target.closest("[data-switch]");if(s){closeMenu();const pg=ROUTE.scope==="cliente"?ROUTE.page:"visao";go(s.dataset.switch+"/"+(pg==="marca"?"mercado":pg==="criativos"&&!CLS[s.dataset.switch].anuncios?"visao":pg));return}
   if(!e.target.closest("#menu"))closeMenu()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 
@@ -77,7 +78,7 @@ function render(r,scrollTop){
     const al=paginasCliente();
     if(!al.length){r={...r,page:"visao",sub:null};pg=PAGE_CLI_VAZIO}
     else{if(!al.includes(r.page))r={...r,page:al[0],sub:null};pg=PAGES[r.page]}}
-  else{pg=PAGES[r.page];if(pg.if&&!pg.if()){r={...r,page:"visao"};pg=PAGES.visao}}
+  else{pg=PAGES[r.page];if(pg.if&&!pg.if()){r={...r,page:"visao",sub:null};pg=PAGES.visao}}
   ROUTE=r;
   const th=VIEW+"|"+CID;if(th!==render.th){render.th=th;const tid=VIEW==="cliente"&&D.cliente.tema&&AG.temas.some(x=>x.id===D.cliente.tema)?D.cliente.tema:AG.temas[0].id;applyTheme(tid,false)}   // tema do cliente só na vista do cliente (Q09)
   const t=$("#page");t.classList.remove("on");

@@ -33,7 +33,7 @@ function sigCard(s,i){
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
-   <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
+   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
@@ -86,13 +86,14 @@ function openEntity(id){
     body=`<div class="blk"><div class="t-xs">Anúncios ativos agora</div><div class="big2">${nf(a1)}</div></div>
      <div class="blk"><div class="t-xs">Últimas 26 semanas</div><div class="cv" id="dch" style="height:84px"></div></div>
      <div class="blk"><dl style="display:grid;grid-template-columns:150px 1fr;gap:8px 12px;font-size:13.5px"><dt class="muted">Quota de voz</dt><dd>${nf(sv,1)}%</dd><dt class="muted">Novos no período</dt><dd>${nf(nw)}</dd><dt class="muted">Investimento estimado</dt><dd data-src="investimento">${eur(sp)}</dd><dt class="muted">Plataformas ativas</dt><dd>${pp.length?pp.map(x=>`${x.p} (${x.v})`).join(", "):"—"}</dd></dl></div>
-     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-cr-b="${id}">Ver criativos</button></div>`;
+     <div style="display:flex;gap:8px;flex-wrap:wrap">${isCli()?"":`<button class="btn pri" data-go="marca/${id}">Abrir ficha completa</button>`}<button class="btn" data-cr-b="${id}">Ver criativos</button></div>`;
     setTimeout(()=>{const h=$("#dch");if(h)tsChart(h,{series:[{n:e.nome,c:col(e),d:range(a,Z).map(w=>PL.reduce((q,p)=>q+AD[id][p][w],0))}],type:"line",fill:true,mini:true,h:84,xl:i=>wLab(a+i),fmt:v=>nf(v)+" anúncios",aria:"Anúncios ativos"},false)},60)}
   else body=`<div class="blk"><dl style="display:grid;grid-template-columns:130px 1fr;gap:8px 12px;font-size:13.5px"><dt class="muted">Papel</dt><dd>${esc(e.papel)}</dd><dt class="muted">Prioridade</dt><dd>${esc(e.prioridade&&e.prioridade!=="cliente"?e.prioridade:"—")}</dd></dl></div>
      <div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>Por recolher</b><br>Anúncios (Meta Ad Library) e notícias desta entidade ligam-se na recolha. Sem dados recolhidos, o Radar não inventa números sobre entidades de terceiros.</div></div>
      <div style="margin-top:14px"><button class="btn" data-go="agencia/fontes">Ver fontes de dados</button></div>`;
   openDrawer(`${drawerHead(esc(e.nome))}<p class="t-sm muted" style="margin-top:4px">${esc(e.papel)}</p>${body}`)}
-document.addEventListener("click",e=>{const r=e.target.closest("tr[data-ent]");if(r)openEntity(r.dataset.ent)});
+document.addEventListener("click",e=>{const r=e.target.closest("[data-ent]");if(r)openEntity(r.dataset.ent)});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("[data-ent][role=button]")){e.preventDefault();openEntity(e.target.dataset.ent)}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;const sp=b.querySelector("span");if(sp)sp.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
 
 function sinceHTML(){

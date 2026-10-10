@@ -26,7 +26,8 @@ function answer(a){
 function comandos(){
   const L=[],cli=ROUTE.scope==="cliente";
   if(cli){
-    Object.entries(PAGES).filter(([k,p])=>!p.if||p.if()).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"abrir página",run:()=>go(`${CID}/${k}`)}));
+    Object.entries(PAGES).filter(([k,p])=>!p.hide&&(!p.if||p.if())).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"abrir página",run:()=>go(`${CID}/${k}`)}));
+    if(hasAds()&&!isTema())incl().forEach(e=>L.push({g:"Ir para",t:"Ficha de marca: "+e.nome,i:"i-layers",k:"marca concorrente "+e.id,run:()=>go(`${CID}/marca/${e.id}`)}));
     mtabs().forEach(x=>L.push({g:"Ir para",t:"Mercado: "+x[1],i:"i-layers",k:"abrir",run:()=>go(`${CID}/mercado/${x[0]}`)}));
     L.push({g:"Ir para",t:"Relatórios: publicar para o cliente",i:"i-send",k:"publicar vista cliente",run:()=>go(`${CID}/relatorios/publicar`)});
   }

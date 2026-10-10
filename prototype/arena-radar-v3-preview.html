@@ -413,7 +413,7 @@ textarea.edit{width:100%;min-height:78px;border-radius:10px;border:1px solid var
 .sg .rd{font-size:13.5px;color:var(--text-2)}
 .sg .lim{font-size:12px;color:var(--text-2)}
 .sg.obs{background:color-mix(in srgb,var(--surface) 70%,var(--bg))}
-.sgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.sgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .pk2 .ps{margin-left:auto;font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap}
 
 /* ============ Empty state ============ */
@@ -638,6 +638,14 @@ html[data-present] #toast{bottom:116px}
 #drawer .why-dl{grid-template-columns:minmax(0,1fr) auto}
 #drawer .why-dl dd{text-align:right;font-weight:600}
 #drawer .why-dl dt{color:var(--text-2)}
+.sg .who[data-ent]{cursor:pointer}
+.sg .who[data-ent]:hover{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.rrow[data-ent]{cursor:pointer}
+.rrow[data-ent]:hover .nm{text-decoration:underline;text-underline-offset:3px}
+.cmpbar{display:flex;gap:10px;align-items:center;margin:-6px 0 14px}
+.cmpbar select{height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px;font-size:13.5px;color:var(--text)}
+.kpis.five .kpi .big{font-size:28px}
+.kpis.five .kv .sp{width:58px}
 
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
 :root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
@@ -813,6 +821,12 @@ html[data-present] #toast{bottom:116px}
 .tgl[disabled]{cursor:default}
 .tgl[disabled][aria-pressed=true]{opacity:.8}
 th .thw{display:block;font-size:10.5px;font-weight:500;color:var(--text-2);opacity:.85;margin-top:1px}
+.gantt .bar2 em{background:rgba(255,255,255,.9);color:#0F2623;border-radius:4px;padding:0 4px;font-size:9.5px;letter-spacing:.02em}
+.pleg{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:12px;color:var(--text-2);margin:6px 0 14px}
+.pleg span{display:inline-flex;gap:7px;align-items:center}
+.pleg i{width:10px;height:10px;border-radius:3px}
+.win-in{margin:0 0 16px;max-width:none}
+.win-in .tag{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok-ink);margin-right:4px}
 
 </style>
 </head>
@@ -1370,7 +1384,7 @@ function sigCard(s,i){
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
-   <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
+   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
@@ -1423,13 +1437,14 @@ function openEntity(id){
     body=`<div class="blk"><div class="t-xs">Anúncios ativos agora</div><div class="big2">${nf(a1)}</div></div>
      <div class="blk"><div class="t-xs">Últimas 26 semanas</div><div class="cv" id="dch" style="height:84px"></div></div>
      <div class="blk"><dl style="display:grid;grid-template-columns:150px 1fr;gap:8px 12px;font-size:13.5px"><dt class="muted">Quota de voz</dt><dd>${nf(sv,1)}%</dd><dt class="muted">Novos no período</dt><dd>${nf(nw)}</dd><dt class="muted">Investimento estimado</dt><dd data-src="investimento">${eur(sp)}</dd><dt class="muted">Plataformas ativas</dt><dd>${pp.length?pp.map(x=>`${x.p} (${x.v})`).join(", "):"—"}</dd></dl></div>
-     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-cr-b="${id}">Ver criativos</button></div>`;
+     <div style="display:flex;gap:8px;flex-wrap:wrap">${isCli()?"":`<button class="btn pri" data-go="marca/${id}">Abrir ficha completa</button>`}<button class="btn" data-cr-b="${id}">Ver criativos</button></div>`;
     setTimeout(()=>{const h=$("#dch");if(h)tsChart(h,{series:[{n:e.nome,c:col(e),d:range(a,Z).map(w=>PL.reduce((q,p)=>q+AD[id][p][w],0))}],type:"line",fill:true,mini:true,h:84,xl:i=>wLab(a+i),fmt:v=>nf(v)+" anúncios",aria:"Anúncios ativos"},false)},60)}
   else body=`<div class="blk"><dl style="display:grid;grid-template-columns:130px 1fr;gap:8px 12px;font-size:13.5px"><dt class="muted">Papel</dt><dd>${esc(e.papel)}</dd><dt class="muted">Prioridade</dt><dd>${esc(e.prioridade&&e.prioridade!=="cliente"?e.prioridade:"—")}</dd></dl></div>
      <div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>Por recolher</b><br>Anúncios (Meta Ad Library) e notícias desta entidade ligam-se na recolha. Sem dados recolhidos, o Radar não inventa números sobre entidades de terceiros.</div></div>
      <div style="margin-top:14px"><button class="btn" data-go="agencia/fontes">Ver fontes de dados</button></div>`;
   openDrawer(`${drawerHead(esc(e.nome))}<p class="t-sm muted" style="margin-top:4px">${esc(e.papel)}</p>${body}`)}
-document.addEventListener("click",e=>{const r=e.target.closest("tr[data-ent]");if(r)openEntity(r.dataset.ent)});
+document.addEventListener("click",e=>{const r=e.target.closest("[data-ent]");if(r)openEntity(r.dataset.ent)});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("[data-ent][role=button]")){e.preventDefault();openEntity(e.target.dataset.ent)}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;const sp=b.querySelector("span");if(sp)sp.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
 
 function sinceHTML(){
@@ -1475,7 +1490,7 @@ const RH=44;let eint=null;
 function stopRace(){if(eint){clearInterval(eint);eint=null}const b=$("#eplay");if(b){$("span",b).textContent="Reproduzir";$("use",b).setAttribute("href","#i-play")}}
 function buildRace(){const host=$("#race");if(!host)return;const E=isCli()?incl():D.entidades;   // o cliente só vê as marcas que a equipa aceitou
   host.style.height=E.length*RH+"px";
-  host.innerHTML=E.map(e=>`<div class="rrow ${e.cliente?"me":""}" data-id="${e.id}"><span class="rk"></span><span class="nm">${esc(e.nome)}${e.cliente?"<em>cliente</em>":""}</span><div class="bar"><i></i></div><span class="val num"></span><span class="dl num"></span></div>`).join("");
+  host.innerHTML=E.map(e=>`<div class="rrow ${e.cliente?"me":""}" data-id="${e.id}" ${isCli()?"":`data-ent="${e.id}" role="button" tabindex="0"`}><span class="rk"></span><span class="nm">${esc(e.nome)}${e.cliente?"<em>cliente</em>":""}</span><div class="bar"><i></i></div><span class="val num"></span><span class="dl num"></span></div>`).join("");
   void host.offsetWidth;updateRace();
   $("#ewk").addEventListener("input",ev=>{stopRace();S.ew=+ev.target.value;updateRace()});
   $("#eplay").addEventListener("click",()=>{if(eint){stopRace();return}let i=S.ew>=Z?adsFrom():S.ew;S.ew=i;updateRace();$("#eplay span").textContent="Pausar";$("#eplay use").setAttribute("href","#i-pause");eint=setInterval(()=>{i++;if(i>Z){stopRace();return}S.ew=i;updateRace()},RM?40:380)})}
@@ -1513,18 +1528,25 @@ function mAtiv(){
    secHTML("Cada marca, lado a lado","Mesma escala em todos os gráficos, para a comparação ser justa. A cor das camadas é a plataforma.",`<div class="minis">${bs.map(e=>{const last=act(e.id,W.z),p4=act(e.id,Math.max(0,W.z-W.w));return`<div class="mini"><div class="mh"><span><i class="d" style="background:${col(e)}"></i>${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</span>${W.canP&&p4>=3?dchip(pctd(last,p4)):""}</div><div class="bg">${last}<span class="t-xs" style="margin-left:6px;font-weight:500">anúncios ativos</span></div><div class="cv" id="m_${e.id}"></div></div>`}).join("")}</div>${legendHTML(pls.map(p=>({n:p,c:rampOf(p)})))}`,"anuncios")+
    `<div class="card" style="margin-top:16px"><header><div><h2 class="t-h2">Anúncios novos por semana</h2><p>Picos mostram lançamentos de campanha. Uma marca que cria muitos criativos de uma vez está a testar ou a entrar em força.</p></div></header>${legendHTML(newS)}<div class="cv" id="c3"></div>${tableHTML({series:newS,xl,fmt:nf})}${foot("anuncios")}</div>`}
 
-function mCamp(){
-  if(!hasAds())return emptyHTML("Sem anúncios ligados","Liga a Meta Ad Library ou importa um CSV em Fontes de dados.");
-  const W=win(),bs=incl(),n=W.w,rows=[];
+/* Calendário de campanhas: linhas por marca (campanhas agrupadas) e desenho em barras; usado no Mercado e na ficha de marca */
+const platCode=p=>{const u=p.replace(/[^A-Z]/g,"");return u.length>=2?u.slice(0,2):p.slice(0,2).toUpperCase()};
+function campRows(bs,W){const rows=[];
   bs.forEach(e=>{const g={};ADS.filter(c=>c.b===e.id&&S.pl.has(c.p)&&c.en>=W.a0&&c.st<=W.z).forEach(c=>{const k=c.camp||"Anúncios ativos";(g[k]=g[k]||{n:k,st:99,en:0,pl:new Set(),th:{},c:[]});const x=g[k];x.st=Math.min(x.st,c.st);x.en=Math.max(x.en,c.en);x.pl.add(c.p);if(c.th>=0)x.th[c.th]=(x.th[c.th]||0)+1;x.c.push(c)});
    const L=Object.values(g).sort((a,b)=>a.st-b.st);if(L.length){rows.push({g:e});L.forEach(f=>rows.push({f,e}))}});
+  return rows}
+function ganttHTML(rows,W,{groups=true}={}){const n=W.w;
+  const body=rows.map(r=>r.g?(groups?`<div class="grp3">${esc(r.g.nome)}${r.g.cliente?" · cliente":""}</div>`:""):(()=>{const f=r.f,s=Math.max(f.st,W.a0),e2=Math.min(f.en,W.z),pls=[...f.pl],pkA=Math.max(...range(s,e2).map(w=>pls.reduce((q,p)=>q+AD[r.e.id][p][w],0))),th=Object.entries(f.th).sort((a,b)=>b[1]-a[1])[0];
+    return`<div class="gr"><div class="gl2"><i style="background:${col(r.e)}"></i><span>${esc(f.n)}</span></div><div class="lane" style="background-size:${100/n}% 100%"><div class="bar2 ${r.e.cliente?"":"dk"}" style="left:${(s-W.a0)/n*100}%;width:${(e2-s+1)/n*100}%;background:${col(r.e)}" data-tip="<b>${esc(f.n)}</b> · ${esc(r.e.nome)}<br>${wLab(f.st)} a ${wLab(f.en)}<br>Plataformas: ${pls.join(", ")}${th?`<br>Mensagem: ${esc(TH[th[0]].toLowerCase())}`:""}<br>Pico: ${pkA} anúncios ativos">${pls.map(p=>`<em>${platCode(p)}</em>`).join("")}</div></div></div>`})()).join("");
+  return`<div class="gantt">${body}<div class="gr" style="border:0"><div></div><div class="ax2" style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-2);padding-top:6px"><span>${wLab(W.a0)}</span><span>${wLab(W.a0+Math.floor(n/2))}</span><span>${wLab(W.z)} · semana atual</span></div></div></div><p class="t-xs" style="margin-top:8px">${PL.map(p=>`<b>${platCode(p)}</b> ${p}`).join(" · ")}</p>`}
+function mCamp(){
+  if(!hasAds())return emptyHTML("Sem anúncios ligados","Liga a Meta Ad Library ou importa um CSV em Fontes de dados.");
+  const W=win(),bs=incl(),n=W.w,rows=campRows(bs,W);
   const pr=range(W.a0,W.z).map(w=>bs.reduce((s,e)=>s+act(e.id,w),0)),srt=[...pr].sort((p,q)=>p-q),thr=srt[Math.floor(n*.3)],pk=srt[Math.floor(n*.8)];
   const runs=[];let cur=null;pr.forEach((v,i)=>{if(v<=thr){if(!cur)cur=[i,i];else cur[1]=i}else if(cur){runs.push(cur);cur=null}});if(cur)runs.push(cur);
   const win_=runs.filter(r=>r[1]-r[0]>=1).slice(0,4);
   later(()=>tsChart($("#gp"),{series:[{n:"Anúncios ativos",c:"var(--text-2)",d:pr,cf:i=>pr[i]>=pk?"var(--brand-ink)":pr[i]<=thr?"var(--line)":"color-mix(in srgb,var(--text-2) 55%,var(--surface))"}],type:"bars",mini:true,h:64,ml:0,mr:0,xl:i=>wLab(W.a0+i),fmt:v=>nf(v)+" anúncios",aria:"Pressão total por semana"},true));
-  const gantt=rows.map(r=>r.g?`<div class="grp3">${esc(r.g.nome)}${r.g.cliente?" · cliente":""}</div>`:(()=>{const f=r.f,s=Math.max(f.st,W.a0),e2=Math.min(f.en,W.z),pls=[...f.pl],pkA=Math.max(...range(s,e2).map(w=>pls.reduce((q,p)=>q+AD[r.e.id][p][w],0))),th=Object.entries(f.th).sort((a,b)=>b[1]-a[1])[0];
-    return`<div class="gr"><div class="gl2"><i style="background:${col(r.e)}"></i><span>${esc(f.n)}</span></div><div class="lane" style="background-size:${100/n}% 100%"><div class="bar2 ${r.e.cliente?"":"dk"}" style="left:${(s-W.a0)/n*100}%;width:${(e2-s+1)/n*100}%;background:${col(r.e)}" data-tip="<b>${esc(f.n)}</b> · ${esc(r.e.nome)}<br>${wLab(f.st)} a ${wLab(f.en)}<br>Plataformas: ${pls.join(", ")}${th?`<br>Mensagem: ${esc(TH[th[0]].toLowerCase())}`:""}<br>Pico: ${pkA} anúncios ativos">${pls.map(p=>`<em>${p[0]}</em>`).join("")}</div></div></div>`})()).join("");
-  return cardHTML("Calendário de campanhas","Quando cada marca esteve no ar, em que plataformas e com que intensidade. Passa o cursor numa barra para ver o detalhe.",`<div class="axis2"><div class="t-xs" style="padding-top:22px">Pressão total do conjunto</div><div class="cv" id="gp"></div></div><div class="gantt">${gantt}<div class="gr" style="border:0"><div></div><div class="ax2" style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-2);padding-top:6px"><span>${wLab(W.a0)}</span><span>${wLab(W.a0+Math.floor(n/2))}</span><span>${wLab(W.z)}</span></div></div></div><p class="t-xs" style="margin-top:8px">M Meta · G Google · Y YouTube · T TikTok</p>${win_.length?`<div class="win"><span class="t-sm muted" style="margin-right:4px">Janelas de menor ruído concorrencial neste período:</span>${win_.map(r=>`<span class="tag">${wLab(W.a0+r[0])} a ${wLab(W.a0+r[1])}</span>`).join("")}</div>`:""}`,"anuncios")}
+  return(win_.length?`<div class="insight win-in"><b>Janelas de menor ruído concorrencial neste período:</b> ${win_.map(r=>`<span class="tag">${wLab(W.a0+r[0])} a ${wLab(W.a0+r[1])}</span>`).join(" ")}<br><span class="t-sm muted">Semanas em que o conjunto está no ar com menos anúncios: uma oportunidade para reforçar a presença, a confirmar com o histórico.</span></div>`:"")+
+   cardHTML("Calendário de campanhas","Quando cada marca esteve no ar, em que plataformas e com que intensidade. Passa o cursor numa barra para ver o detalhe.",`<div class="axis2"><div class="t-xs" style="padding-top:22px">Pressão total do conjunto</div><div class="cv" id="gp"></div></div><div class="pleg"><span><i style="background:var(--brand-ink)"></i>Semanas de maior pressão</span><span><i style="background:color-mix(in srgb,var(--text-2) 55%,var(--surface))"></i>Intermédias</span><span><i style="background:var(--line)"></i>Menor ruído</span></div>${ganttHTML(rows,W)}`,"anuncios")}
 
 const STOP=new Set("de a o e para na no em que um uma os as do da dos das por com à é se ao ou tua teu mas pelo mais menos todos todas".split(" "));
 function mForm(){
@@ -1625,6 +1647,7 @@ function pageProcura(){
    LIGAÇÃO[meta-ad-library] LIGAÇÃO[google-ads-transparency] LIGAÇÃO[tiktok-ad-library]:
    cada anúncio do dataset traz a ligação (url) ao original; a gaveta passa a abri-lo quando existir.
    ============================================================ */
+function crCard(c){const e=ebyid(c.b),nm=e?e.nome:(c.bn||c.b);return`<button class="cr" data-cr="${esc(c.id)}" aria-label="Abrir criativo de ${esc(nm)}" data-src="anuncios">${thumb(c)}<div class="cm"><b><i style="background:${e?col(e):"#6b7a77"}"></i>${esc(nm)}</b><div class="r2"><span class="tag">${c.p}</span><span class="tag">${esc(FM[c.fm])}</span>${c.th>=0?`<span class="tag">${esc(TH[c.th])}</span>`:""}</div><span>${isOn(c)?"Ativo":"Terminado"} · desde ${dateOf(c)} · ${c.days} dias</span></div></button>`}
 function pageCriativos(){
   if(!hasAds())return pheadHTML(`${esc(D.cliente.nome)} · Criativos`,"Criativos","")+emptyHTML("Sem anúncios ligados","Liga a Meta Ad Library ou importa um CSV em Fontes de dados.");
   const W=win(),a0=W.a0;
@@ -1641,7 +1664,7 @@ function pageCriativos(){
     <button class="tgl" data-gon="1" aria-pressed="${S.only}">Só ativos</button>
     ${b?`<button class="tgl" data-clrb="1" aria-pressed="true"><i style="background:${col(b)}"></i>${esc(b.nome)} ✕</button>`:""}
     <span style="flex:1"></span><span class="t-sm muted">${nf(list.length)} criativos</span></div>
-   ${shown.length?`<div class="gal">${shown.map(c=>{const e=ebyid(c.b),nm=e?e.nome:(c.bn||c.b);return`<button class="cr" data-cr="${esc(c.id)}" aria-label="Abrir criativo de ${esc(nm)}" data-src="anuncios">${thumb(c)}<div class="cm"><b><i style="background:${e?col(e):"#6b7a77"}"></i>${esc(nm)}</b><div class="r2"><span class="tag">${c.p}</span><span class="tag">${esc(FM[c.fm])}</span>${c.th>=0?`<span class="tag">${esc(TH[c.th])}</span>`:""}</div><span>${isOn(c)?"Ativo":"Terminado"} · desde ${dateOf(c)} · ${c.days} dias</span></div></button>`}).join("")}</div>
+   ${shown.length?`<div class="gal">${shown.map(crCard).join("")}</div>
    ${list.length>shown.length?`<p style="margin-top:16px"><button class="btn" data-more="1">Ver mais ${Math.min(12,list.length-shown.length)}</button></p>`:""}`:`<div class="lockcard">Nenhum criativo com estes filtros. Alarga o período ou limpa os formatos.</div>`}
    ${secHTML("Quanto tempo vivem os criativos","Criativos que ficam muito tempo no ar costumam funcionar. A duração média dos terminados é uma pista do que cada marca considera vencedor.",`<div class="card"><div class="hb">${lon.map(x=>`<div class="row"><span class="nm"><i style="background:${col(x.e)}"></i>${esc(x.e.nome)}</span><div class="single"><i data-w="${x.av/mxl*100}" style="background:${col(x.e)}" data-tip="<b>${esc(x.e.nome)}</b>: duração média de ${nf(x.av)} dias nos criativos terminados; ${x.keep} ativos há 4 semanas ou mais."></i></div><span class="num2">${nf(x.av)} d</span></div>`).join("")}</div></div>`,"anuncios")}`;
   return pheadHTML(`${esc(D.cliente.nome)} · Criativos`,"O que a concorrência põe no ar","Anúncios do conjunto competitivo, filtrados por período, plataforma, marca e formato. Abre um criativo para ver o detalhe.",{sm:true})+body}
@@ -1904,6 +1927,72 @@ function pageFontes(){
     <div class="imp"><div class="drop" id="drop"><svg class="ic" style="width:26px;height:26px"><use href="#i-plug"/></svg><span>Arrasta um ficheiro CSV para aqui</span><input type="file" id="impfile" accept=".csv,text/csv"><button class="btn pri" id="impbtn">Escolher ficheiro</button>${EM_ARTEFACTO?"":`<button class="btn ghost" id="imptpl">Descarregar modelo</button>`}<button class="chip" id="impsample">Experimentar com um exemplo</button></div><div id="impres"></div></div></div>`}
 
 /* ============================================================
+   Ficha de marca (Mercado › marca): tudo o que o Radar sabe sobre uma marca do conjunto competitivo,
+   e comparação com outra marca. Só vista Equipa. Genérico: lê as marcas do cliente ativo.
+   ============================================================ */
+function marcaMetrics(id,W){
+  const a1=act(id,W.z),a0=W.canP?act(id,W.z-W.w):null,sv=sov(W.z)[id],sv0=W.canP?sov(W.z-W.w)[id]:null,nw=sumR(neu,id,W.a0,W.z),nwp=W.canP?sumR(neu,id,W.p0,W.p1):null,sp=sumR(spdt,id,W.a0,W.z),spp=W.canP?sumR(spdt,id,W.p0,W.p1):null;
+  const L=ADS.filter(c=>c.b===id&&!c.imp&&inCr(c,W.a0,W.z)),top=(arr,f)=>{const m={};arr.forEach(x=>{const k=f(x);if(k!=null&&k!=="")m[k]=(m[k]||0)+1});const r=Object.entries(m).sort((p,q)=>q[1]-p[1])[0];return r?r[0]:null};
+  const plat=PL.map(p=>({p,v:AD[id][p][W.z]})).sort((x,y)=>y.v-x.v)[0],keep=L.filter(c=>isOn(c)&&c.days>=28).length;
+  const camps=campRows([ebyid(id)],W).filter(r=>r.f);
+  return{a1,a0,sv,sv0,nw,nwp,sp,spp,L,keep,camps,fmt:top(L,c=>FM[c.fm]),terr:top(L,c=>c.th>=0?TH[c.th]:null),plat:plat&&plat.v?plat.p:null,rank:[...incl()].sort((p,q)=>press(q.id,W.z)-press(p.id,W.z)).findIndex(e=>e.id===id)+1}}
+function marcaKpis(e,m,W){
+  const sp=k=>k;
+  return[
+   {l:"Anúncios ativos agora",v:`<span data-count="${m.a1}">${nf(m.a1)}</span>`,sub:cmpSub(m.a0!=null&&m.a0>=3?pctd(m.a1,m.a0):null,"%",`face a há ${W.w} semanas`),series:range(W.a0,W.z).map(w=>act(e.id,w)),src:"anuncios"},
+   {l:"Quota de voz",v:`<span>${nf(m.sv,1)}%</span>`,sub:`${m.rank}.º de ${incl().length}`+(S.cmp==="nenhum"||m.sv0==null?"":` · ${dchip(m.sv-m.sv0,"p.p.")}`),series:range(W.a0,W.z).map(w=>sov(w)[e.id]),src:"anuncios"},
+   {l:"Anúncios novos no período",v:`<span data-count="${m.nw}">${nf(m.nw)}</span>`,sub:cmpSub(m.nwp?pctd(m.nw,m.nwp):null,"%","face ao período anterior"),series:range(W.a0,W.z).map(w=>neu(e.id,w)),src:"anuncios"},
+   {l:"Investimento estimado",v:`<span>${eur(m.sp)}</span>`,sub:cmpSub(m.spp?pctd(m.sp,m.spp):null,"%","face ao período anterior"),series:range(W.a0,W.z).map(w=>spdt(e.id,w)),src:"investimento"},
+   {l:"Criativos longevos",v:`<span data-count="${m.keep}">${nf(m.keep)}</span>`,sub:`<span class="muted">ativos há 4 semanas ou mais</span>`,src:"anuncios"}]}
+function pageMarca(sub){
+  const e=ebyid(sub);
+  if(!hasAds()||isTema()||!e||!e.incluida)return pheadHTML(`${esc(D.cliente.nome)} · Mercado`,"Ficha de marca","")+emptyHTML("Marca não encontrada","Escolhe uma marca do conjunto competitivo em Mercado.")+`<p style="margin-top:14px"><button class="btn" data-go="mercado">Voltar ao Mercado</button></p>`;
+  const W=win(),m=marcaMetrics(e.id,W),xl=i=>wLab(W.a0+i);
+  if(S.cmpb===e.id||!(ebyid(S.cmpb)&&ebyid(S.cmpb).incluida))S.cmpb=null;
+  const o=S.cmpb?ebyid(S.cmpb):null,mo=o?marcaMetrics(o.id,W):null;
+  use("anuncios");use("investimento");
+  // gráfico principal: anúncios ativos por plataforma, com os lançamentos de campanha desta marca
+  const pls=PL.filter(p=>S.pl.has(p)),ser=pls.map(p=>({id:p,n:p,c:rampOf(p),d:range(W.a0,W.z).map(w=>AD[e.id][p][w])}));
+  const cp={};ADS.filter(a=>a.b===e.id&&a.camp&&S.pl.has(a.p)).forEach(a=>{const c=cp[a.camp]||(cp[a.camp]={n:a.camp,st:a.st,k:0});c.st=Math.min(c.st,a.st);c.k++});
+  const ev=Object.values(cp).filter(c=>c.st>W.a0&&c.st<=W.z).sort((x,y)=>y.k-x.k).slice(0,4).sort((x,y)=>x.st-y.st).filter((c,j,r)=>j===0||c.st-r[j-1].st>=3).slice(0,3).map(c=>({i:c.st-W.a0,t:`Lança «${c.n}»`}));
+  later(()=>{tsChart($("#mk1"),{series:ser,type:"area",stack:true,end:true,events:ev,xl,fmt:nf,aria:"Anúncios ativos de "+e.nome+" por plataforma"},true);
+   if(o)tsChart($("#mk2"),{series:[{id:e.id,n:e.nome,c:col(e),d:range(W.a0,W.z).map(w=>act(e.id,w))},{id:o.id,n:o.nome,c:col(o),d:range(W.a0,W.z).map(w=>act(o.id,w))}],type:"line",end:true,xl,fmt:nf,aria:`Anúncios ativos: ${e.nome} e ${o.nome}`},true);
+   requestAnimationFrame(()=>$$(".single i[data-w]").forEach(i=>i.style.width=i.dataset.w+"%"))});
+  // formatos e mensagens
+  const t=m.L.length||1,fmx=FM.map((f,i)=>m.L.filter(c=>c.fm===i).length/t*100),thx=TH.map((_,i)=>m.L.filter(c=>c.th===i).length/t*100),Wd={};
+  m.L.forEach(c=>c.h.toLowerCase().replace(/[.,%!?«»:]/g,"").split(/\s+/).filter(w=>w.length>=3&&!STOP.has(w)).forEach(w=>Wd[w]=(Wd[w]||0)+1));
+  const terms=Object.entries(Wd).sort((p,q)=>q[1]-p[1]).slice(0,6);
+  const camps=m.camps,lead=`${e.cliente?"Marca do cliente. ":""}${nf(m.a1)} ${m.a1===1?"anúncio ativo":"anúncios ativos"}, ${nf(m.sv,1)}% da quota de voz (${m.rank}.º de ${incl().length}), ${camps.length} ${camps.length===1?"campanha":"campanhas"} nas últimas ${W.w} semanas${m.plat?`, sobretudo em ${m.plat}`:""}${m.fmt?` e em ${m.fmt.toLowerCase()}`:""}.`;
+  const sgs=D.sinais.filter(s=>s.entidade===e.id);
+  const longos=[...m.L].sort((p,q)=>q.days-p.days).slice(0,6);
+  // frente a frente
+  const diff=(a,b,d=0,unit="")=>{const x=a-b;return`<span class="dchip ${x>0.04?"up":x<-0.04?"dn":""}">${x>0.04?"▲":x<-0.04?"▼":"•"} ${sgn(Math.round(x*Math.pow(10,d))/Math.pow(10,d),d)}${unit}</span>`};
+  const ff=o?`<div class="card" style="margin-top:16px"><header><div><h2 class="t-h2">${esc(e.nome)} frente a ${esc(o.nome)}</h2><p>${esc(e.nome)} tem ${m.a1>=mo.a1?"mais":"menos"} ${nf(Math.abs(m.a1-mo.a1))} anúncios ativos e ${nf(Math.abs(m.sv-mo.sv),1)} p.p. ${m.sv>=mo.sv?"a mais":"a menos"} de quota de voz.</p></div></header>
+    ${legendHTML([{n:e.nome,c:col(e)},{n:o.nome,c:col(o)}],true)}<div class="cv" id="mk2"></div>
+    <div class="tblwrap" style="margin-top:12px"><table><thead><tr><th></th><th class="n">${dot(e)}${esc(e.nome)}</th><th class="n">${dot(o)}${esc(o.nome)}</th><th class="n">Diferença</th></tr></thead><tbody>
+    <tr><td>Anúncios ativos agora</td><td class="n">${nf(m.a1)}</td><td class="n">${nf(mo.a1)}</td><td class="n">${diff(m.a1,mo.a1)}</td></tr>
+    <tr><td>Quota de voz</td><td class="n">${nf(m.sv,1)}%</td><td class="n">${nf(mo.sv,1)}%</td><td class="n">${diff(m.sv,mo.sv,1," p.p.")}</td></tr>
+    <tr><td>Anúncios novos no período</td><td class="n">${nf(m.nw)}</td><td class="n">${nf(mo.nw)}</td><td class="n">${diff(m.nw,mo.nw)}</td></tr>
+    <tr><td>Investimento estimado</td><td class="n">${eur(m.sp)}</td><td class="n">${eur(mo.sp)}</td><td class="n"><span class="muted">—</span></td></tr>
+    <tr><td>Campanhas no período</td><td class="n">${m.camps.length}</td><td class="n">${mo.camps.length}</td><td class="n">${diff(m.camps.length,mo.camps.length)}</td></tr>
+    <tr><td>Plataforma principal</td><td class="n">${esc(m.plat||"—")}</td><td class="n">${esc(mo.plat||"—")}</td><td class="n"></td></tr>
+    <tr><td>Formato principal</td><td class="n">${esc(m.fmt||"—")}</td><td class="n">${esc(mo.fmt||"—")}</td><td class="n"></td></tr>
+    <tr><td>Mensagem principal</td><td class="n">${esc(m.terr||"—")}</td><td class="n">${esc(mo.terr||"—")}</td><td class="n"></td></tr>
+    <tr><td>Criativos ativos há 4 semanas ou mais</td><td class="n">${m.keep}</td><td class="n">${mo.keep}</td><td class="n">${diff(m.keep,mo.keep)}</td></tr></tbody></table></div>${foot("anuncios")}</div>`:"";
+  const body=`${filterBar({platforms:true})}
+   <div class="cmpbar"><label for="cmpb" class="t-sm muted">Comparar com</label><select id="cmpb"><option value="">Nenhuma marca</option>${incl().filter(x=>x.id!==e.id).map(x=>`<option value="${x.id}" ${S.cmpb===x.id?"selected":""}>${esc(x.nome)}</option>`).join("")}</select></div>
+   <div class="kpis k5 five">${marcaKpis(e,m,W).map(kpiHTML).join("")}</div>
+   ${ff}
+   <div class="sec" style="margin-top:28px">${cardHTML("Anúncios ativos por plataforma",`Só os anúncios de ${esc(e.nome)}. ${ev.length?"As linhas verticais marcam o arranque das campanhas.":""}`,`${legendHTML(ser)}<div class="cv" id="mk1"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}</div>
+   ${secHTML("Campanhas",`Quando ${esc(e.nome)} esteve no ar, em que plataformas e com que mensagem.`,camps.length?`<div class="card">${ganttHTML(campRows([e],W),W,{groups:false})}</div>`:emptyHTML("Sem campanhas neste período","Alarga o período ou as plataformas."),"anuncios")}
+   <div class="grid2 sec">${cardHTML("Formatos",`O que ${esc(e.nome)} põe no ar, no período.`,m.L.length?`${legendHTML(FM.map((f,i)=>({n:f,c:RAMP[i%4]})))}<div class="sbar" style="height:30px">${fmx.map((v,i)=>v<=0?"":`<span style="flex:${v} 1 0;background:${RAMP[i%4]};${i===0?"color:#0F2623":""};line-height:30px" data-tip="<b>${esc(FM[i])}</b>: ${nf(v)}% dos criativos">${v>=9?nf(v)+"%":""}</span>`).join("")}</div><p class="t-xs" style="margin-top:8px">${m.L.length} criativos observados.</p>`:emptyHTML("Sem criativos","Nenhum criativo no período."),"anuncios")}
+    ${cardHTML("Mensagens",`Territórios e palavras que ${esc(e.nome)} mais usa.`,m.L.length?`<div class="hb">${TH.map((x,i)=>thx[i]>0?`<div class="row"><span class="nm" style="font-weight:500">${esc(x)}</span><div class="single"><i data-w="${thx[i]}" style="background:var(--brand)"></i></div><span class="num2">${nf(thx[i])}%</span></div>`:"").join("")}</div>${terms.length?`<p class="t-xs" style="margin-top:12px">Palavras mais repetidas: ${terms.map(([w,n])=>`<b>${esc(w)}</b> (${n})`).join(", ")}.</p>`:""}`:emptyHTML("Sem criativos","Nenhum criativo no período."),"anuncios")}</div>
+   ${secHTML("Criativos mais longevos",`Os que ficam mais tempo no ar costumam ser os que a marca considera vencedores. <a href="#" data-cr-b="${e.id}" style="color:var(--brand-ink);font-weight:600">Ver todos</a>.`,longos.length?`<div class="gal">${longos.map(crCard).join("")}</div>`:emptyHTML("Sem criativos","Nenhum criativo no período."),"anuncios")}
+   ${sgs.length?secHTML("O que o Radar apontou sobre esta marca","Sinais desta semana que envolvem a marca.",`<div class="sgs">${sgs.map((s,i)=>sigCard(s,"m"+i)).join("")}</div>`):""}`;
+  return pheadHTML(`<button class="lnk" data-go="mercado">← Mercado</button> · ${esc(D.cliente.nome)}`,`${esc(e.nome)}${e.cliente?' <span class="tag" style="vertical-align:middle;margin-left:6px">cliente</span>':""}`,esc(lead),{sm:true})+body}
+document.addEventListener("change",e=>{if(e.target.id==="cmpb"){S.cmpb=e.target.value||null;CUR.refresh()}});
+
+/* ============================================================
    Definições (ícone no topo): aparência (claro/escuro), cor do tema e controlos de demonstração.
    As cores vêm de config/themes/*.json e passam por validação de contraste AA ao serem aplicadas.
    ============================================================ */
@@ -1974,7 +2063,8 @@ function answer(a){
 function comandos(){
   const L=[],cli=ROUTE.scope==="cliente";
   if(cli){
-    Object.entries(PAGES).filter(([k,p])=>!p.if||p.if()).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"abrir página",run:()=>go(`${CID}/${k}`)}));
+    Object.entries(PAGES).filter(([k,p])=>!p.hide&&(!p.if||p.if())).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"abrir página",run:()=>go(`${CID}/${k}`)}));
+    if(hasAds()&&!isTema())incl().forEach(e=>L.push({g:"Ir para",t:"Ficha de marca: "+e.nome,i:"i-layers",k:"marca concorrente "+e.id,run:()=>go(`${CID}/marca/${e.id}`)}));
     mtabs().forEach(x=>L.push({g:"Ir para",t:"Mercado: "+x[1],i:"i-layers",k:"abrir",run:()=>go(`${CID}/mercado/${x[0]}`)}));
     L.push({g:"Ir para",t:"Relatórios: publicar para o cliente",i:"i-send",k:"publicar vista cliente",run:()=>go(`${CID}/relatorios/publicar`)});
   }
@@ -2065,6 +2155,7 @@ let CID=null;                          // cliente ativo (último selecionado; ta
 const PAGES={
   visao:{n:"Visão geral",s:"Visão",i:"i-radar",f:pageVisao},
   mercado:{n:"Mercado",i:"i-layers",f:pageMercado},
+  marca:{n:"Ficha de marca",i:"i-layers",f:pageMarca,hide:true,if:()=>hasAds()&&!isTema()},
   procura:{n:"Procura e notícias",s:"Procura",i:"i-trend",f:pageProcura},
   criativos:{n:"Criativos",i:"i-image",f:pageCriativos,if:()=>hasAds()},
   relatorios:{n:"Relatórios",i:"i-mail",f:pageRelatorios},
@@ -2083,9 +2174,9 @@ document.addEventListener("click",e=>{if(!e.target.closest("#bnpub"))return;cons
 /* ---------- Menu único (o mesmo para todos os clientes) e seletor de âmbito ---------- */
 function buildNav(){
   const cli=ROUTE.scope==="cliente";
-  const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" aria-current="${on}"><svg class="ic"><use href="#${p.i}"/></svg><span class="lg">${p.n}</span><span class="sh">${p.s||p.n}</span>${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
+  const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" ${on?'aria-current="page"':""}><svg class="ic"><use href="#${p.i}"/></svg><span class="lg">${p.n}</span><span class="sh">${p.s||p.n}</span>${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
   if(VIEW==="cliente"&&cli){$("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+paginasCliente().map(k=>item(k,PAGES[k],ROUTE.page===k,`${D.cliente.id}/${k}`,false)).join("");return}
-  $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.if||p.if()).map(([k,p])=>item(k,p,cli&&ROUTE.page===k,`${D.cliente.id}/${k}`,k==="acoes")).join("")+
+  $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.hide&&(!p.if||p.if())).map(([k,p])=>item(k,p,cli&&(ROUTE.page===k||(k==="mercado"&&ROUTE.page==="marca")),`${D.cliente.id}/${k}`,k==="acoes")).join("")+
    `<div class="grp">Agência</div>`+Object.entries(AGPAGES).map(([k,p])=>item(k,p,!cli&&ROUTE.page===k,`agencia/${k}`,false)).join("")}
 let MENU=null;
 function buildScope(){
@@ -2102,7 +2193,7 @@ function openMenu(kind,btn){closeMenu();
   $("#scope").appendChild(m);m.style.left=(btn.offsetLeft)+"px";MENU=m}
 function closeMenu(){if(MENU){MENU.remove();MENU=null}}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-menu]");if(b){e.stopPropagation();MENU&&MENU.dataset.k===b.dataset.menu?closeMenu():(openMenu(b.dataset.menu,b),MENU.dataset.k=b.dataset.menu);return}
-  const s=e.target.closest("[data-switch]");if(s){closeMenu();const pg=ROUTE.scope==="cliente"?ROUTE.page:"visao";go(s.dataset.switch+"/"+(pg==="criativos"&&!CLS[s.dataset.switch].anuncios?"visao":pg));return}
+  const s=e.target.closest("[data-switch]");if(s){closeMenu();const pg=ROUTE.scope==="cliente"?ROUTE.page:"visao";go(s.dataset.switch+"/"+(pg==="marca"?"mercado":pg==="criativos"&&!CLS[s.dataset.switch].anuncios?"visao":pg));return}
   if(!e.target.closest("#menu"))closeMenu()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 
@@ -2136,7 +2227,7 @@ function render(r,scrollTop){
     const al=paginasCliente();
     if(!al.length){r={...r,page:"visao",sub:null};pg=PAGE_CLI_VAZIO}
     else{if(!al.includes(r.page))r={...r,page:al[0],sub:null};pg=PAGES[r.page]}}
-  else{pg=PAGES[r.page];if(pg.if&&!pg.if()){r={...r,page:"visao"};pg=PAGES.visao}}
+  else{pg=PAGES[r.page];if(pg.if&&!pg.if()){r={...r,page:"visao",sub:null};pg=PAGES.visao}}
   ROUTE=r;
   const th=VIEW+"|"+CID;if(th!==render.th){render.th=th;const tid=VIEW==="cliente"&&D.cliente.tema&&AG.temas.some(x=>x.id===D.cliente.tema)?D.cliente.tema:AG.temas[0].id;applyTheme(tid,false)}   // tema do cliente só na vista do cliente (Q09)
   const t=$("#page");t.classList.remove("on");
