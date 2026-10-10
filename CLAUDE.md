@@ -24,7 +24,7 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 2. Dado `real` tem sempre `fonte` (emissor identificado) e `data_recolha`.
 3. Dado `estimado` explica o método num campo `metodo`.
 4. Dado `demo` nunca é atribuído a uma entidade terceira real (Novo Verde, Electrão, SDR Portugal, etc.). Para terceiros: dado real ou nada.
-5. A interface mostra a origem de cada dado (etiqueta visível + fonte ao passar o cursor).
+5. A interface mostra a origem de cada dado (etiqueta visível + fonte ao passar o cursor). *Proposta D27, por confirmar: um selo de dados por página (Demonstração, Real ou Misto) com o detalhe ao abrir e em cada número. Até o David confirmar, mantêm-se as etiquetas por bloco.*
 6. Dados internos de clientes (ex.: utilização do chatbot ELO) ficam em `data/raw/internal/`, que está no `.gitignore`. Nunca fazer commit destes dados.
 
 ## Marca Arena Media
@@ -52,7 +52,10 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 - Critério do "wow": o primeiro ecrã tem de dizer logo algo útil. O movimento explica, não decora.
 - Nada disto está fechado. Itens em `docs/05-backlog.md`, secção "Evolução do produto".
 
-- **Uso interno primeiro (D23).** O foco é a visão do mercado e da concorrência por vertical e cliente: o que os concorrentes anunciam (Meta, Google, YouTube, TikTok), criativos, formatos, mensagens, campanhas, investimento estimado e quota de voz. As pistas de ação servem Performance, Brand e Account; levar algo ao cliente é opcional e secundário.
+- **Duas vistas, Equipa e Cliente (D26, ajusta a D23).** Os mesmos dados servem a agência e o cliente. A vista Cliente é reporting limpo e só mostra o que a equipa publicou. Especificação em `docs/08-especificacao-ux.md`; navegação com seletor de âmbito e menu único (D28).
+- **Leitura tipo dashboard de reporting.** Cada página segue a ordem filtros → KPIs → o que mudou → gráfico principal → detalhe (ver `docs/08`).
+- **Pontos de ligação (D29).** Onde uma fonte real entra no código, deixar um comentário `LIGAÇÃO[<id>]` e atualizar `docs/09-pontos-de-ligacao.md`. Listar com `grep -rn "LIGAÇÃO\[" prototype/src scripts`.
+- **Uso interno primeiro (D23, ajustada por D26).** O foco é a visão do mercado e da concorrência por vertical e cliente: o que os concorrentes anunciam (Meta, Google, YouTube, TikTok), criativos, formatos, mensagens, campanhas, investimento estimado e quota de voz. As pistas de ação servem Performance, Brand e Account; levar algo ao cliente é opcional e secundário.
 - **Fontes como módulos (D25).** Cada fonte é um módulo em «Fontes de dados». Importações CSV passam pela validação de proveniência.
 - **Gráficos:** SVG próprio, cores categóricas fixas por marca (validadas para daltonismo), rampa azul ordinal para plataformas e formatos, dica ao passar o cursor, vista em tabela e navegação por teclado. Código em `prototype/src/competition.js`.
 

@@ -85,6 +85,16 @@ Para a v3 de demonstração, a proposta é limitar-se a três ideias de valor: R
 - **RB-53** Mercado cruzado com a performance do cliente (só depois de parecer de Compliance).
 - **RB-54** Memória da agência: o Impacto acumula o que funcionou, em que contexto.
 
+## Reestruturação UX e multi-cliente (out. 2026; decisões D26 a D29)
+Especificação em `docs/08-especificacao-ux.md`. Por fases:
+- **RB-70** *(fase C)* Seletor de âmbito e menu único para todos os clientes.
+- **RB-71** *(fase C)* Barra de filtros global (período, comparação, plataforma, marcas) em Visão geral, Mercado e Procura e notícias.
+- **RB-72** *(fase C)* Componentes reutilizáveis: KPI, cartão-conclusão, gráfico, tabela, gaveta, estado vazio.
+- **RB-73** *(fase C)* Dados por cliente: `config/` → `scripts/build_dataset.py` (RB-09) → JSON lido pelo protótipo; remover clientes e marcas escritos no código. Criar `config/verticals/` (RB-40).
+- **RB-74** *(fase C)* Selo de dados por página (depende da D27).
+- **RB-75** *(fase D)* Vista Cliente e publicação pela equipa (depende de Q09).
+- **RB-76** *(fase E)* Dados reais nos blocos Procura e Notícias para a home; Meta quando houver token (Q10).
+
 ## Concorrência e fontes (out. 2026)
 - **RB-60** Ligar a Meta Ad Library (`collect_meta_ads.py`) ao módulo Concorrência: substituir os anúncios simulados pelos recolhidos, com `origem=real`, fonte e data. Depende de Q10.
 - **RB-61** Recolha do Google Ads Transparency Center (manual/CSV) através do importador; avaliar automatização só com aprovação.
