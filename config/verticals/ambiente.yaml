@@ -1,0 +1,7 @@
+# Vertical Ambiente e economia circular — universo de tipo «tema»: a disputa é por atenção e clareza de mensagem, não por quota.
+vertical:
+  id: ambiente
+  nome: Ambiente e economia circular
+tipo_universo: tema
+# Nesta vertical o conjunto é definido por cliente (entidades que comunicam sobre o tema).
+concorrentes_por_defeito: []

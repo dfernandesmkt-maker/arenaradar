@@ -1,0 +1,38 @@
+# Vertical Energia — conjunto competitivo por defeito e vocabulário de demonstração.
+# As marcas abaixo são FICTÍCIAS (dados de demonstração). Em produção, o conjunto vem de dados reais e a equipa aceita ou recusa.
+vertical:
+  id: energia
+  nome: Energia
+tipo_universo: concorrencia
+
+# Concorrentes por defeito: o cliente herda e ajusta (config/clients/<cliente>.yaml).
+concorrentes_por_defeito:
+  - {id: aurea,  nome: Aurea,  fator: 1.15, ficticia: true}
+  - {id: voltix, nome: Voltix, fator: 0.95, ficticia: true}
+  - {id: helio,  nome: Helio,  fator: 0.80, ficticia: true}
+sugeridos:       # candidatos que o Radar sugere; a equipa aceita ou não
+  - {id: zenit, nome: Zenit, fator: 1.30, sobreposicao: 73, ficticia: true}
+
+territorios: [Preço, Sustentabilidade, Simplicidade, App e inovação, Família]
+ctas: [Saber mais, Simular poupança, Pedir proposta, Mudar agora]
+textos:
+  - ["Tarifa fixa. O preço não muda.", "Poupa até 20% na tua fatura de luz.", "Sem surpresas na fatura, todos os meses.", "Muda hoje e paga menos amanhã."]
+  - ["Energia 100% renovável para a tua casa.", "O sol trabalha por ti. Painéis instalados em 7 dias.", "Menos carbono, mais poupança.", "Casa mais verde, fatura mais leve."]
+  - ["Mudar de fornecedor demora 5 minutos.", "Sem papéis, sem filas, sem complicações.", "Tudo num só contacto.", "Contrato claro, escrito em português simples."]
+  - ["Controla o consumo na app.", "A tua energia na palma da mão.", "Alertas inteligentes quando gastas demais.", "Carrega o carro elétrico com tarifa dedicada."]
+  - ["Conforto para toda a família, o ano inteiro.", "Mais calor em casa, menos peso no orçamento.", "Pensado para quem tem filhos em casa.", "Verão fresco sem medo da fatura."]
+
+preferencias_formato:     # ajustes de demonstração ao mix de formatos por marca
+  - {entidade: aurea,  formato: Vídeo,     x: 1.4}
+  - {entidade: helio,  formato: Texto,     x: 1.3}
+  - {entidade: helio,  formato: Vídeo,     x: 0.7}
+  - {entidade: voltix, formato: Carrossel, plataforma: Meta, x: 1.6}
+
+noticias_temas: [Preços e tarifas, Renováveis e solar, Regulação, Mobilidade elétrica]
+procura_rotulo: Procura pela marca
+
+kpis:
+  - {metrica: anuncios_ativos}
+  - {metrica: anuncios_novos}
+  - {metrica: quota_voz}
+  - {metrica: investimento}

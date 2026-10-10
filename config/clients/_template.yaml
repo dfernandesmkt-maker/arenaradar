@@ -1,25 +1,34 @@
 # Modelo para um novo cliente. Copiar para <id>.yaml e preencher.
+# Acrescentar um cliente = criar este ficheiro (e, se for uma vertical nova, config/verticals/<vertical>.yaml).
+# Depois: python3 scripts/build_dataset.py && python3 prototype/build_preview.py
 cliente:
-  id:
+  id:                    # sem espaços nem acentos
   nome:
   setor:
+  vertical:              # id de config/verticals/<vertical>.yaml
   geo: PT
   idioma: pt-PT
-  tipo_universo: concorrencia   # ou "tema"
+  tipo_universo: concorrencia   # "concorrencia" (compara marcas) ou "tema" (conversa pública; ver config/clients/spv.yaml)
+  ficticio: false        # true só para clientes de demonstração
 
-universo: []      # lista de entidades: id, nome, papel, prioridade, meta_search_terms, meta_page_ids
+universo:                # o cliente e, se não vierem da vertical, as outras entidades
+  - {id: , nome: , papel: Cliente, prioridade: cliente, fator: 1.0, meta_search_terms: [], meta_page_ids: []}
 
-trends:
+concorrentes:            # só para concorrência: ajustes ao conjunto herdado da vertical
+  excluir: []            # ids de concorrentes por defeito a retirar
+  acrescentar: []        # entidades novas: {id, nome, fator}
+  aceitar_sugeridos: []  # ids de sugestões do Radar já aceites pela equipa
+
+trends:                  # LIGAÇÃO[google-trends]
   geo: PT
   periodo: today 5-y
-  clusters: {}    # nome_cluster: [até 5 termos]
+  clusters: {}           # nome_cluster: [até 5 termos]
 
-noticias:
+noticias:                # LIGAÇÃO[news-rss]
   queries: []
 
 canais_observados: [meta, google_search, youtube, tiktok, tv, radio, ooh, imprensa]
 
-limiares:
-  pesquisas_variacao_vs_media_8s: 0.30
-  anuncios_dias_ativo_min: 3
-  noticias_meios_min: 3
+limiares: {}             # sobrepõe os valores de config/agencia.yaml (pesquisas_variacao_vs_media_8s, anuncios_variacao_4s, ...)
+
+# kpis: [...]            # opcional; por defeito vem da vertical

@@ -1,0 +1,39 @@
+# Cliente FICTÍCIO de demonstração (vertical Seguros, universo de concorrência).
+cliente:
+  id: vael
+  nome: Vael
+  setor: Seguros (cliente fictício)
+  vertical: seguros
+  geo: PT
+  idioma: pt-PT
+  tipo_universo: concorrencia
+  ficticio: true
+
+universo:
+  - {id: vael, nome: Vael, papel: Cliente, prioridade: cliente, fator: 1.0, ficticia: true, meta_search_terms: ["Vael seguros"], meta_page_ids: []}
+
+concorrentes:
+  excluir: []
+  acrescentar: []
+  aceitar_sugeridos: []
+
+limiares: {}
+
+demo:
+  seed: 2027
+  anuncios_desde: 2026-04-06
+  campanhas:
+    - {b: vael,   n: "Seguro Auto Digital",    s: 2,  e: 12, pl: [Meta, Google],          th: 0, int: 8}
+    - {b: vael,   n: "Casa Protegida",         s: 14, e: 25, pl: [Meta, YouTube, Google], th: 1, int: 9}
+    - {b: vael,   n: "Sempre ativo, pesquisa", s: 0,  e: 25, pl: [Google],                th: 2, int: 4}
+    - {b: orsa,   n: "Black Seguros",          s: 6,  e: 9,  pl: [Meta, YouTube, TikTok], th: 0, int: 18}
+    - {b: orsa,   n: "Poupa no Auto",          s: 12, e: 19, pl: [Meta, Google],          th: 0, int: 11}
+    - {b: orsa,   n: "Família Segura",         s: 19, e: 25, pl: [YouTube, Meta],         th: 4, int: 12}
+    - {b: orsa,   n: "Sempre ativo, pesquisa", s: 0,  e: 25, pl: [Google],                th: 2, int: 4}
+    - {b: plenia, n: "Saúde 24h",              s: 1,  e: 8,  pl: [Meta, Google],          th: 3, int: 10}
+    - {b: plenia, n: "App Plenia",             s: 11, e: 25, pl: [Meta, TikTok],          th: 3, int: 12}
+    - {b: plenia, n: "Sempre ativo, pesquisa", s: 0,  e: 25, pl: [Google],                th: 2, int: 3}
+    - {b: tavo,   n: "Vida e Proteção",        s: 0,  e: 10, pl: [YouTube, Google],       th: 1, int: 9}
+    - {b: tavo,   n: "Tavo Jovem",             s: 15, e: 25, pl: [TikTok, Meta],          th: 3, int: 14}
+    - {b: tavo,   n: "Sempre ativo, pesquisa", s: 0,  e: 25, pl: [Google],                th: 2, int: 4}
+    - {b: ondara, n: "Lançamento Ondara",      s: 17, e: 25, pl: [Meta, YouTube, Google], th: 0, int: 16}

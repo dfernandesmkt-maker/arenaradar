@@ -1,0 +1,16 @@
+# Modelo para uma nova vertical. Copiar para <id>.yaml e preencher.
+vertical:
+  id:
+  nome:
+tipo_universo: concorrencia   # ou "tema"
+concorrentes_por_defeito: []  # lista de {id, nome, fator, ficticia}; em produção, entidades reais
+sugeridos: []                 # candidatos que o Radar sugere ({id, nome, fator, sobreposicao})
+territorios: []               # 5 territórios de mensagem
+ctas: []
+textos: []                    # um grupo de 4 textos por território (só para demonstração)
+noticias_temas: []
+kpis:
+  - {metrica: anuncios_ativos}
+  - {metrica: anuncios_novos}
+  - {metrica: quota_voz}
+  - {metrica: investimento}

@@ -12,6 +12,18 @@ ORIGENS = {"real", "estimado", "demo"}
 COLUNAS_PROVENIENCIA = ["origem", "fonte", "data_recolha", "metodo", "url"]
 
 
+def load_yaml(path: Path) -> dict:
+    if not path.exists():
+        raise SystemExit(f"Ficheiro não encontrado: {path}")
+    with path.open(encoding="utf-8") as f:
+        return yaml.safe_load(f) or {}
+
+
+def list_clients() -> list[str]:
+    """Ids dos clientes configurados (ficheiros de config/clients/ que não começam por «_»)."""
+    return sorted(p.stem for p in (ROOT / "config" / "clients").glob("*.yaml") if not p.name.startswith("_"))
+
+
 def load_client(client_id: str) -> dict:
     path = ROOT / "config" / "clients" / f"{client_id}.yaml"
     if not path.exists():

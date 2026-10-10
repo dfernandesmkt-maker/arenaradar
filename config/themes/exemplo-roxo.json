@@ -1,0 +1,7 @@
+{
+  "_nota": "Tema de EXEMPLO para demonstrar temas por cliente. Não é a marca de nenhum cliente real (ver Q09). Só mudam as cores de marca; o resto herda de arena.json. O Radar valida o contraste AA ao aplicar.",
+  "id": "exemplo-roxo",
+  "nome": "Cliente exemplo, roxo",
+  "herda": "arena",
+  "marca": { "primaria": "#733478", "escura": "#0F2623", "destaque": "#FFDC32" }
+}

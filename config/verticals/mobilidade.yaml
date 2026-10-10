@@ -1,0 +1,27 @@
+# Vertical Mobilidade — marcas FICTÍCIAS (dados de demonstração).
+vertical:
+  id: mobilidade
+  nome: Mobilidade
+tipo_universo: concorrencia
+concorrentes_por_defeito:
+  - {id: zuro, nome: Zuro, fator: 1.15, ficticia: true}
+  - {id: mivo, nome: Mivo, fator: 0.90, ficticia: true}
+sugeridos:
+  - {id: rolla, nome: Rolla, fator: 1.00, sobreposicao: 71, ficticia: true}
+territorios: [Preço, Sustentabilidade, Conveniência, App e tecnologia, Liberdade]
+ctas: [Saber mais, Experimentar, Reservar agora, Descarregar a app]
+textos:
+  - ["Viaja a partir de 1 € por trajeto.", "Passe único, preço único.", "Menos custos, mais cidade.", "Poupa no mês sem trocar de rotina."]
+  - ["Zero emissões em cada viagem.", "Move-te sem deixar rasto.", "Cidade mais limpa, trajeto mais leve.", "Elétrico por defeito."]
+  - ["Reserva em 10 segundos.", "À porta de casa, quando precisares.", "Sem filas, sem espera.", "Do ponto A ao B sem complicações."]
+  - ["Tudo na app: reserva, paga, viaja.", "Rotas em tempo real.", "Desbloqueia com o telemóvel.", "A mobilidade na palma da mão."]
+  - ["Vai onde quiseres, quando quiseres.", "Liberdade em cada quilómetro.", "Escolhe o teu ritmo.", "A cidade é tua."]
+preferencias_formato:
+  - {entidade: zuro, formato: Vídeo, x: 1.5}
+noticias_temas: [Preços e tarifas, Eletrificação, Transportes públicos, Regulação]
+procura_rotulo: Procura pela marca
+kpis:
+  - {metrica: anuncios_ativos}
+  - {metrica: anuncios_novos}
+  - {metrica: quota_voz}
+  - {metrica: investimento}

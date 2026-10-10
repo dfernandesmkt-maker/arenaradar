@@ -1,0 +1,43 @@
+# Cliente FICTÍCIO de demonstração (vertical Energia, universo de concorrência).
+# Mostra um cliente que compara marcas. Nenhum dado é atribuído a empresas reais.
+cliente:
+  id: lumio
+  nome: Lumio
+  setor: Energia (cliente fictício)
+  vertical: energia
+  geo: PT
+  idioma: pt-PT
+  tipo_universo: concorrencia
+  ficticio: true
+
+universo:
+  - {id: lumio, nome: Lumio, papel: Cliente, prioridade: cliente, fator: 1.0, ficticia: true, meta_search_terms: ["Lumio energia"], meta_page_ids: []}
+
+concorrentes:          # herda o conjunto da vertical (config/verticals/energia.yaml); aqui só os ajustes
+  excluir: []
+  acrescentar: []
+  aceitar_sugeridos: []
+
+limiares: {}           # herda os da agência
+
+# LIGAÇÃO[meta-ad-library] LIGAÇÃO[google-ads-transparency] LIGAÇÃO[tiktok-ad-library]:
+# as campanhas abaixo geram anúncios de DEMONSTRAÇÃO (origem=demo). Com dados reais, esta secção deixa de ser usada.
+demo:
+  seed: 2026
+  anuncios_desde: 2026-04-06
+  campanhas:
+    - {b: lumio,  n: "Tarifa Fixa 12M",         s: 2,  e: 11, pl: [Meta, Google],          th: 0, int: 9}
+    - {b: lumio,  n: "Painéis Solares Casa",    s: 14, e: 25, pl: [Meta, YouTube, Google], th: 1, int: 11}
+    - {b: lumio,  n: "Sempre ativo, pesquisa",  s: 0,  e: 25, pl: [Google],                th: 2, int: 4}
+    - {b: aurea,  n: "Black Energy",            s: 6,  e: 9,  pl: [Meta, YouTube, TikTok], th: 0, int: 20}
+    - {b: aurea,  n: "Poupa 20%",               s: 12, e: 19, pl: [Meta, Google],          th: 0, int: 12}
+    - {b: aurea,  n: "Verão Eficiente",         s: 19, e: 25, pl: [YouTube, TikTok, Meta], th: 4, int: 13}
+    - {b: aurea,  n: "Sempre ativo, pesquisa",  s: 0,  e: 25, pl: [Google],                th: 2, int: 4}
+    - {b: voltix, n: "Tarifa Jovem",            s: 1,  e: 8,  pl: [TikTok, Meta],          th: 3, int: 10}
+    - {b: voltix, n: "Mobilidade Elétrica",     s: 11, e: 25, pl: [Meta, YouTube, Google], th: 1, int: 14}
+    - {b: voltix, n: "App Voltix",              s: 20, e: 25, pl: [Meta, TikTok],          th: 3, int: 9}
+    - {b: voltix, n: "Sempre ativo, pesquisa",  s: 0,  e: 25, pl: [Google],                th: 2, int: 3}
+    - {b: helio,  n: "Instalação Solar",        s: 0,  e: 9,  pl: [Google, YouTube],       th: 1, int: 10}
+    - {b: helio,  n: "Solar Pro",               s: 14, e: 21, pl: [Google, Meta],          th: 2, int: 9}
+    - {b: helio,  n: "Sempre ativo, pesquisa",  s: 0,  e: 25, pl: [Google],                th: 2, int: 5}
+    - {b: zenit,  n: "Lançamento Zenit",        s: 15, e: 25, pl: [TikTok, Meta, YouTube], th: 3, int: 22}

@@ -1,0 +1,29 @@
+# Vertical Seguros — marcas FICTÍCIAS (dados de demonstração).
+vertical:
+  id: seguros
+  nome: Seguros
+tipo_universo: concorrencia
+concorrentes_por_defeito:
+  - {id: orsa,   nome: Orsa,   fator: 1.20, ficticia: true}
+  - {id: plenia, nome: Plenia, fator: 0.95, ficticia: true}
+  - {id: tavo,   nome: Tavo,   fator: 0.85, ficticia: true}
+sugeridos:
+  - {id: ondara, nome: Ondara, fator: 1.10, sobreposicao: 68, ficticia: true}
+territorios: [Preço, Proteção, Simplicidade, App e rapidez, Família]
+ctas: [Saber mais, Simular seguro, Pedir proposta, Contratar agora]
+textos:
+  - ["Seguro auto desde 9 € por mês.", "Compara e poupa até 25% no teu seguro.", "Preço claro, sem letras pequenas.", "Muda hoje e paga menos amanhã."]
+  - ["Proteção completa para o que mais importa.", "Casa segura, cabeça descansada.", "Cobertura que acompanha a tua vida.", "Imprevistos resolvidos sem burocracia."]
+  - ["Contrata em 3 minutos, sem papéis.", "Apólice clara, escrita em português simples.", "Participa o sinistro numa chamada.", "Tudo num só contacto."]
+  - ["Gere a tua apólice na app.", "Assistência a um toque.", "Alertas inteligentes sobre a tua cobertura.", "Reembolso mais rápido, no telemóvel."]
+  - ["Proteção para toda a família.", "Seguro de saúde para os teus filhos.", "Pensado para quem tem família em casa.", "Cuida de quem mais amas."]
+preferencias_formato:
+  - {entidade: orsa,   formato: Vídeo,  x: 1.4}
+  - {entidade: tavo,   formato: Texto,  x: 1.3}
+noticias_temas: [Preços e prémios, Regulação, Saúde e bem-estar, Digitalização]
+procura_rotulo: Procura pela marca
+kpis:
+  - {metrica: anuncios_ativos}
+  - {metrica: anuncios_novos}
+  - {metrica: quota_voz}
+  - {metrica: investimento}

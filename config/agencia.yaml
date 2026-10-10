@@ -1,0 +1,48 @@
+# Arena Radar — configuração da agência (valores por defeito para todos os clientes).
+# Um cliente ou uma vertical pode sobrepor qualquer bloco no seu próprio ficheiro.
+
+agencia:
+  nome: Arena Media Portugal
+
+calendario:
+  inicio: 2026-01-05         # segunda-feira da semana 0
+  semanas: 39                # número de semanas da série
+  semana_atual: 38           # índice da semana mais recente (28 set a 4 out 2026)
+  data_referencia: 2026-10-05  # data de recolha usada nos dados de demonstração
+
+# LIGAÇÃO[marktest-adcheck]: «valor_anuncio» é um valor assumido (euros por anúncio ativo e semana, por plataforma).
+# Quando houver uma fonte licenciada de investimento, esta tabela deixa de ser usada.
+plataformas:
+  - {id: Meta,    peso: 1.0,  valor_anuncio: 420}
+  - {id: Google,  peso: 0.9,  valor_anuncio: 360}
+  - {id: YouTube, peso: 1.15, valor_anuncio: 540}
+  - {id: TikTok,  peso: 0.8,  valor_anuncio: 300}
+
+formatos: [Vídeo, Imagem, Carrossel, Texto]
+canais_offline: [TV, Rádio, Exterior]
+
+# Pesos base do formato por plataforma, na ordem de «formatos» (usado só para anúncios de demonstração).
+formato_por_plataforma:
+  TikTok:  [1, 0, 0, 0]
+  YouTube: [0.92, 0.08, 0, 0]
+  Google:  [0.1, 0.25, 0, 0.65]
+  Meta:    [0.42, 0.28, 0.30, 0]
+
+limiares:
+  pesquisas_variacao_vs_media_8s: 0.30
+  anuncios_dias_ativo_min: 3
+  noticias_meios_min: 3
+  anuncios_variacao_4s: 0.12     # variação das 4 últimas semanas face às 4 anteriores
+  quota_voz_pp_8s: 5.0           # pontos percentuais em 8 semanas
+  lancamento_criativos_2s: 5     # criativos novos em 2 semanas
+
+# Critérios de sucesso do piloto (proposta; a validar com a direção). Mostrados na Torre de controlo.
+piloto:
+  duracao_semanas: 6
+  criterios:
+    - {criterio: Briefings entregues a tempo, meta: 6 em 6}
+    - {criterio: Tempo de produção por briefing, meta: 3 h ou menos na semana 6}
+    - {criterio: Sinais considerados relevantes pela equipa, meta: 50% ou mais}
+    - {criterio: Pistas aceites pela equipa, meta: pelo menos 1 por semana, metrica: pistas_aceites}
+    - {criterio: Ações levadas ao cliente, meta: pelo menos 2, metrica: acoes_cliente}
+    - {criterio: Ações adotadas pelo cliente, meta: pelo menos 1}

@@ -1,0 +1,35 @@
+# Cliente FICTÍCIO de demonstração (vertical Mobilidade, universo de concorrência).
+cliente:
+  id: kob
+  nome: Kob
+  setor: Mobilidade (cliente fictício)
+  vertical: mobilidade
+  geo: PT
+  idioma: pt-PT
+  tipo_universo: concorrencia
+  ficticio: true
+
+universo:
+  - {id: kob, nome: Kob, papel: Cliente, prioridade: cliente, fator: 1.0, ficticia: true, meta_search_terms: ["Kob mobilidade"], meta_page_ids: []}
+
+concorrentes:
+  excluir: []
+  acrescentar: []
+  aceitar_sugeridos: []
+
+limiares: {}
+
+demo:
+  seed: 2028
+  anuncios_desde: 2026-04-06
+  campanhas:
+    - {b: kob,  n: "Kob Elétrico",           s: 2,  e: 12, pl: [Meta, Google],          th: 1, int: 8}
+    - {b: kob,  n: "Partilha Kob",           s: 14, e: 25, pl: [Meta, TikTok, YouTube], th: 2, int: 10}
+    - {b: kob,  n: "Sempre ativo, pesquisa", s: 0,  e: 25, pl: [Google],                th: 2, int: 3}
+    - {b: zuro, n: "Zuro Go",                s: 5,  e: 14, pl: [TikTok, Meta],          th: 3, int: 16}
+    - {b: zuro, n: "Zuro Cidade",            s: 16, e: 25, pl: [Meta, Google, YouTube], th: 0, int: 14}
+    - {b: zuro, n: "Sempre ativo, pesquisa", s: 0,  e: 25, pl: [Google],                th: 2, int: 4}
+    - {b: mivo, n: "Mivo Pass",              s: 0,  e: 10, pl: [Google, YouTube],       th: 0, int: 9}
+    - {b: mivo, n: "Mivo Bike",              s: 12, e: 25, pl: [Meta, TikTok],          th: 4, int: 11}
+    - {b: mivo, n: "Sempre ativo, pesquisa", s: 0,  e: 25, pl: [Google],                th: 2, int: 3}
+    - {b: rolla, n: "Lançamento Rolla",      s: 18, e: 25, pl: [TikTok, Meta, YouTube], th: 3, int: 18}
