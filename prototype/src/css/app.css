@@ -562,3 +562,5 @@ html[data-present] #toast{bottom:116px}
 .sg .meter{margin-bottom:2px}
 .sg .pk2{margin-top:4px}
 @media (max-width:680px){#fbar.fbar{padding:6px 0;margin-bottom:14px}}
+.nv .sh{display:none}
+@media (max-width:900px){.nv .lg{display:none}.nv .sh{display:inline}}

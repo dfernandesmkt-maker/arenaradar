@@ -4,9 +4,9 @@
    ============================================================ */
 let CID=null;                          // cliente ativo (último selecionado; também usado em Agência)
 const PAGES={
-  visao:{n:"Visão geral",i:"i-radar",f:pageVisao},
+  visao:{n:"Visão geral",s:"Visão",i:"i-radar",f:pageVisao},
   mercado:{n:"Mercado",i:"i-layers",f:pageMercado},
-  procura:{n:"Procura e notícias",i:"i-trend",f:pageProcura},
+  procura:{n:"Procura e notícias",s:"Procura",i:"i-trend",f:pageProcura},
   criativos:{n:"Criativos",i:"i-image",f:pageCriativos,if:()=>hasAds()},
   relatorios:{n:"Relatórios",i:"i-mail",f:pageRelatorios},
   acoes:{n:"Ações",i:"i-spark",f:pageAcoes}};
@@ -18,7 +18,7 @@ function pageClienteVazio(){return pheadHTML(`${esc(D.cliente.nome)} · vista do
 /* ---------- Menu único (o mesmo para todos os clientes) e seletor de âmbito ---------- */
 function buildNav(){
   const cli=ROUTE.scope==="cliente";
-  const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" aria-current="${on}"><svg class="ic"><use href="#${p.i}"/></svg>${p.n}${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
+  const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" aria-current="${on}"><svg class="ic"><use href="#${p.i}"/></svg><span class="lg">${p.n}</span><span class="sh">${p.s||p.n}</span>${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
   if(VIEW==="cliente"&&cli){$("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+paginasCliente().map(k=>item(k,PAGES[k],ROUTE.page===k,`${D.cliente.id}/${k}`,false)).join("");return}
   $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.if||p.if()).map(([k,p])=>item(k,p,cli&&ROUTE.page===k,`${D.cliente.id}/${k}`,k==="acoes")).join("")+
    `<div class="grp">Agência</div>`+Object.entries(AGPAGES).map(([k,p])=>item(k,p,!cli&&ROUTE.page===k,`agencia/${k}`,false)).join("")}
