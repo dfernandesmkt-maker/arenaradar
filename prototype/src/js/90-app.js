@@ -11,7 +11,7 @@ const PAGES={
   criativos:{n:"Criativos",i:"i-image",f:pageCriativos,if:()=>hasAds()},
   relatorios:{n:"Relatórios",i:"i-mail",f:pageRelatorios},
   acoes:{n:"Ações",i:"i-spark",f:pageAcoes}};
-const AGPAGES={torre:{n:"Torre de controlo",i:"i-grid",f:pageTorre},fontes:{n:"Fontes de dados",i:"i-plug",f:pageFontes}};
+const AGPAGES={torre:{n:"Torre de controlo",i:"i-grid",f:pageTorre},piloto:{n:"Piloto",i:"i-flask",f:pagePiloto},fontes:{n:"Fontes de dados",i:"i-plug",f:pageFontes}};
 let ROUTE={scope:"cliente",view:"equipa",rasc:false,cid:null,page:"visao",sub:null,focus:null};
 const PAGE_CLI_VAZIO={n:"Relatório",f:pageClienteVazio};
 function pageClienteVazio(){SEAL_HIDE=true;return pheadHTML(`${esc(D.cliente.nome)} · vista do cliente`,"Ainda não há relatório publicado","A equipa Arena ainda não publicou o relatório desta semana. O cliente não vê nada sem essa decisão.")+`<div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>Sem publicação</b><br>Prepara o que o cliente vê em Relatórios, «Publicar para o cliente», ou vê já como ficaria com a seleção sugerida.<div class="emptyacts"><button class="btn pri" data-sugerir="1"><svg class="ic"><use href="#i-eye"/></svg>Ver como ficaria</button><button class="btn" data-go="${D.cliente.id}/relatorios/publicar?v=equipa">Preparar publicação</button></div></div></div>`}
@@ -50,11 +50,23 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 
 /* ---------- Router ---------- */
 function parse(hash){
-  const h=(hash||"").replace(/^#\/?/,""),[pth,focus]=h.split("#"),[path,q]=pth.split("?"),p=path.split("/").filter(Boolean),view=/(^|&)v=cliente/.test(q||"")?"cliente":"equipa",rasc=view==="cliente"&&/(^|&)rasc=1/.test(q||"");
+  const h=(hash||"").replace(/^#\/?/,""),[pth,focus]=h.split("#"),[path,q]=pth.split("?"),p=path.split("/").filter(Boolean),qp=Object.fromEntries((q||"").split("&").filter(Boolean).map(x=>{const i=x.indexOf("=");return i<0?[x,""]:[x.slice(0,i),x.slice(i+1)]})),view=/(^|&)v=cliente/.test(q||"")?"cliente":"equipa",rasc=view==="cliente"&&/(^|&)rasc=1/.test(q||"");
   if(p[0]==="agencia")return{scope:"agencia",view:"equipa",rasc:false,cid:CID,page:AGPAGES[p[1]]?p[1]:"torre",sub:null,focus};
-  if(p[0]&&CLS[p[0]])return{scope:"cliente",view,rasc,cid:p[0],page:PAGES[p[1]]?p[1]:"visao",sub:p[2]||null,focus};
+  if(p[0]&&CLS[p[0]])return{scope:"cliente",view,rasc,cid:p[0],page:PAGES[p[1]]?p[1]:"visao",sub:p[2]||null,focus,f:(qp.w||qp.c||qp.p||qp.b)?{w:qp.w,c:qp.c,p:qp.p,b:qp.b}:null};
   return{scope:"cliente",view:"equipa",rasc:false,cid:CID||AG.cliente_inicial||AG.clientes[0].id,page:"visao",sub:null,focus:null}}
-function href(r){return r.scope==="agencia"?"#/agencia/"+r.page:`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${r.view==="cliente"?"?v=cliente"+(r.rasc?"&rasc=1":""):""}${r.focus?"#"+r.focus:""}`}
+const PG_FILTROS=["visao","mercado","procura","criativos","marca"];
+function filtersQS(){if(!D||!S)return[];const q=[];
+  if(S.w!==defW())q.push("w="+S.w);if(S.cmp!=="anterior")q.push("c=n");
+  if(S.pl.size!==PL.length)q.push("p="+[...S.pl].map(encodeURIComponent).join(","));
+  const bi=D.entidades.filter(e=>e.incluida).map(e=>e.id).sort().join(","),b0=D.entidades.filter(e=>e.incl0).map(e=>e.id).sort().join(",");
+  if(bi!==b0)q.push("b="+bi);return q}
+function applyF(f){if(f.w!=null&&periodos().includes(+f.w))S.w=+f.w;if(f.c)S.cmp=f.c==="n"?"nenhum":"anterior";
+  if(f.p){const s=new Set(f.p.split(",").map(decodeURIComponent).filter(x=>PL.includes(x)));if(s.size)S.pl=s}
+  if(f.b){const ids=new Set(f.b.split(","));D.entidades.forEach(e=>{if(!e.cliente)e.incluida=ids.has(e.id)})}}
+function href(r){if(r.scope==="agencia")return"#/agencia/"+r.page;
+  const q=[];if(r.view==="cliente"){q.push("v=cliente");if(r.rasc)q.push("rasc=1")}else if(D&&D.cliente.id===r.cid&&PG_FILTROS.includes(r.page))q.push(...filtersQS());
+  return`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${q.length?"?"+q.join("&"):""}${r.focus?"#"+r.focus:""}`}
+const syncUrl=()=>{try{const h=href(ROUTE);if(location.hash!==h)history.replaceState(null,"",h)}catch(e){}};
 function go(path){
   const first=path.split(/[\/#]/)[0];
   if(first!=="agencia"&&!CLS[first])path=CID+"/"+path;      // relativo ao cliente ativo
@@ -71,6 +83,7 @@ render.n=0;
 function render(r,scrollTop){
   stopRace();stopPlay();closeDrawer();closeMenu();closeFpop();$("#pop").classList.remove("on");CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;
   if(r.cid){CID=r.cid}if(!D||D.cliente.id!==CID)setClient(CID);else if(!S)setClient(CID);
+  if(r.f&&r.scope==="cliente")applyF(r.f);
   VIEW=r.view;document.documentElement.dataset.view=VIEW;ROUTE=r;
   let pg;
   if(r.scope==="agencia")pg=AGPAGES[r.page];
@@ -86,8 +99,8 @@ function render(r,scrollTop){
   const html=banner+pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
   buildNav();buildScope();$("#viewseg").hidden=r.scope==="agencia";$$("#viewseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===VIEW));
   document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n+(VIEW==="cliente"?" (vista do cliente)":""));
-  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync()};
-  AFTER.forEach(f=>f());AFTER.length=0;counters(t);syncCounts();
+  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));applySorts($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync();syncUrl()};
+  AFTER.forEach(f=>f());AFTER.length=0;counters(t);syncCounts();applySorts(t);
   if(scrollTop&&!r.focus)scrollTo({top:0,behavior:"auto"});
   const h1=$("h1",t);if(h1&&scrollTop){h1.tabIndex=-1;if(render.n++)h1.focus({preventScroll:true})}
   const lv=$("#live");if(lv)lv.textContent=document.title;

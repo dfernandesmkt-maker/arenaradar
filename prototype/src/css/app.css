@@ -671,3 +671,38 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;bac
 .mail .bsig .pk{margin-top:2px}
 .mail .pk span{font-size:13px;display:block}
 .mail .brx{grid-template-columns:minmax(0,1fr) auto}
+.tl3{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tl3 span{padding:2px 9px;border-radius:99px;background:var(--line-2);font-size:12px;font-weight:500;color:var(--text-2);white-space:nowrap}
+.tl3 span.done{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok-ink)}
+.tl3 i{width:10px;height:1px;background:var(--line);flex:none}
+
+/* Torre: clientes por vertical; Piloto */
+.vblocks{display:grid;gap:14px}
+.vblock{padding:0;overflow:hidden}
+.vhead{display:grid;grid-template-columns:minmax(0,1fr) 140px auto;gap:18px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line-2)}
+.vhead .spark{height:30px}
+@media (max-width:680px){.vhead{grid-template-columns:minmax(0,1fr) auto}.vhead .spark{display:none}}
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.fase{display:flex;gap:14px;padding:16px 18px}
+.fase .fn{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand-ink);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
+
+/* tabelas ordenáveis e linhas clicáveis */
+th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap}
+th[data-sort]:hover{color:var(--text)}
+th[aria-sort]{color:var(--text)}
+th[aria-sort=ascending]::after{content:" ↑"}
+th[aria-sort=descending]::after{content:" ↓"}
+tbody tr.go td:last-child::after{content:"›";margin-left:10px;color:var(--text-2);opacity:.5;display:inline-block;transition:transform .15s,opacity .15s}
+tbody tr.go:hover td:last-child::after{transform:translateX(3px);opacity:1}
+
+.fgap{flex:1}
+.fbtn.fic{padding:0 9px}
+.vwrow{display:flex;align-items:center;gap:2px}
+.vwrow .opt{flex:1}
+.vdel{width:30px;height:30px;font-size:12px;border:0;background:none}
+.vsave{display:flex;gap:8px;padding:0 8px}
+.vsave input{flex:1;height:32px;border-radius:9px;border:1px solid var(--line);background:var(--surface);padding:0 10px;font-size:13px;color:var(--text);min-width:0}
+.fdesk{flex:1}
+.vblock table.fx{table-layout:fixed}
+.vblock:not(:first-child) thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.vblock:not(:first-child) .vhead{border-bottom:1px solid var(--line-2)}

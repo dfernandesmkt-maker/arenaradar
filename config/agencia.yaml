@@ -42,6 +42,11 @@ limiares:
 # Critérios de sucesso do piloto (proposta; a validar com a direção). Mostrados na Torre de controlo.
 piloto:
   duracao_semanas: 6
+  janela_resultado_semanas: 4   # semanas durante as quais se mede o resultado de uma pista aceite
+  fases:
+    - {semanas: "1 a 3", nome: Modo sombra, descricao: "O briefing é produzido e avaliado internamente, sem sair da agência."}
+    - {semanas: "4 a 6", nome: Com o cliente, descricao: "A equipa escolhe as pistas que leva ao cliente, com o acordo prévio do contacto do cliente."}
+    - {semanas: "7", nome: Decisão, descricao: "Ponto de decisão, com os critérios de sucesso abaixo."}
   criterios:
     - {criterio: Briefings entregues a tempo, meta: 6 em 6}
     - {criterio: Tempo de produção por briefing, meta: 3 h ou menos na semana 6}

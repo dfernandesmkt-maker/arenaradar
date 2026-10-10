@@ -42,16 +42,17 @@ const defW=()=>isTema()?NW:12;
 function filterBar(cfg={}){
   Object.assign(FCFG,{brands:false,platforms:false,compare:true},cfg);
   const ads=hasAds(),{brands,platforms,compare}=FCFG,perL=isTema()&&S.w===NW?"Tudo":S.w+" sem.";
-  const btn=(k,l,v,on)=>`<button class="fbtn ${on?"on":""}" data-fpop="${k}" aria-haspopup="true" aria-expanded="${FP.k===k}"><span class="fl">${l}</span><b>${v}</b><svg class="ic"><use href="#i-down"/></svg></button>`;
+  const btn=(k,l,v,on)=>`<button class="fbtn ${on?"on":""}" data-fpop="${k}" aria-haspopup="true" aria-expanded="${FP.k===k}">${k==="views"?`<svg class="ic" style="margin-right:-2px"><use href="#i-bookmark"/></svg>`:""}<span class="fl">${l}</span>${v?`<b>${v}</b>`:""}<svg class="ic"><use href="#i-down"/></svg></button>`;
   const alt=[S.w!==defW(),compare&&S.cmp!=="anterior",platforms&&ads&&S.pl.size!==PL.length].filter(Boolean).length;
   return`<div class="fbar" id="fbar" role="group" aria-label="Filtros desta página">
-   <div class="fdesk">${btn("per","Período",perL,S.w!==defW())}${compare?btn("cmp","Comparar",S.cmp==="anterior"?"Período anterior":"Sem comparação",S.cmp!=="anterior"):""}${platforms&&ads?btn("pl","Plataformas",S.pl.size===PL.length?"Todas":`${S.pl.size} de ${PL.length}`,S.pl.size!==PL.length):""}${brands&&ads&&!isTema()?btn("br","Marcas",`${incl().length} marcas`,false):""}${alt?`<button class="fbtn ghost" data-freset>Repor filtros</button>`:""}</div>
+   <div class="fdesk">${btn("per","Período",perL,S.w!==defW())}${compare?btn("cmp","Comparar",S.cmp==="anterior"?"Período anterior":"Sem comparação",S.cmp!=="anterior"):""}${platforms&&ads?btn("pl","Plataformas",S.pl.size===PL.length?"Todas":`${S.pl.size} de ${PL.length}`,S.pl.size!==PL.length):""}${brands&&ads&&!isTema()?btn("br","Marcas",`${incl().length} marcas`,false):""}${alt?`<button class="fbtn ghost" data-freset>Repor filtros</button>`:""}<span class="fgap"></span>${btn("views","Vistas","","")}${EM_ARTEFACTO?"":`<button class="fbtn ghost fic" data-copylink aria-label="Copiar a ligação desta vista" data-tip="Copiar a ligação desta vista, com os filtros"><svg class="ic"><use href="#i-copy"/></svg></button>`}</div>
    <button class="fbtn fmob ${alt?"on":""}" data-fpop="all" aria-haspopup="true" aria-expanded="${FP.k==="all"}"><svg class="ic"><use href="#i-sliders"/></svg><span>Filtros</span><b>${perL}${alt?` · ${alt} alterado${alt>1?"s":""}`:""}</b></button></div>`}
 function fpopSec(k){
   if(k==="per")return`<div class="gh">Período</div>`+periodos().map(n=>`<button class="opt" role="radio" aria-checked="${S.w===n}" data-fw="${n}">${isTema()&&n===NW?"Tudo":n+" semanas"}</button>`).join("");
   if(k==="cmp")return`<div class="gh">Comparar com</div>`+[["anterior","Período anterior"],["nenhum","Sem comparação"]].map(([v,l])=>`<button class="opt" role="radio" aria-checked="${S.cmp===v}" data-fc="${v}">${l}</button>`).join("");
   if(k==="pl")return`<div class="gh">Plataformas</div>`+PL.map(p=>`<button class="opt chk" role="checkbox" aria-checked="${S.pl.has(p)}" data-fp="${p}">${p}</button>`).join("");
   if(k==="br")return`<div class="gh">Marcas do conjunto</div>`+D.entidades.map(e=>e.incluida?`<button class="opt chk" role="checkbox" aria-checked="true" data-fb="${e.id}" ${e.cliente?'disabled':""}>${dot(e)}${esc(e.nome)}${e.cliente?" <em>cliente</em>":""}</button>`:e.sugerida?(isCli()?"":`<button class="opt sug" data-add="${e.id}">${dot(e)}${esc(e.nome)} <em>sugerida pelo Radar. Aceitar</em></button>`):`<button class="opt chk" role="checkbox" aria-checked="false" data-fb="${e.id}">${dot(e)}${esc(e.nome)}</button>`).join("");
+  if(k==="views"){const L=(PREFS.views&&PREFS.views[D.cliente.id])||[];return`<div class="gh">Vistas guardadas</div>${L.length?L.map((v,i)=>`<div class="vwrow"><button class="opt vw" data-vapply="${i}">${esc(v.n)}</button><button class="iconbtn vdel" data-vdel="${i}" aria-label="Apagar a vista ${esc(v.n)}">✕</button></div>`).join(""):`<p class="t-sm muted" style="padding:2px 8px 8px">Ainda não guardaste nenhuma vista.</p>`}<div class="gh">Guardar a vista atual</div><form class="vsave" id="vform"><input id="vname" maxlength="40" placeholder="Nome da vista" aria-label="Nome da vista" required><button class="btn pri sm" type="submit">Guardar</button></form><p class="t-xs" style="padding:4px 8px 4px">Guarda a página com o período, a comparação, as plataformas e as marcas.</p>`}
   return""}
 function fpopHTML(k){
   if(k!=="all")return fpopSec(k);
@@ -111,3 +112,21 @@ function openWhy(id){const s=D.sinais.find(x=>x.id===id);if(!s)return;
 document.addEventListener("click",e=>{let t;
   if(t=e.target.closest("[data-kwhy]")){e.stopPropagation();e.preventDefault();openKpiWhy(KWHY[t.dataset.kwhy]);return}
   if(t=e.target.closest("[data-why]")){e.preventDefault();openWhy(t.dataset.why)}},true);
+
+/* ---------- Tabelas ordenáveis: clicar num cabeçalho ordena; o critério fica guardado por tabela durante a sessão ---------- */
+const SORTS={};
+const numOf=t=>{t=String(t).replace(/\s+/g," ").trim();if(!t||/^(—|por recolher)/i.test(t))return null;const m=t.match(/[−-]?\s?\d[\d ]*(?:,\d+)?/);if(!m)return null;let v=parseFloat(m[0].replace(/[ \u00a0]/g,"").replace("−","-").replace(",","."));if(isNaN(v))return null;if(/mil\s*€/.test(t))v*=1e3;else if(/\bM\s*€/.test(t))v*=1e6;return v};
+function sortTable(tb,c,dir){const body=tb.tBodies[0],th=tb.tHead.rows[0].cells[c],isNum=th&&th.dataset.sort==="num";
+  const key=r=>{const x=r.cells[c]?r.cells[c].textContent:"";return isNum?numOf(x):x.trim().toLowerCase()};
+  [...body.rows].sort((a,b)=>{const x=key(a),y=key(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return-1;return dir*(isNum?x-y:String(x).localeCompare(String(y),"pt"))}).forEach(r=>body.appendChild(r))}
+function applySorts(root=document){(root.matches&&root.matches("table.sortable")?[root]:$$("table.sortable",root)).forEach(tb=>{const s=SORTS[(D?D.cliente.id:"")+"|"+tb.dataset.tid];$$("th[data-sort]",tb).forEach((h,i)=>{h.setAttribute("tabindex","0");h.setAttribute("role","columnheader");h.removeAttribute("aria-sort")});if(!s)return;const th=tb.tHead.rows[0].cells[s.c];if(th)th.setAttribute("aria-sort",s.d>0?"ascending":"descending");sortTable(tb,s.c,s.d)})}
+function clickSort(h){const tb=h.closest("table"),c=h.cellIndex,k=(D?D.cliente.id:"")+"|"+tb.dataset.tid,s=SORTS[k];SORTS[k]=s&&s.c===c?{c,d:-s.d}:{c,d:h.dataset.sort==="num"?-1:1};applySorts(tb)}
+document.addEventListener("click",e=>{const h=e.target.closest("table.sortable th[data-sort]");if(h)clickSort(h)});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("table.sortable th[data-sort]")){e.preventDefault();clickSort(e.target)}});
+
+/* ---------- Vistas guardadas e ligação com filtros ---------- */
+document.addEventListener("click",e=>{let t;
+  if(e.target.closest("[data-copylink]")){const u=location.href;const ok=()=>toast("Ligação copiada, com os filtros desta vista.");try{navigator.clipboard.writeText(u).then(ok,()=>toast("Não foi possível copiar a ligação neste ambiente."))}catch(_){toast("Não foi possível copiar a ligação neste ambiente.")}return}
+  if(t=e.target.closest("[data-vapply]")){const v=(PREFS.views[D.cliente.id]||[])[+t.dataset.vapply];if(v){closeFpop();location.hash=v.h}return}
+  if(t=e.target.closest("[data-vdel]")){const L=PREFS.views[D.cliente.id]||[];L.splice(+t.dataset.vdel,1);savePrefs();if(FP.k==="views")$("#fpop").innerHTML=fpopHTML("views");return}});
+document.addEventListener("submit",e=>{if(e.target.id!=="vform")return;e.preventDefault();const n=$("#vname").value.trim();if(!n)return;PREFS.views=PREFS.views||{};const L=PREFS.views[D.cliente.id]=PREFS.views[D.cliente.id]||[];L.unshift({n,h:href(ROUTE)});PREFS.views[D.cliente.id]=L.slice(0,8);savePrefs();$("#fpop").innerHTML=fpopHTML("views");toast("Vista «"+n+"» guardada.")});
