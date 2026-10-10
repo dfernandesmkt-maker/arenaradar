@@ -33,7 +33,7 @@ Regras:
 | Dados do cliente (ELO) | Sessões, primeiras mensagens, temas | Autorização do cliente | Alta | Manual, fora do Git |
 
 ### Notas de viabilidade
-- **Google Trends.** A Google anunciou uma API oficial em alpha em julho de 2025, com acesso por candidatura. A biblioteca `pytrends` foi arquivada em abril de 2025 e funciona apenas em parte. Recomendação: candidatar a agência à alpha; entretanto usar `pytrends` com repetição limitada e, se falhar, exportação manual de CSV a partir de trends.google.com para `data/raw/trends/manual/`.
+- **Google Trends.** A Google anunciou uma API oficial em alpha em julho de 2025, com acesso por candidatura. A biblioteca `pytrends` foi arquivada em abril de 2025 e funciona apenas em parte. Recomendação: candidatar a agência à alpha; entretanto usar `pytrends` com repetição limitada e, se falhar, exportação manual de CSV a partir de trends.google.com e importação com `scripts/import_trends_csv.py` (grava em `data/raw/trends/<cliente>/`).
 - **Meta Ad Library.** Por força do Regulamento dos Serviços Digitais (DSA), o repositório da Meta cobre todos os anúncios entregues na UE, não só os políticos. Os campos de despesa ficam vazios para anúncios comerciais. Confirmar nomes de campos e versão da Graph API na documentação atual antes de correr.
 - **Scrapers de terceiros** (ex.: Apify) existem, mas usam caminhos não oficiais. Não usar sem validação jurídica e de IT.
 
