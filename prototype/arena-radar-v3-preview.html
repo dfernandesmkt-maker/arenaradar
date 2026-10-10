@@ -609,6 +609,36 @@ html[data-present] #toast{bottom:116px}
 .pubrow.hist .hq{min-width:128px;font-size:12.5px;color:var(--text-2);font-variant-numeric:tabular-nums}
 @media (max-width:1100px){.pubgrid{grid-template-columns:minmax(0,1fr)}.pubprev{position:static;order:-1}}
 
+/* «Porquê?», sinais novos, desde a semana passada */
+.why-t{font-size:15px;font-weight:600;letter-spacing:-.01em;margin:10px 0 6px;line-height:1.4}
+.why-dl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;font-size:13.5px}
+.why-dl dt{color:var(--text-2);font-weight:500}
+.why-dl dd{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.why-v{font-size:30px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.why-src{margin-top:2px}
+#drawer .blk p{font-size:14px}
+.tag.hi{background:var(--brand-soft);color:var(--brand-ink)}
+.tag.nw{background:var(--accent);color:var(--forest)}
+.sg .tags{display:inline-flex;gap:6px;align-items:center}
+.since{margin:-4px 0 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.since summary{display:flex;gap:10px 14px;flex-wrap:wrap;align-items:center;padding:10px 14px;cursor:pointer;list-style:none;font-size:13px}
+.since summary::-webkit-details-marker{display:none}
+.since .sl{font-weight:600}
+.since .sn{color:var(--text-2);display:inline-flex;gap:6px;align-items:center}
+.since .sn.nw{color:var(--text);font-weight:600}
+.since .sn.nw i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1.5px var(--forest)}
+.since summary .ic{margin-left:auto;width:16px;height:16px;color:var(--text-2);transition:transform .2s}
+.since[open] summary .ic{transform:rotate(180deg)}
+.since .sbody{padding:0 14px 12px;border-top:1px solid var(--line-2)}
+.since h4{font-size:12px;font-weight:600;color:var(--text-2);margin:12px 0 4px}
+.since ul{padding-left:18px;display:grid;gap:3px;font-size:13.5px}
+.qm i{font-style:normal;opacity:.8}
+.lnk{font-size:12px;font-weight:600;color:var(--brand-ink);text-decoration:underline;text-underline-offset:2px}
+.lnk:hover{filter:brightness(1.15)}
+#drawer .why-dl{grid-template-columns:minmax(0,1fr) auto}
+#drawer .why-dl dd{text-align:right;font-weight:600}
+#drawer .why-dl dt{color:var(--text-2)}
+
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
 :root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
   /* Temas e assuntos (notícias, procura por tema): família própria, para a cor nunca sugerir uma marca. Validada: CVD, visão normal e contraste. */
@@ -1078,7 +1108,8 @@ function foot(id){const b=BLK(id);if(!b)return"";use(id);
 
 /* ---------- Blocos de página ---------- */
 const emptyHTML=(t,x)=>`<div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>${t}</b><br>${x||""}</div></div>`;
-function kpiHTML(k){return`<div class="kpi ${k.go?"clk":""}" ${k.src?`data-src="${use(k.src)}"`:""} ${k.go?`data-go="${k.go}" tabindex="0" role="link"`:""}><span class="t-xs">${k.l}${k.help?`<button class="qm" type="button" aria-label="O que é isto?" data-tip="${esc(k.help)}" onclick="event.stopPropagation()">?</button>`:""}</span><div class="kv"><span class="big">${k.v}</span>${k.series&&k.series.length>1?`<span class="sp">${spark(k.series,84,34)}</span>`:""}</div><span class="sub">${k.sub||""}</span></div>`}
+let KWHY={};
+function kpiHTML(k){const wid=k.why?"k"+Object.keys(KWHY).length:null;if(wid)KWHY[wid]=k;return`<div class="kpi ${k.go?"clk":""}" ${k.src?`data-src="${use(k.src)}"`:""} ${k.go?`data-go="${k.go}" tabindex="0" role="link"`:""}><span class="t-xs">${k.l}${k.help?`<button class="qm" type="button" aria-label="Como se calcula: ${esc(String(k.l).replace(/<[^>]+>/g,""))}" data-tip="${esc(k.help)} <i>Clica para ver como se calcula.</i>" ${wid?`data-kwhy="${wid}"`:""}>?</button>`:""}</span><div class="kv"><span class="big">${k.v}</span>${k.series&&k.series.length>1?`<span class="sp">${spark(k.series,84,34)}</span>`:""}</div><span class="sub">${k.sub||""}</span></div>`}
 function secHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="sec"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
 function cardHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="card"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
 function pheadHTML(kick,title,lead,{sm=false}={}){return`<div class="phead ${sm?"sm":""}"><div class="kick"><span>${kick}</span><span id="sealslot">${sealHTML(USED)}</span></div><h1 class="t-display">${title}</h1>${lead?`<p class="lead">${lead}</p>`:""}</div>`}
@@ -1131,6 +1162,33 @@ function closeDrawer(){$("#drawer").classList.remove("on");$("#scrim").classList
 const drawerHead=t=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 class="t-h2">${t}</h2><button class="iconbtn" id="dclose" aria-label="Fechar" style="width:32px;height:32px"><svg class="ic"><use href="#i-x"/></svg></button></div>`;
 document.addEventListener("click",e=>{if(e.target.closest("#dclose")||e.target.id==="scrim")closeDrawer()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
+
+/* ---------- «Porquê?»: como se calcula um KPI e porque é que um sinal é sinal ---------- */
+const sigUnit=s=>s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%";
+const plain=h=>String(h).replace(/<[^>]+>/g,"");
+function whyBlk(label,html){return`<div class="blk"><div class="t-xs">${label}</div>${html}</div>`}
+function whySrc(ids){const s=sealInfo(new Set(ids));return`<p class="why-src"><span class="seal" data-o="${s.o}" style="height:22px;font-size:11px">${esc(s.t)}</span></p>${ids.map(id=>BLK(id)?`<p class="t-sm muted" style="margin-top:6px">${srcTip(id)}</p>`:"").join("")}`}
+function openKpiWhy(k){const w=k.why;if(!w)return;
+  openDrawer(`${drawerHead("Como se calcula")}<p class="why-t">${plain(k.l)}</p>
+   <div class="blk"><div class="why-v">${k.v}</div><div class="sub" style="margin-top:4px">${k.sub||""}</div></div>
+   ${whyBlk("O que mede",`<p>${esc(w.def)}</p>`)}${whyBlk("Como se calcula",`<p>${esc(w.calc)}</p>`)}${whyBlk("Janela",`<p>${esc(w.janela)}</p>`)}${w.filtros?whyBlk("Filtros",`<p>${esc(w.filtros)}</p>`):""}${w.limites?whyBlk("Limites",`<p>${esc(w.limites)}</p>`):""}
+   ${k.src?whyBlk("De onde vêm os dados",whySrc([k.src])):""}
+   ${k.go?`<div style="margin-top:14px"><button class="btn" data-go="${k.go}">Ver o detalhe</button></div>`:""}`)}
+function openWhy(id){const s=D.sinais.find(x=>x.id===id);if(!s)return;
+  const p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),u=sigUnit(s),d=v=>Math.abs(v)<10?1:0;
+  const nums=s.detalhe?`<dl class="why-dl">${s.detalhe.map(x=>`<dt>${esc(x.rotulo)}</dt><dd>${nf(x.valor,x.dec)}${esc(x.sufixo)}</dd>`).join("")}${s.valor!=null?`<dt>Variação observada</dt><dd><b>${sgn(s.valor,d(s.valor))}${u}</b></dd>`:""}${s.limiar!=null?`<dt>Limiar do sinal</dt><dd>${nf(Math.abs(s.limiar),d(s.limiar))}${u}</dd>`:""}${s.valor_anterior!=null?`<dt>Na semana passada</dt><dd>${sgn(s.valor_anterior,d(s.valor_anterior))}${u}</dd>`:""}</dl>`:"";
+  openDrawer(`${drawerHead("Porquê este sinal?")}<p class="why-t">${esc(s.titulo)}</p>
+   <div class="blk"><span class="tag ${s.material?"hi":""}">${s.material?"Acima do limiar":"Em observação"}</span>${s.novo?` <span class="tag nw">Novo esta semana</span>`:""}${s.hipotese?` <span class="tag">Hipótese</span>`:""}</div>
+   ${s.regra?whyBlk("A regra",`<p>${esc(s.regra)}</p>`):""}
+   ${nums?whyBlk("Os números"+(s.janela?`, ${esc(s.janela)}`:""),nums):""}
+   ${ch?whyBlk("Últimas 12 semanas",`<div class="cv" id="whych" style="height:84px"></div>`):""}
+   ${whyBlk("O que significa",`<p>${esc(s.leitura)}</p>`)}
+   ${whyBlk("De onde vêm os dados",whySrc([s.bloco]))}
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn" ${s.entidade&&s.categoria==="Lançamento"?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`}>${s.categoria==="Lançamento"?"Ver criativos":"Ver no gráfico"}</button>${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver a pista</button>`:""}</div>`);
+  if(ch)setTimeout(()=>{const h=$("#whych");if(h)tsChart(h,{...ch,type:"line",fill:true,mini:true,h:84},false)},60)}
+document.addEventListener("click",e=>{let t;
+  if(t=e.target.closest("[data-kwhy]")){e.stopPropagation();e.preventDefault();openKpiWhy(KWHY[t.dataset.kwhy]);return}
+  if(t=e.target.closest("[data-why]")){e.preventDefault();openWhy(t.dataset.why)}},true);
 
 /* ============================================================
    Gráficos em SVG próprio: linhas, áreas, barras e empilhados, com dica ao passar o cursor,
@@ -1243,20 +1301,20 @@ const cmpSub=(d,unit,txt)=>S.cmp==="nenhum"?`<span class="muted">${txt.replace(/
 const pctd=(c,p)=>p?(c/p-1)*100:null;
 const METR={
  anuncios_ativos(){const W=win(),bs=incl(),cur=totalAct(W.z),prv=W.canP?totalAct(W.z-W.w):null;
-  return{help:"Anúncios ativos na semana, somados nas marcas em comparação. Fonte: bibliotecas de anúncios das plataformas.",l:"Anúncios ativos agora",v:`<span data-count="${cur}">${nf(cur)}</span>`,sub:cmpSub(prv?pctd(cur,prv):null,"%",`face a há ${W.w} semanas`),series:range(W.a0,W.z).map(totalAct),src:"anuncios",go:"mercado/ativ"}},
+  return{help:"Anúncios ativos na semana, somados nas marcas em comparação. Fonte: bibliotecas de anúncios das plataformas.",why:{def:"Quantos anúncios estavam a correr na semana mais recente, somados nas marcas do conjunto competitivo.",calc:"Cada anúncio conta em todas as semanas entre a data de início e a de fim (ou até hoje, se continua ativo).",janela:`Semana de ${wLab(W.z)}`+(W.canP?`, comparada com a semana de há ${W.w} semanas.`:"."),filtros:"Respeita as plataformas e as marcas escolhidas nos filtros.",limites:"Só inclui anúncios visíveis nas bibliotecas públicas. Não inclui TV, rádio nem exterior."},l:"Anúncios ativos agora",v:`<span data-count="${cur}">${nf(cur)}</span>`,sub:cmpSub(prv?pctd(cur,prv):null,"%",`face a há ${W.w} semanas`),series:range(W.a0,W.z).map(totalAct),src:"anuncios",go:"mercado/ativ"}},
  anuncios_novos(){const W=win(),bs=incl(),nw=bs.reduce((s,e)=>s+sumR(neu,e.id,W.a0,W.z),0),np=W.canP?bs.reduce((s,e)=>s+sumR(neu,e.id,W.p0,W.p1),0):null;
-  return{help:"Anúncios que começaram a correr dentro do período escolhido.",l:"Anúncios novos no período",v:`<span data-count="${nw}">${nf(nw)}</span>`,sub:cmpSub(np?pctd(nw,np):null,"%","face ao período anterior"),series:range(W.a0,W.z).map(w=>bs.reduce((s,e)=>s+neu(e.id,w),0)),src:"anuncios",go:"mercado/ativ"}},
+  return{help:"Anúncios que começaram a correr dentro do período escolhido.",why:{def:"Anúncios que começaram a correr dentro do período escolhido, nas marcas do conjunto.",calc:"Conta-se cada anúncio na semana da sua data de início.",janela:`${W.w} semanas até ${wLab(W.z)}`+(W.canP?", comparadas com as "+W.w+" semanas anteriores.":"."),filtros:"Respeita as plataformas e as marcas escolhidas.",limites:"Um pico pode ser um lançamento ou apenas a entrada de muitos criativos de teste."},l:"Anúncios novos no período",v:`<span data-count="${nw}">${nf(nw)}</span>`,sub:cmpSub(np?pctd(nw,np):null,"%","face ao período anterior"),series:range(W.a0,W.z).map(w=>bs.reduce((s,e)=>s+neu(e.id,w),0)),src:"anuncios",go:"mercado/ativ"}},
  quota_voz(){const W=win(),m=me(),inc=incl(),s1=sov(W.z)[m.id],s0=W.canP?sov(W.z-W.w)[m.id]:null,rank=[...inc].sort((p,q)=>press(q.id,W.z)-press(p.id,W.z)).findIndex(e=>e.cliente)+1;
-  return{help:"Peso da marca no total de anúncios ativos do conjunto de marcas. Não é quota de mercado.",l:`Quota de voz de ${esc(m.nome)}`,v:`<span data-count="${s1.toFixed(1)}" data-dec="1" data-suf="%">${nf(s1,1)}%</span>`,sub:`${rank}.º de ${inc.length} · `+(S.cmp==="nenhum"?"":s0==null?"sem período anterior":dchip(s1-s0,"p.p.")),series:range(W.a0,W.z).map(w=>sov(w)[m.id]),src:"anuncios",go:"mercado/voz"}},
+  return{help:"Peso da marca no total de anúncios ativos do conjunto de marcas. Não é quota de mercado.",why:{def:"O peso da marca no total da pressão publicitária do conjunto competitivo. Não é quota de mercado.",calc:`Somam-se os anúncios ativos de cada marca ponderados pelo alcance típico da plataforma (${D.plataformas.map(p=>p.id+" "+nf(p.peso,2)).join("; ")}, conforme a configuração da agência). A quota é a parte da marca nesse total.`,janela:`Semana de ${wLab(W.z)}`+(W.canP?`, comparada com a semana de há ${W.w} semanas, em pontos percentuais.`:"."),filtros:"Respeita as plataformas e as marcas escolhidas: mudar o conjunto muda a quota.",limites:"Mede presença nos anúncios públicos, não investimento nem resultados."},l:`Quota de voz de ${esc(m.nome)}`,v:`<span data-count="${s1.toFixed(1)}" data-dec="1" data-suf="%">${nf(s1,1)}%</span>`,sub:`${rank}.º de ${inc.length} · `+(S.cmp==="nenhum"?"":s0==null?"sem período anterior":dchip(s1-s0,"p.p.")),series:range(W.a0,W.z).map(w=>sov(w)[m.id]),src:"anuncios",go:"mercado/voz"}},
  investimento(){const W=win(),bs=incl(),sp=bs.reduce((s,e)=>s+sumR(spdt,e.id,W.a0,W.z),0),spp=W.canP?bs.reduce((s,e)=>s+sumR(spdt,e.id,W.p0,W.p1),0):null,m=me(),mine=sumR(spdt,m.id,W.a0,W.z);
-  return{help:"Estimativa de investimento a partir do volume e do formato dos anúncios. Não são valores faturados.",l:"Investimento estimado",v:`<span>${eur(sp)}</span>`,sub:cmpSub(spp?pctd(sp,spp):null,"%","face ao período anterior")+(S.cmp==="nenhum"?`<span class="muted">${esc(m.nome)}: ${sp?nf(mine/sp*100):0}% do total</span>`:""),series:range(W.a0,W.z).map(w=>bs.reduce((s,e)=>s+spdt(e.id,w),0)),src:"investimento",go:"mercado/inv"}},
+  return{help:"Estimativa de investimento a partir do volume e do formato dos anúncios. Não são valores faturados.",why:{def:"Ordem de grandeza do investimento do conjunto no período. Serve para comparar, não para fechar contas.",calc:"Anúncios ativos por semana × valor médio assumido por plataforma × fator da marca (configuração da agência).",janela:`${W.w} semanas até ${wLab(W.z)}`+(W.canP?", comparadas com as "+W.w+" semanas anteriores.":"."),filtros:"Respeita as plataformas e as marcas escolhidas.",limites:"As bibliotecas públicas não devolvem investimento em anúncios comerciais. Com uma fonte licenciada, este número passa a ser lido e deixa de ser estimado."},l:"Investimento estimado",v:`<span>${eur(sp)}</span>`,sub:cmpSub(spp?pctd(sp,spp):null,"%","face ao período anterior")+(S.cmp==="nenhum"?`<span class="muted">${esc(m.nome)}: ${sp?nf(mine/sp*100):0}% do total</span>`:""),series:range(W.a0,W.z).map(w=>bs.reduce((s,e)=>s+spdt(e.id,w),0)),src:"investimento",go:"mercado/inv"}},
  procura(k){const s=serieProcura(k.serie);if(!s)return null;const v=varProcura(s),W=win();
-  return{help:"Índice de interesse de pesquisa em Portugal, de 0 a 100 (100 = o pico do período).",l:k.rotulo||s.nome,v:`<span data-count="${s.valores[Z]}">${nf(s.valores[Z])}</span>`,sub:v?`${dchip(v.pct,"%")}<span class="muted">face à média de 8 semanas</span>`:`<span class="muted">índice 0 a 100</span>`,series:s.valores.slice(Math.max(0,W.a0),Z+1),src:"procura",go:"procura"}},
+  return{help:"Índice de interesse de pesquisa em Portugal, de 0 a 100 (100 = o pico do período).",why:{def:"Interesse de pesquisa em Portugal por este tema, num índice de 0 a 100 em que 100 é o pico do período.",calc:"Valor da semana atual; a variação compara-o com a média das 8 semanas anteriores.",janela:`Semana de ${wLab(Z)}, face à média das 8 semanas anteriores.`,filtros:"Não depende dos filtros de plataforma nem de marca.",limites:"É um índice relativo, não um número de pesquisas."},l:k.rotulo||s.nome,v:`<span data-count="${s.valores[Z]}">${nf(s.valores[Z])}</span>`,sub:v?`${dchip(v.pct,"%")}<span class="muted">face à média de 8 semanas</span>`:`<span class="muted">índice 0 a 100</span>`,series:s.valores.slice(Math.max(0,W.a0),Z+1),src:"procura",go:"procura"}},
  noticias_total(k){if(!D.noticias)return null;const W=win(),S_=D.noticias.series,tot=w=>{const v=S_.map(s=>s.valores[w]);return v.every(x=>x==null)?null:sum(v)},arr=range(W.a0,W.z).map(tot),ok=arr.filter(x=>x!=null);if(!ok.length)return null;
   const cur=sum(ok),prev=W.canP?range(W.p0,W.p1).map(tot):null,pv=prev&&prev.every(x=>x!=null)?sum(prev):null;
-  return{l:k.rotulo||"Artigos no período",v:`<span data-count="${cur}">${nf(cur)}</span>`,sub:cmpSub(pv?pctd(cur,pv):null,"%","face ao período anterior"),series:arr.map(x=>x??0),src:"noticias",go:"procura"}},
+  return{help:"Artigos de imprensa por semana que mencionam os temas acompanhados.",why:{def:"Número de artigos de imprensa que mencionam os temas acompanhados.",calc:"Somam-se os artigos de todos os temas na janela escolhida.",janela:`${W.w} semanas até ${wLab(W.z)}`+(W.canP?", comparadas com as "+W.w+" semanas anteriores.":"."),filtros:"Respeita o período escolhido.",limites:"A pesquisa de notícias não é exaustiva: serve para detetar temas, não para os contar todos."},l:k.rotulo||"Artigos no período",v:`<span data-count="${cur}">${nf(cur)}</span>`,sub:cmpSub(pv?pctd(cur,pv):null,"%","face ao período anterior"),series:arr.map(x=>x??0),src:"noticias",go:"procura"}},
  indicador(k){const it=D.contexto&&D.contexto.indicadores.find(i=>i.id===k.id);if(!it)return null;
-  return{l:it.rotulo,v:`<span>${nf(it.valor,it.decimais||0)}${it.formato||""}</span>`,sub:`<span class="muted">${esc(it.detalhe||"")}</span>`,src:it.bloco,go:"mercado/ctx"}}
+  return{help:"Indicador público de contexto de mercado.",why:{def:`${it.rotulo}: indicador público de contexto de mercado.`,calc:"Valor publicado pela fonte indicada; o Radar não o recalcula.",janela:it.detalhe||"Último valor disponível.",filtros:"Não depende dos filtros.",limites:"Os indicadores públicos atualizam-se com atraso e podem ser revistos pela entidade que os publica."},l:it.rotulo,v:`<span>${nf(it.valor,it.decimais||0)}${it.formato||""}</span>`,sub:`<span class="muted">${esc(it.detalhe||"")}</span>`,src:it.bloco,go:"mercado/ctx"}}
 };
 const KP_ADS=new Set(["anuncios_ativos","anuncios_novos","quota_voz","investimento"]);
 function kpisHTML(){const ks=D.kpis.filter(k=>!KP_ADS.has(k.metrica)||hasAds()).map(k=>(METR[k.metrica]||(()=>null))(k)).filter(Boolean);return ks.length?`<div class="kpis k5">${ks.map(kpiHTML).join("")}</div>`:""}
@@ -1302,7 +1360,7 @@ function sigCardCli(s,i){
   </article>`}
 function sigMeter(s){
   if(s.limiar==null||s.valor==null||!+s.limiar)return"";
-  const v=Math.abs(s.valor),l=Math.abs(s.limiar),pc=clamp(v/(l*2)*100,3,100),d=v<10?1:0,u=s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%";
+  const v=Math.abs(s.valor),l=Math.abs(s.limiar),pc=clamp(v/(l*2)*100,3,100),d=v<10?1:0,u=sigUnit(s);
   return`<div class="lmeter" role="meter" aria-valuemin="0" aria-valuemax="${nf(l*2,d)}" aria-valuenow="${nf(v,d)}" aria-label="Valor face ao limiar" data-tip="Valor observado face ao limiar definido para este tipo de sinal">
    <div class="mb"><i class="${v>=l?"ok":""}" style="width:${pc.toFixed(0)}%"></i><u></u></div>
    <div class="ml"><span><b>${nf(v,d)}${u}</b> ${s.janela_curta?(s.janela_curta.startsWith("vs")?s.janela_curta:"em "+s.janela_curta):"observado"}</span><span>limiar ${nf(l,d)}${u}</span></div></div>`}
@@ -1312,11 +1370,11 @@ function sigCard(s,i){
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
-   <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></div>
+   <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
-   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}
+   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}<button class="btn ghost" data-why="${s.id}">Porquê?</button>
     ${noRasc&&noPub?`<span class="tag ok" data-tip="Este cartão faz parte do que o cliente vê agora.">No cliente</span>`:noRasc?`<span class="tag" data-tip="Está no rascunho da vista do cliente. Só chega ao cliente quando publicares.">No rascunho</span>`:noPub?`<span class="tag warn" data-tip="O cliente ainda vê este cartão. Sai quando publicares as alterações.">A retirar</span>`:""}
     <div class="more"><button class="btn ghost ico" data-cardmenu aria-haspopup="menu" aria-expanded="false" aria-label="Mais ações"><svg class="ic"><use href="#i-dots"/></svg></button>
      <div class="mm" role="menu" hidden>${p?`<button role="menuitem" ${det}>${dl}</button>`:""}<button role="menuitem" data-pubsg="${s.id}"><svg class="ic"><use href="#i-send"/></svg>${pub?"Retirar do rascunho para o cliente":"Adicionar ao rascunho para o cliente"}</button>${p?`<button role="menuitem" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg><span>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</span></button>`:""}</div></div></div>
@@ -1374,11 +1432,19 @@ function openEntity(id){
 document.addEventListener("click",e=>{const r=e.target.closest("tr[data-ent]");if(r)openEntity(r.dataset.ent)});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;const sp=b.querySelector("span");if(sp)sp.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
 
+function sinceHTML(){
+  if(isCli()||S.bquiet)return"";
+  const nov=D.sinais.filter(s=>s.novo),mant=D.sinais.filter(s=>s.material&&!s.novo),res=D.sinais_resolvidos||[];
+  const parts=[nov.length?`<span class="sn nw"><i></i>${nov.length} ${nov.length===1?"novo":"novos"}</span>`:"",mant.length?`<span class="sn">${mant.length} ${mant.length===1?"mantém-se":"mantêm-se"}</span>`:"",res.length?`<span class="sn">${res.length} ${res.length===1?"deixou":"deixaram"} de estar acima do limiar</span>`:""].filter(Boolean);
+  if(!parts.length)return"";
+  const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:"";
+  return`<details class="since"><summary><span class="sl">Desde a semana passada</span>${parts.join("")}<svg class="ic"><use href="#i-down"/></svg></summary>
+   <div class="sbody">${nov.length?`<h4>Novos</h4>${li(nov,s=>`<li>${esc(s.titulo)}</li>`)}`:""}${mant.length?`<h4>Mantêm-se acima do limiar</h4>${li(mant,s=>`<li>${esc(s.titulo)}${s.valor_anterior!=null&&s.valor!=null?` <span class="muted">(semana passada: ${sgn(s.valor_anterior,Math.abs(s.valor_anterior)<10?1:0)}${sigUnit(s)})</span>`:""}</li>`)}`:""}${res.length?`<h4>Deixaram de estar acima do limiar</h4>${li(res,s=>`<li>${esc(s.titulo)}</li>`)}`:""}</div></details>`}
 function pageVisao(){
   const lista=isCli()?cartoesPub():S.bquiet?[]:D.sinais,sg=lista.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
    ${kpisHTML()}
-   ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
+   ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`${sinceHTML()}<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
    ${detailHTML()}`;
   return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),esc(leadText()))+body}
@@ -1706,7 +1772,7 @@ function pistaHTML(p){
   const res=`<button class="btn ghost" data-a="research" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg>${p.res?"Aprofundamento pedido à Research":"Pedir aprofundamento à Research"}</button>`;
   return`<article class="pista" id="${p.id}" data-id="${p.id}" data-src="${use(p.bloco)}">
    <div class="hd"><h2 class="t-h2" style="max-width:60ch">${esc(p.titulo)}</h2><span class="state" data-s="${p.s}">${STL[p.s]}</span></div>
-   <div class="pchain"><div><h4>Sinal</h4><p>${esc(p.sinal)}</p></div><div><h4>Leitura ${p.hipotese?'<span class="tag">Hipótese</span>':""}</h4><p>${esc(p.leitura)}</p></div><div class="act"><h4>Ação possível</h4><p data-act>${esc(p.acao)}</p></div></div>
+   <div class="pchain"><div><h4>Sinal ${p.sinal_id?`<button class="lnk" data-why="${p.sinal_id}">Porquê?</button>`:""}</h4><p>${esc(p.sinal)}</p></div><div><h4>Leitura ${p.hipotese?'<span class="tag">Hipótese</span>':""}</h4><p>${esc(p.leitura)}</p></div><div class="act"><h4>Ação possível</h4><p data-act>${esc(p.acao)}</p></div></div>
    <div class="pfoot">${act}${res}<span class="sp"></span><span class="t-xs">Atribuída a</span><div class="seg">${["Performance","Brand","Account"].map(x=>`<button data-a="para" data-v="${x}" aria-pressed="${p.para===x}">${x}</button>`).join("")}</div></div><p class="conf" style="margin-top:10px">${esc(p.confianca)}</p></article>`}
 function syncCounts(){const n=pistasPend(D),c=$("#navcnt");if(c){c.textContent=n;c.hidden=n===0}}
 function refreshPista(id,flash){const p=D.pistas.find(x=>x.id===id),old=document.getElementById(id);if(!old)return;const tmp=document.createElement("div");tmp.innerHTML=pistaHTML(p);const n=tmp.firstElementChild;n.classList.add("in");if(flash)n.classList.add("just");old.replaceWith(n);syncCounts()}
@@ -2061,7 +2127,7 @@ document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.tar
 
 render.n=0;
 function render(r,scrollTop){
-  stopRace();stopPlay();closeDrawer();closeMenu();closeFpop();$("#pop").classList.remove("on");CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;
+  stopRace();stopPlay();closeDrawer();closeMenu();closeFpop();$("#pop").classList.remove("on");CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;
   if(r.cid){CID=r.cid}if(!D||D.cliente.id!==CID)setClient(CID);else if(!S)setClient(CID);
   VIEW=r.view;document.documentElement.dataset.view=VIEW;ROUTE=r;
   let pg;
@@ -2078,7 +2144,7 @@ function render(r,scrollTop){
   const html=banner+pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
   buildNav();buildScope();$("#viewseg").hidden=r.scope==="agencia";$$("#viewseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===VIEW));
   document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n+(VIEW==="cliente"?" (vista do cliente)":""));
-  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync()};
+  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync()};
   AFTER.forEach(f=>f());AFTER.length=0;counters(t);syncCounts();
   if(scrollTop&&!r.focus)scrollTo({top:0,behavior:"auto"});
   const h1=$("h1",t);if(h1&&scrollTop){h1.tabIndex=-1;if(render.n++)h1.focus({preventScroll:true})}

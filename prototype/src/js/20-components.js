@@ -28,7 +28,8 @@ function foot(id){const b=BLK(id);if(!b)return"";use(id);
 
 /* ---------- Blocos de página ---------- */
 const emptyHTML=(t,x)=>`<div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>${t}</b><br>${x||""}</div></div>`;
-function kpiHTML(k){return`<div class="kpi ${k.go?"clk":""}" ${k.src?`data-src="${use(k.src)}"`:""} ${k.go?`data-go="${k.go}" tabindex="0" role="link"`:""}><span class="t-xs">${k.l}${k.help?`<button class="qm" type="button" aria-label="O que é isto?" data-tip="${esc(k.help)}" onclick="event.stopPropagation()">?</button>`:""}</span><div class="kv"><span class="big">${k.v}</span>${k.series&&k.series.length>1?`<span class="sp">${spark(k.series,84,34)}</span>`:""}</div><span class="sub">${k.sub||""}</span></div>`}
+let KWHY={};
+function kpiHTML(k){const wid=k.why?"k"+Object.keys(KWHY).length:null;if(wid)KWHY[wid]=k;return`<div class="kpi ${k.go?"clk":""}" ${k.src?`data-src="${use(k.src)}"`:""} ${k.go?`data-go="${k.go}" tabindex="0" role="link"`:""}><span class="t-xs">${k.l}${k.help?`<button class="qm" type="button" aria-label="Como se calcula: ${esc(String(k.l).replace(/<[^>]+>/g,""))}" data-tip="${esc(k.help)} <i>Clica para ver como se calcula.</i>" ${wid?`data-kwhy="${wid}"`:""}>?</button>`:""}</span><div class="kv"><span class="big">${k.v}</span>${k.series&&k.series.length>1?`<span class="sp">${spark(k.series,84,34)}</span>`:""}</div><span class="sub">${k.sub||""}</span></div>`}
 function secHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="sec"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
 function cardHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="card"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
 function pheadHTML(kick,title,lead,{sm=false}={}){return`<div class="phead ${sm?"sm":""}"><div class="kick"><span>${kick}</span><span id="sealslot">${sealHTML(USED)}</span></div><h1 class="t-display">${title}</h1>${lead?`<p class="lead">${lead}</p>`:""}</div>`}
@@ -81,3 +82,30 @@ function closeDrawer(){$("#drawer").classList.remove("on");$("#scrim").classList
 const drawerHead=t=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 class="t-h2">${t}</h2><button class="iconbtn" id="dclose" aria-label="Fechar" style="width:32px;height:32px"><svg class="ic"><use href="#i-x"/></svg></button></div>`;
 document.addEventListener("click",e=>{if(e.target.closest("#dclose")||e.target.id==="scrim")closeDrawer()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
+
+/* ---------- «Porquê?»: como se calcula um KPI e porque é que um sinal é sinal ---------- */
+const sigUnit=s=>s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%";
+const plain=h=>String(h).replace(/<[^>]+>/g,"");
+function whyBlk(label,html){return`<div class="blk"><div class="t-xs">${label}</div>${html}</div>`}
+function whySrc(ids){const s=sealInfo(new Set(ids));return`<p class="why-src"><span class="seal" data-o="${s.o}" style="height:22px;font-size:11px">${esc(s.t)}</span></p>${ids.map(id=>BLK(id)?`<p class="t-sm muted" style="margin-top:6px">${srcTip(id)}</p>`:"").join("")}`}
+function openKpiWhy(k){const w=k.why;if(!w)return;
+  openDrawer(`${drawerHead("Como se calcula")}<p class="why-t">${plain(k.l)}</p>
+   <div class="blk"><div class="why-v">${k.v}</div><div class="sub" style="margin-top:4px">${k.sub||""}</div></div>
+   ${whyBlk("O que mede",`<p>${esc(w.def)}</p>`)}${whyBlk("Como se calcula",`<p>${esc(w.calc)}</p>`)}${whyBlk("Janela",`<p>${esc(w.janela)}</p>`)}${w.filtros?whyBlk("Filtros",`<p>${esc(w.filtros)}</p>`):""}${w.limites?whyBlk("Limites",`<p>${esc(w.limites)}</p>`):""}
+   ${k.src?whyBlk("De onde vêm os dados",whySrc([k.src])):""}
+   ${k.go?`<div style="margin-top:14px"><button class="btn" data-go="${k.go}">Ver o detalhe</button></div>`:""}`)}
+function openWhy(id){const s=D.sinais.find(x=>x.id===id);if(!s)return;
+  const p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),u=sigUnit(s),d=v=>Math.abs(v)<10?1:0;
+  const nums=s.detalhe?`<dl class="why-dl">${s.detalhe.map(x=>`<dt>${esc(x.rotulo)}</dt><dd>${nf(x.valor,x.dec)}${esc(x.sufixo)}</dd>`).join("")}${s.valor!=null?`<dt>Variação observada</dt><dd><b>${sgn(s.valor,d(s.valor))}${u}</b></dd>`:""}${s.limiar!=null?`<dt>Limiar do sinal</dt><dd>${nf(Math.abs(s.limiar),d(s.limiar))}${u}</dd>`:""}${s.valor_anterior!=null?`<dt>Na semana passada</dt><dd>${sgn(s.valor_anterior,d(s.valor_anterior))}${u}</dd>`:""}</dl>`:"";
+  openDrawer(`${drawerHead("Porquê este sinal?")}<p class="why-t">${esc(s.titulo)}</p>
+   <div class="blk"><span class="tag ${s.material?"hi":""}">${s.material?"Acima do limiar":"Em observação"}</span>${s.novo?` <span class="tag nw">Novo esta semana</span>`:""}${s.hipotese?` <span class="tag">Hipótese</span>`:""}</div>
+   ${s.regra?whyBlk("A regra",`<p>${esc(s.regra)}</p>`):""}
+   ${nums?whyBlk("Os números"+(s.janela?`, ${esc(s.janela)}`:""),nums):""}
+   ${ch?whyBlk("Últimas 12 semanas",`<div class="cv" id="whych" style="height:84px"></div>`):""}
+   ${whyBlk("O que significa",`<p>${esc(s.leitura)}</p>`)}
+   ${whyBlk("De onde vêm os dados",whySrc([s.bloco]))}
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn" ${s.entidade&&s.categoria==="Lançamento"?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`}>${s.categoria==="Lançamento"?"Ver criativos":"Ver no gráfico"}</button>${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver a pista</button>`:""}</div>`);
+  if(ch)setTimeout(()=>{const h=$("#whych");if(h)tsChart(h,{...ch,type:"line",fill:true,mini:true,h:84},false)},60)}
+document.addEventListener("click",e=>{let t;
+  if(t=e.target.closest("[data-kwhy]")){e.stopPropagation();e.preventDefault();openKpiWhy(KWHY[t.dataset.kwhy]);return}
+  if(t=e.target.closest("[data-why]")){e.preventDefault();openWhy(t.dataset.why)}},true);

@@ -599,3 +599,33 @@ html[data-present] #toast{bottom:116px}
 .pubrow.hist{cursor:default;align-items:baseline}
 .pubrow.hist .hq{min-width:128px;font-size:12.5px;color:var(--text-2);font-variant-numeric:tabular-nums}
 @media (max-width:1100px){.pubgrid{grid-template-columns:minmax(0,1fr)}.pubprev{position:static;order:-1}}
+
+/* «Porquê?», sinais novos, desde a semana passada */
+.why-t{font-size:15px;font-weight:600;letter-spacing:-.01em;margin:10px 0 6px;line-height:1.4}
+.why-dl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;font-size:13.5px}
+.why-dl dt{color:var(--text-2);font-weight:500}
+.why-dl dd{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.why-v{font-size:30px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.why-src{margin-top:2px}
+#drawer .blk p{font-size:14px}
+.tag.hi{background:var(--brand-soft);color:var(--brand-ink)}
+.tag.nw{background:var(--accent);color:var(--forest)}
+.sg .tags{display:inline-flex;gap:6px;align-items:center}
+.since{margin:-4px 0 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.since summary{display:flex;gap:10px 14px;flex-wrap:wrap;align-items:center;padding:10px 14px;cursor:pointer;list-style:none;font-size:13px}
+.since summary::-webkit-details-marker{display:none}
+.since .sl{font-weight:600}
+.since .sn{color:var(--text-2);display:inline-flex;gap:6px;align-items:center}
+.since .sn.nw{color:var(--text);font-weight:600}
+.since .sn.nw i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1.5px var(--forest)}
+.since summary .ic{margin-left:auto;width:16px;height:16px;color:var(--text-2);transition:transform .2s}
+.since[open] summary .ic{transform:rotate(180deg)}
+.since .sbody{padding:0 14px 12px;border-top:1px solid var(--line-2)}
+.since h4{font-size:12px;font-weight:600;color:var(--text-2);margin:12px 0 4px}
+.since ul{padding-left:18px;display:grid;gap:3px;font-size:13.5px}
+.qm i{font-style:normal;opacity:.8}
+.lnk{font-size:12px;font-weight:600;color:var(--brand-ink);text-decoration:underline;text-underline-offset:2px}
+.lnk:hover{filter:brightness(1.15)}
+#drawer .why-dl{grid-template-columns:minmax(0,1fr) auto}
+#drawer .why-dl dd{text-align:right;font-weight:600}
+#drawer .why-dl dt{color:var(--text-2)}

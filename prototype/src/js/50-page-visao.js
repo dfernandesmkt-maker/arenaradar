@@ -23,7 +23,7 @@ function sigCardCli(s,i){
   </article>`}
 function sigMeter(s){
   if(s.limiar==null||s.valor==null||!+s.limiar)return"";
-  const v=Math.abs(s.valor),l=Math.abs(s.limiar),pc=clamp(v/(l*2)*100,3,100),d=v<10?1:0,u=s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%";
+  const v=Math.abs(s.valor),l=Math.abs(s.limiar),pc=clamp(v/(l*2)*100,3,100),d=v<10?1:0,u=sigUnit(s);
   return`<div class="lmeter" role="meter" aria-valuemin="0" aria-valuemax="${nf(l*2,d)}" aria-valuenow="${nf(v,d)}" aria-label="Valor face ao limiar" data-tip="Valor observado face ao limiar definido para este tipo de sinal">
    <div class="mb"><i class="${v>=l?"ok":""}" style="width:${pc.toFixed(0)}%"></i><u></u></div>
    <div class="ml"><span><b>${nf(v,d)}${u}</b> ${s.janela_curta?(s.janela_curta.startsWith("vs")?s.janela_curta:"em "+s.janela_curta):"observado"}</span><span>limiar ${nf(l,d)}${u}</span></div></div>`}
@@ -33,11 +33,11 @@ function sigCard(s,i){
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
-   <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></div>
+   <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
-   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}
+   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}<button class="btn ghost" data-why="${s.id}">Porquê?</button>
     ${noRasc&&noPub?`<span class="tag ok" data-tip="Este cartão faz parte do que o cliente vê agora.">No cliente</span>`:noRasc?`<span class="tag" data-tip="Está no rascunho da vista do cliente. Só chega ao cliente quando publicares.">No rascunho</span>`:noPub?`<span class="tag warn" data-tip="O cliente ainda vê este cartão. Sai quando publicares as alterações.">A retirar</span>`:""}
     <div class="more"><button class="btn ghost ico" data-cardmenu aria-haspopup="menu" aria-expanded="false" aria-label="Mais ações"><svg class="ic"><use href="#i-dots"/></svg></button>
      <div class="mm" role="menu" hidden>${p?`<button role="menuitem" ${det}>${dl}</button>`:""}<button role="menuitem" data-pubsg="${s.id}"><svg class="ic"><use href="#i-send"/></svg>${pub?"Retirar do rascunho para o cliente":"Adicionar ao rascunho para o cliente"}</button>${p?`<button role="menuitem" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg><span>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</span></button>`:""}</div></div></div>
@@ -95,11 +95,19 @@ function openEntity(id){
 document.addEventListener("click",e=>{const r=e.target.closest("tr[data-ent]");if(r)openEntity(r.dataset.ent)});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;const sp=b.querySelector("span");if(sp)sp.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
 
+function sinceHTML(){
+  if(isCli()||S.bquiet)return"";
+  const nov=D.sinais.filter(s=>s.novo),mant=D.sinais.filter(s=>s.material&&!s.novo),res=D.sinais_resolvidos||[];
+  const parts=[nov.length?`<span class="sn nw"><i></i>${nov.length} ${nov.length===1?"novo":"novos"}</span>`:"",mant.length?`<span class="sn">${mant.length} ${mant.length===1?"mantém-se":"mantêm-se"}</span>`:"",res.length?`<span class="sn">${res.length} ${res.length===1?"deixou":"deixaram"} de estar acima do limiar</span>`:""].filter(Boolean);
+  if(!parts.length)return"";
+  const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:"";
+  return`<details class="since"><summary><span class="sl">Desde a semana passada</span>${parts.join("")}<svg class="ic"><use href="#i-down"/></svg></summary>
+   <div class="sbody">${nov.length?`<h4>Novos</h4>${li(nov,s=>`<li>${esc(s.titulo)}</li>`)}`:""}${mant.length?`<h4>Mantêm-se acima do limiar</h4>${li(mant,s=>`<li>${esc(s.titulo)}${s.valor_anterior!=null&&s.valor!=null?` <span class="muted">(semana passada: ${sgn(s.valor_anterior,Math.abs(s.valor_anterior)<10?1:0)}${sigUnit(s)})</span>`:""}</li>`)}`:""}${res.length?`<h4>Deixaram de estar acima do limiar</h4>${li(res,s=>`<li>${esc(s.titulo)}</li>`)}`:""}</div></details>`}
 function pageVisao(){
   const lista=isCli()?cartoesPub():S.bquiet?[]:D.sinais,sg=lista.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
    ${kpisHTML()}
-   ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
+   ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`${sinceHTML()}<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
    ${detailHTML()}`;
   return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),esc(leadText()))+body}
