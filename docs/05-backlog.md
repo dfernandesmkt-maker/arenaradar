@@ -33,11 +33,11 @@ Substituir a lógica "concorrentes / share of voice" por quatro blocos: **Procur
 Nova entrada na navegação. Pré-visualização do email interno para a equipa (largura 600 px, marca Arena): O que mudou · O que significa · Pistas de ação. Versão cliente opcional, gerada só com as pistas que a equipa aceitou. Botão "Exportar PDF" via `window.print()` com CSS de impressão.
 **Aceitação:** cabe numa página A4; inclui o estado "sem sinais materiais esta semana".
 
-### RB-07 · Limiares visíveis e estado vazio
+### RB-07 · Limiares visíveis e estado vazio *(feito em out. 2026: limiares nos cartões; interruptor «Simular semana sem sinais» na Visão geral e no Briefing; clientes sem dados mostram «Ainda sem dados ligados»)*
 Mostrar em Observar o limiar de cada bloco (de `04-dados-e-fontes.md`). Quando nada ultrapassa o limiar: mensagem clara, não ecrã vazio.
 **Aceitação:** é possível simular a semana sem sinais através de um interruptor.
 
-### RB-08 · Modo direção
+### RB-08 · Modo direção *(feito em out. 2026 como «Modo apresentação»: botão «Apresentar», roteiro guiado de 10 passos em `config/roteiro.yaml`, letra maior, sem distrações, setas para avançar, «Repor demonstração»)*
 Interruptor que esconde ⌘K, skeletons e animações acessórias, aumenta a tipografia e deixa quatro ecrãs: Visão geral, Observar, Briefing, Impacto.
 **Aceitação:** percorrível em 3 minutos numa reunião, sem cliques perdidos.
 

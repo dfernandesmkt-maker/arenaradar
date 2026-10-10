@@ -384,6 +384,18 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
     }
 
 
+def carregar_roteiro(clientes: set[str]) -> list[dict]:
+    p = ROOT / "config" / "roteiro.yaml"
+    if not p.exists():
+        return []
+    passos = load_yaml(p).get("roteiro", [])
+    for s in passos:
+        primeiro = s["rota"].split("/")[0]
+        if primeiro != "agencia" and primeiro not in clientes:
+            print(f"  AVISO: o passo «{s['id']}» do roteiro usa o cliente «{primeiro}», que não existe em config/clients/.")
+    return passos
+
+
 def build_agency(datasets: list[dict], ag: dict, fontes: dict) -> dict:
     temas = []
     for p in sorted((ROOT / "config" / "themes").glob("*.json")):
@@ -404,7 +416,8 @@ def build_agency(datasets: list[dict], ag: dict, fontes: dict) -> dict:
                          "pulso": d["pulso"], "n_entidades": sum(1 for e in d["entidades"] if e["incluida"])})
     return {"versao": 1, "gerado_em": ag["calendario"]["data_referencia"], "agencia": ag["agencia"],
             "calendario": ag["calendario"], "rotulo_semana_atual": rotulo_semana(ag["calendario"]["inicio"], ag["calendario"]["semana_atual"]), "verticais": list(verts.values()), "clientes": clientes,
-            "fontes": fontes["fontes"], "temas": temas, "piloto": ag["piloto"]}
+            "fontes": fontes["fontes"], "temas": temas, "piloto": ag["piloto"],
+            "roteiro": carregar_roteiro({c["id"] for c in clientes})}
 
 
 def main() -> None:

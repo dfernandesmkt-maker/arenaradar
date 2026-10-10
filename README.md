@@ -23,7 +23,7 @@ Conceito e protótipo de alta fidelidade concluídos. Dados reais, motor de leit
 | `docs/09-pontos-de-ligacao.md` | Onde ligar cada fonte (Meta, Google, TikTok, Marktest…) e contrato de dados |
 | `docs/10-como-acrescentar-um-cliente.md` | Acrescentar um cliente = um ficheiro de configuração |
 | `docs/legacy/` | Documentos antigos (documento estratégico de abril) |
-| `config/` | Configuração: `agencia.yaml`, `verticals/`, `clients/` (um ficheiro por cliente), `themes/`, `fontes.yaml` |
+| `config/` | Configuração: `agencia.yaml`, `verticals/`, `clients/` (um ficheiro por cliente), `themes/`, `fontes.yaml`, `roteiro.yaml` (apresentação guiada) |
 | `scripts/` | Recolha de dados: notícias, Google Trends, Meta Ad Library |
 | `data/` | Dados recolhidos, sempre com proveniência |
 | `prototype/` | Protótipo HTML (v3, multi-cliente) e o seu código-fonte em `src/` |

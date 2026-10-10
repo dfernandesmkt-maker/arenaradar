@@ -71,6 +71,7 @@
       <div class="scope" id="scope" aria-label="Âmbito"></div>
       <button class="askbtn" id="askopen" aria-label="Pergunta ao Radar"><svg class="ic"><use href="#i-search"/></svg><span>Pergunta ao Radar</span><kbd>Ctrl K</kbd></button>
       <div class="tools">
+        <button class="btn" id="presbtn" aria-label="Modo apresentação"><svg class="ic"><use href="#i-play"/></svg><span>Apresentar</span></button>
         <div class="seg" id="viewseg" role="group" aria-label="Vista"><button data-view="equipa" aria-pressed="true">Equipa</button><button data-view="cliente" aria-pressed="false">Cliente</button></div>
         <div class="sw" id="themes" role="group" aria-label="Tema de cor"></div>
         <button class="iconbtn" id="modebtn" aria-label="Alternar modo claro e escuro"><svg class="ic"><use href="#i-moon"/></svg></button>
@@ -88,6 +89,7 @@
 </div>
 <div id="scrim"></div>
 <aside id="drawer" aria-label="Detalhe"></aside>
+<div id="tour" hidden role="region" aria-label="Roteiro da apresentação"></div>
 <div id="pop" role="dialog" aria-label="Origem dos dados"></div>
 <div id="tip" role="tooltip"></div>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -109,6 +111,7 @@
 {{INCLUDE:js/55-page-acoes.js}}
 {{INCLUDE:js/56-page-agencia.js}}
 {{INCLUDE:js/57-fontes.js}}
+{{INCLUDE:js/85-tour.js}}
 {{INCLUDE:js/90-app.js}}
 })();
 </script>

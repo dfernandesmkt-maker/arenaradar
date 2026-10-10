@@ -27,7 +27,7 @@ let SAVED={};try{SAVED=JSON.parse(localStorage.getItem(STKEY)||"{}")}catch(e){}
 const PAGINAS_CLIENTE=["visao","mercado","procura","criativos","relatorios"];
 Object.values(CLS).forEach(d=>{
   const sv=SAVED[d.cliente.id]||{},pk=sv.pistas||{};
-  d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;const o=pk[p.id];if(o&&o.t===p.titulo){p.s=o.s||"sugerida";p.cli=!!o.cli;p.res=!!o.res;if(o.para)p.para=o.para;if(o.acao)p.acao=o.acao}});
+  d.pistas.forEach(p=>{p.acao0=p.acao;p.para0=p.para;p.s="sugerida";p.cli=false;p.res=false;const o=pk[p.id];if(o&&o.t===p.titulo){p.s=o.s||"sugerida";p.cli=!!o.cli;p.res=!!o.res;if(o.para)p.para=o.para;if(o.acao)p.acao=o.acao}});
   const pb=sv.pub||{};
   d.pub={publicada:!!pb.publicada,paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",quando:pb.quando||null};
   if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao")});

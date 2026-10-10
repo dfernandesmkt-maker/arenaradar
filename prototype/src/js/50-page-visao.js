@@ -79,8 +79,9 @@ document.addEventListener("click",e=>{const r=e.target.closest("tr[data-ent]");i
 document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;b.lastChild.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
 
 function pageVisao(){
-  const lista=isCli()?cartoesPub():D.sinais,sg=lista.map(sigCard).join("");
+  const lista=isCli()?cartoesPub():S.bquiet?[]:D.sinais,sg=lista.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
+   ${isCli()?"":`<div class="no-print" style="margin-top:14px"><button class="chip" id="vquiet" aria-pressed="${!!S.bquiet}" data-tip="Mostra como fica o ecrã quando nada ultrapassa o limiar">Simular semana sem sinais</button></div>`}
    ${kpisHTML()}
    ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
@@ -88,3 +89,5 @@ function pageVisao(){
   return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),esc(leadText()))+body}
 
 document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão marcado para a vista do cliente. Só sai quando publicares em Relatórios.":"Cartão retirado da vista do cliente.");CUR.refresh()});
+
+document.addEventListener("click",e=>{if(e.target.closest("#vquiet")){S.bquiet=!S.bquiet;CUR.refresh()}});

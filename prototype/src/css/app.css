@@ -449,3 +449,25 @@ html[data-view=cliente] .legend{display:none}
 .pubrow input{margin-top:4px;width:17px;height:17px;accent-color:var(--brand-ink);flex:none}
 .pubrow.off{opacity:.55;cursor:default}
 @media (max-width:680px){#viewseg button{padding:0 9px}.vbanner{margin-top:0}}
+
+/* ============ Modo apresentação ============ */
+#tour{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:75;width:min(1000px,calc(100vw - 24px));background:var(--forest);color:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 24px 60px -16px rgba(0,0,0,.55)}
+#tour[hidden]{display:none}
+.tour-in{display:flex;gap:14px;align-items:center}
+#tour .tn{flex:none;min-width:44px;height:30px;border-radius:99px;background:var(--accent);color:var(--forest);font-size:12.5px;font-weight:700;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+#tour .tt{flex:1;display:grid;gap:2px;min-width:0}
+#tour .tt b{font-size:15px;font-weight:650;letter-spacing:-.01em}
+#tour .tt span{color:#cfe0dc;font-size:13px;line-height:1.45}
+#tour .tb{display:flex;gap:8px;align-items:center;flex:none}
+#tour .btn.ghost{color:#cfe0dc}
+#tour .btn.ghost:hover{background:rgba(255,255,255,.1);color:#fff}
+html[data-present] #page{zoom:1.1}
+html[data-present] main{padding-bottom:170px}
+html[data-present] .askbtn kbd,html[data-present] .sw,html[data-present] .legend{display:none}
+html[data-present] .fbar{position:static}
+@media (max-width:900px){#tour{bottom:76px}.tour-in{flex-wrap:wrap}#presbtn span{display:none}}
+@media (max-width:680px){#presbtn{display:none}}
+@media print{#tour,#presbtn{display:none!important}html[data-present] #page{zoom:1}}
+#tour .btn:not(.pri):not(.ghost){color:var(--forest)}
+#tour .btn[disabled]{opacity:.35}
+html[data-present] #toast{bottom:116px}

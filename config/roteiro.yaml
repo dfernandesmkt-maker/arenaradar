@@ -1,0 +1,48 @@
+# Roteiro da apresentação (modo «Apresentar»). Cada passo abre um ecrã e mostra uma nota para quem apresenta.
+# É configuração, não código: para mudar a história da demonstração, edita este ficheiro e volta a gerar o protótipo.
+# rota: «<cliente>/<página>[/<separador>]» ou «agencia/<torre|fontes>»; acrescentar «?v=cliente» abre a vista do cliente.
+# preparar (opcional): demo-pistas = aceita a 1.ª pista, marca-a para o cliente e escolhe 2 cartões
+#                      demo-publicar = publica (só nesta demonstração)
+roteiro:
+  - id: torre
+    titulo: Todos os clientes num só sítio
+    rota: agencia/torre
+    nota: "A Torre de controlo junta os clientes por vertical: o que mudou, quantos sinais estão acima do limiar e quantas pistas esperam decisão da equipa."
+  - id: visao
+    titulo: O primeiro ecrã diz logo o que mudou
+    rota: lumio/visao
+    nota: "Cada cartão traz o número, o limiar e uma pista. A plataforma sugere; a equipa decide. O selo no topo diz de onde vêm os dados (aqui, demonstração com marcas fictícias)."
+  - id: mercado
+    titulo: A concorrência de relance
+    rota: lumio/mercado/voz
+    nota: "Quota de voz por marca. Mexe na semana e o ranking refaz-se. O conjunto competitivo é da equipa: o Radar só sugere."
+  - id: criativos
+    titulo: O que a concorrência põe no ar
+    rota: lumio/criativos
+    nota: "Criativos, formatos e mensagens. Com a Meta Ad Library ligada, aqui entram os anúncios reais."
+  - id: tema
+    titulo: O mesmo produto noutro tipo de cliente
+    rota: spv/visao
+    nota: "A Sociedade Ponto Verde não compete por quota: disputa atenção e clareza. O contexto é real, com fonte e data; as curvas de pesquisa são de demonstração até ligarmos o Google Trends."
+  - id: procura
+    titulo: Procura e notícias
+    rota: spv/procura
+    nota: "O selo mostra a mistura de dados reais e de demonstração. Clica nele para ver o detalhe, ou passa o cursor num número para ver a origem."
+  - id: pistas
+    titulo: A equipa decide
+    rota: lumio/acoes/pistas
+    nota: "Aceitar, ajustar ou descartar, e atribuir a Performance, Brand ou Account. Cada pista mostra a cadeia sinal, leitura e ação."
+    preparar: demo-pistas
+  - id: publicar
+    titulo: Para o cliente só sai o que a equipa publicar
+    rota: lumio/relatorios/publicar
+    nota: "A equipa escolhe páginas, cartões e pistas aceites. Nada é automático e nada sai sem esta decisão."
+  - id: cliente
+    titulo: A vista do cliente
+    rota: lumio/visao?v=cliente
+    nota: "Sem limiares, hipóteses nem atribuições internas, e assinado pela Arena. A entrega real ao cliente decide-se com IT e Compliance."
+    preparar: demo-publicar
+  - id: fontes
+    titulo: Ligar fontes sem mudar a interface
+    rota: agencia/fontes
+    nota: "Cada fonte é um módulo. Ao ligar uma fonte real, o selo da página passa de Demonstração a Real, sem mexer na interface."
