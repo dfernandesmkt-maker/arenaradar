@@ -39,6 +39,9 @@
     <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3.5h10V8M7 17H4.5v-7.5h15V17H17M7 14.5h10V21H7z"/></symbol>
     <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.5l9 5-9 5-9-5zM3 12.5l9 5 9-5M3 16.5l9 5 9-5"/></symbol>
     <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3.5 17l5-5.5 4 3.5 7.5-8.5M15 6.5h5v5"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.2a1.7 1.7 0 00-1.7-1.7H6.2a1.7 1.7 0 00-1.7 1.7v7.6a1.7 1.7 0 001.7 1.7h2.3"/></symbol>
     <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17.5l5-4.5 4 3.5 3-2.5 4.5 3.5"/></symbol>
   </defs>
 </svg>
@@ -73,8 +76,7 @@
       <div class="tools">
         <button class="btn" id="presbtn" aria-label="Modo apresentação"><svg class="ic"><use href="#i-play"/></svg><span>Apresentar</span></button>
         <div class="seg" id="viewseg" role="group" aria-label="Vista"><button data-view="equipa" aria-pressed="true">Equipa</button><button data-view="cliente" aria-pressed="false">Cliente</button></div>
-        <div class="sw" id="themes" role="group" aria-label="Tema de cor"></div>
-        <button class="iconbtn" id="modebtn" aria-label="Alternar modo claro e escuro"><svg class="ic"><use href="#i-moon"/></svg></button>
+        <button class="iconbtn" id="setbtn" aria-label="Definições" aria-haspopup="dialog" aria-expanded="false"><svg class="ic"><use href="#i-sliders"/></svg></button>
       </div>
     </header>
     <main id="page"></main>
@@ -83,8 +85,8 @@
 
 <div id="ask" role="dialog" aria-modal="true" aria-label="Pergunta ao Radar">
   <div class="askbox">
-    <div class="askin"><svg class="ic" style="color:var(--text-2)"><use href="#i-search"/></svg><input id="askin" placeholder="Pergunta qualquer coisa sobre os dados recolhidos" autocomplete="off"><button class="iconbtn" id="askclose" aria-label="Fechar" style="width:30px;height:30px;border:0"><svg class="ic"><use href="#i-x"/></svg></button></div>
-    <div class="askbody"><div class="sug" id="asksug"></div><div class="ans" id="ans" hidden></div></div>
+    <div class="askin"><svg class="ic" style="color:var(--text-2)"><use href="#i-search"/></svg><input id="askin" placeholder="Escreve um comando ou uma pergunta" role="combobox" aria-expanded="true" aria-controls="asksug" autocomplete="off"><button class="iconbtn" id="askclose" aria-label="Fechar" style="width:30px;height:30px;border:0"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="askbody"><div class="sug" id="asksug" role="listbox"></div><div class="ans" id="ans" hidden></div></div>
   </div>
 </div>
 <div id="scrim"></div>
@@ -111,6 +113,8 @@
 {{INCLUDE:js/55-page-acoes.js}}
 {{INCLUDE:js/56-page-agencia.js}}
 {{INCLUDE:js/57-fontes.js}}
+{{INCLUDE:js/80-settings.js}}
+{{INCLUDE:js/82-palette.js}}
 {{INCLUDE:js/85-tour.js}}
 {{INCLUDE:js/90-app.js}}
 })();

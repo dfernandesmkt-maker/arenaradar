@@ -486,6 +486,56 @@ html[data-present] #toast{bottom:116px}
 .fbar{top:calc(62px + env(safe-area-inset-top,0px))}
 #tour{bottom:calc(18px + env(safe-area-inset-bottom,0px))}
 
+/* ============ Definições, paleta e topo mais limpo ============ */
+.setm{position:fixed;top:calc(58px + env(safe-area-inset-top,0px));right:16px;left:auto;width:min(300px,calc(100vw - 32px));padding:10px;z-index:70}
+.setm .gh{padding:10px 6px 6px}
+.setm .seg{width:100%}.setm .seg button{flex:1}
+.sw2{display:flex;gap:10px;padding:2px 6px 4px}
+.sw2 button{width:26px;height:26px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);transition:transform .15s;padding:0}
+.sw2 button:hover{transform:scale(1.1)}
+.sw2 button[aria-pressed=true]{box-shadow:0 0 0 2px var(--text)}
+.setnote{padding:4px 6px 2px;color:var(--text-2)}
+.mi{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:9px 8px;border-radius:8px;font-size:13.5px;font-weight:500}
+.mi:hover{background:var(--line-2)}
+.mi .tg{margin-left:0}
+.top .tools{gap:8px}
+.askbtn{white-space:nowrap}
+.askbtn span{overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1280px){.askbtn{flex:none;margin-left:auto;width:auto;padding:0 11px}.askbtn span{display:none}}
+#asksug .gh{font-size:11.5px;font-weight:600;color:var(--text-2);padding:10px 10px 4px}
+#asksug button[aria-selected=true]{background:var(--brand-soft)}
+
+/* ============ Filtros compactos ============ */
+.fbar{display:flex;gap:8px;align-items:center;padding:9px 0;margin:0 0 18px;flex-wrap:nowrap}
+.fdesk{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.fbtn{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 10px 0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:13px;white-space:nowrap;transition:border-color .15s,background .15s}
+.fbtn:hover{border-color:color-mix(in srgb,var(--text) 30%,var(--line))}
+.fbtn .fl{color:var(--text-2);font-weight:500}
+.fbtn b{font-weight:600}
+.fbtn .ic{width:14px;height:14px;color:var(--text-2)}
+.fbtn.on{border-color:var(--brand-ink);background:var(--brand-soft)}
+.fbtn[aria-expanded=true]{border-color:var(--brand-ink)}
+.fbtn.ghost{border-color:transparent;background:transparent;color:var(--brand-ink);font-weight:600;padding:0 8px}
+.fmob{display:none}
+#fpop{position:fixed;left:0;top:0;z-index:72;min-width:210px;max-width:min(340px,calc(100vw - 24px));padding:8px;display:none}
+#fpop.on{display:block}
+#fpop .gh{padding:8px 8px 4px}
+.opt{display:flex;width:100%;align-items:center;gap:8px;text-align:left;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:500;min-height:38px}
+.opt:hover:not([disabled]){background:var(--line-2)}
+.opt[disabled]{opacity:.7;cursor:default}
+.opt em{font-style:normal;color:var(--text-2);font-size:12px;font-weight:500}
+.opt[role=radio]::after,.opt[role=checkbox]::after{content:"";margin-left:auto;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.opt[role=checkbox]::after{border-radius:5px}
+.opt[aria-checked=true]{font-weight:600}
+.opt[aria-checked=true]::after{background:var(--brand-ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.2 4.2L19 7'/%3E%3C/svg%3E") center/12px no-repeat;border-color:var(--brand-ink)}
+.opt.sug{border:1px dashed var(--line);margin-top:4px}
+#fscrim{position:fixed;inset:0;z-index:71;background:rgba(10,25,23,.35);opacity:0;pointer-events:none;transition:opacity .2s}
+#fscrim.on{opacity:1;pointer-events:auto}
+#fpop.sheet{top:auto!important;left:0!important;right:0;bottom:0;max-width:none;width:100%;border-radius:18px 18px 0 0;padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));max-height:80vh;overflow:auto}
+.fsheetf{display:flex;gap:10px;justify-content:space-between;margin-top:12px;position:sticky;bottom:0;background:var(--surface);padding-top:8px}
+.fsheetf .btn{flex:1;justify-content:center;height:42px}
+@media (max-width:680px){.fdesk{display:none}.fmob{display:inline-flex;width:100%;height:42px;justify-content:flex-start}.fmob b{margin-left:auto}.fbar{position:static}}
+
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
 :root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--pos:#2a78d6}
 :root[data-mode=dark]{--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--pos:#3987e5}
@@ -685,6 +735,9 @@ html[data-present] #toast{bottom:116px}
     <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3.5h10V8M7 17H4.5v-7.5h15V17H17M7 14.5h10V21H7z"/></symbol>
     <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.5l9 5-9 5-9-5zM3 12.5l9 5 9-5M3 16.5l9 5 9-5"/></symbol>
     <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3.5 17l5-5.5 4 3.5 7.5-8.5M15 6.5h5v5"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.2a1.7 1.7 0 00-1.7-1.7H6.2a1.7 1.7 0 00-1.7 1.7v7.6a1.7 1.7 0 001.7 1.7h2.3"/></symbol>
     <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17.5l5-4.5 4 3.5 3-2.5 4.5 3.5"/></symbol>
   </defs>
 </svg>
@@ -719,8 +772,7 @@ html[data-present] #toast{bottom:116px}
       <div class="tools">
         <button class="btn" id="presbtn" aria-label="Modo apresentação"><svg class="ic"><use href="#i-play"/></svg><span>Apresentar</span></button>
         <div class="seg" id="viewseg" role="group" aria-label="Vista"><button data-view="equipa" aria-pressed="true">Equipa</button><button data-view="cliente" aria-pressed="false">Cliente</button></div>
-        <div class="sw" id="themes" role="group" aria-label="Tema de cor"></div>
-        <button class="iconbtn" id="modebtn" aria-label="Alternar modo claro e escuro"><svg class="ic"><use href="#i-moon"/></svg></button>
+        <button class="iconbtn" id="setbtn" aria-label="Definições" aria-haspopup="dialog" aria-expanded="false"><svg class="ic"><use href="#i-sliders"/></svg></button>
       </div>
     </header>
     <main id="page"></main>
@@ -729,8 +781,8 @@ html[data-present] #toast{bottom:116px}
 
 <div id="ask" role="dialog" aria-modal="true" aria-label="Pergunta ao Radar">
   <div class="askbox">
-    <div class="askin"><svg class="ic" style="color:var(--text-2)"><use href="#i-search"/></svg><input id="askin" placeholder="Pergunta qualquer coisa sobre os dados recolhidos" autocomplete="off"><button class="iconbtn" id="askclose" aria-label="Fechar" style="width:30px;height:30px;border:0"><svg class="ic"><use href="#i-x"/></svg></button></div>
-    <div class="askbody"><div class="sug" id="asksug"></div><div class="ans" id="ans" hidden></div></div>
+    <div class="askin"><svg class="ic" style="color:var(--text-2)"><use href="#i-search"/></svg><input id="askin" placeholder="Escreve um comando ou uma pergunta" role="combobox" aria-expanded="true" aria-controls="asksug" autocomplete="off"><button class="iconbtn" id="askclose" aria-label="Fechar" style="width:30px;height:30px;border:0"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="askbody"><div class="sug" id="asksug" role="listbox"></div><div class="ans" id="ans" hidden></div></div>
   </div>
 </div>
 <div id="scrim"></div>
@@ -919,23 +971,47 @@ function secHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class
 function cardHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="card"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
 function pheadHTML(kick,title,lead,{sm=false}={}){return`<div class="phead ${sm?"sm":""}"><div class="kick"><span>${kick}</span><span id="sealslot">${sealHTML(USED)}</span></div><h1 class="t-display">${title}</h1>${lead?`<p class="lead">${lead}</p>`:""}</div>`}
 
-/* ---------- Barra de filtros global (período, comparação, plataforma, marcas) ---------- */
-function filterBar({brands=false,platforms=false,compare=true}={}){
-  const ads=hasAds();
+/* ---------- Barra de filtros global (uma linha; cada filtro abre um painel; em telemóvel, uma folha «Filtros») ---------- */
+const FCFG={brands:false,platforms:false,compare:true}, FP={k:null};
+const defW=()=>isTema()?NW:12;
+function filterBar(cfg={}){
+  Object.assign(FCFG,{brands:false,platforms:false,compare:true},cfg);
+  const ads=hasAds(),{brands,platforms,compare}=FCFG,perL=isTema()&&S.w===NW?"Tudo":S.w+" sem.";
+  const btn=(k,l,v,on)=>`<button class="fbtn ${on?"on":""}" data-fpop="${k}" aria-haspopup="true" aria-expanded="${FP.k===k}"><span class="fl">${l}</span><b>${v}</b><svg class="ic"><use href="#i-down"/></svg></button>`;
+  const alt=[S.w!==defW(),compare&&S.cmp!=="anterior",platforms&&ads&&S.pl.size!==PL.length].filter(Boolean).length;
   return`<div class="fbar" id="fbar" role="group" aria-label="Filtros desta página">
-   <div class="grp2"><span class="fl">Período</span><div class="seg">${periodos().map(n=>`<button data-fw="${n}" aria-pressed="${S.w===n}">${isTema()&&n===NW?"Tudo":n+" sem."}</button>`).join("")}</div></div>
-   ${compare?`<div class="grp2"><span class="fl">Comparar com</span><div class="seg">${[["anterior","Período anterior"],["nenhum","Sem comparação"]].map(([k,l])=>`<button data-fc="${k}" aria-pressed="${S.cmp===k}">${l}</button>`).join("")}</div></div>`:""}
-   ${platforms&&ads?`<div class="grp2"><span class="fl">Plataforma</span>${PL.map(p=>`<button class="fchip" data-fp="${p}" aria-pressed="${S.pl.has(p)}">${p}</button>`).join("")}</div>`:""}
-   ${brands&&ads&&!isTema()?`<div class="grp2"><span class="fl">Marcas</span>${D.entidades.map(e=>e.incluida?`<button class="fchip" data-fb="${e.id}" aria-pressed="true" ${e.cliente?`disabled aria-label="${esc(e.nome)}, cliente"`:""}><i style="background:${col(e)}"></i>${esc(e.nome)}</button>`:e.sugerida?(isCli()?"":`<button class="fchip sug" data-add="${e.id}" data-tip="O Radar sugere ${esc(e.nome)}: aparece em ${e.sobreposicao}% das mesmas pesquisas. A equipa decide.">${dot(e)}${esc(e.nome)}, sugerida</button>`):`<button class="fchip" data-fb="${e.id}" aria-pressed="false"><i style="background:${col(e)}"></i>${esc(e.nome)}</button>`).join("")}</div>`:""}
-  </div>`}
+   <div class="fdesk">${btn("per","Período",perL,S.w!==defW())}${compare?btn("cmp","Comparar",S.cmp==="anterior"?"Período anterior":"Sem comparação",S.cmp!=="anterior"):""}${platforms&&ads?btn("pl","Plataformas",S.pl.size===PL.length?"Todas":`${S.pl.size} de ${PL.length}`,S.pl.size!==PL.length):""}${brands&&ads&&!isTema()?btn("br","Marcas",`${incl().length} marcas`,false):""}${alt?`<button class="fbtn ghost" data-freset>Repor filtros</button>`:""}</div>
+   <button class="fbtn fmob ${alt?"on":""}" data-fpop="all" aria-haspopup="true" aria-expanded="${FP.k==="all"}"><svg class="ic"><use href="#i-sliders"/></svg><span>Filtros</span><b>${perL}${alt?` · ${alt} alterado${alt>1?"s":""}`:""}</b></button></div>`}
+function fpopSec(k){
+  if(k==="per")return`<div class="gh">Período</div>`+periodos().map(n=>`<button class="opt" role="radio" aria-checked="${S.w===n}" data-fw="${n}">${isTema()&&n===NW?"Tudo":n+" semanas"}</button>`).join("");
+  if(k==="cmp")return`<div class="gh">Comparar com</div>`+[["anterior","Período anterior"],["nenhum","Sem comparação"]].map(([v,l])=>`<button class="opt" role="radio" aria-checked="${S.cmp===v}" data-fc="${v}">${l}</button>`).join("");
+  if(k==="pl")return`<div class="gh">Plataformas</div>`+PL.map(p=>`<button class="opt chk" role="checkbox" aria-checked="${S.pl.has(p)}" data-fp="${p}">${p}</button>`).join("");
+  if(k==="br")return`<div class="gh">Marcas do conjunto</div>`+D.entidades.map(e=>e.incluida?`<button class="opt chk" role="checkbox" aria-checked="true" data-fb="${e.id}" ${e.cliente?'disabled':""}>${dot(e)}${esc(e.nome)}${e.cliente?" <em>cliente</em>":""}</button>`:e.sugerida?(isCli()?"":`<button class="opt sug" data-add="${e.id}">${dot(e)}${esc(e.nome)} <em>sugerida pelo Radar. Aceitar</em></button>`):`<button class="opt chk" role="checkbox" aria-checked="false" data-fb="${e.id}">${dot(e)}${esc(e.nome)}</button>`).join("");
+  return""}
+function fpopHTML(k){
+  if(k!=="all")return fpopSec(k);
+  const ks=["per",FCFG.compare?"cmp":null,FCFG.platforms&&hasAds()?"pl":null,FCFG.brands&&hasAds()&&!isTema()?"br":null].filter(Boolean);
+  return ks.map(fpopSec).join("")+`<div class="fsheetf"><button class="btn" data-freset>Repor filtros</button><button class="btn pri" data-fclose>Ver resultados</button></div>`}
+function fpopPlace(btn){const pop=$("#fpop"),mob=FP.k==="all"||innerWidth<=680;pop.classList.toggle("sheet",mob);$("#fscrim").classList.toggle("on",mob);
+  if(mob){pop.style.left=pop.style.top="";return}
+  const r=btn.getBoundingClientRect();pop.style.top=(r.bottom+6)+"px";pop.style.left=Math.max(12,Math.min(r.left,innerWidth-pop.offsetWidth-12))+"px"}
+function openFpop(k,btn){if(!$("#fpop")){const d=document.createElement("div");d.id="fpop";d.className="menu";d.setAttribute("role","dialog");const s=document.createElement("div");s.id="fscrim";document.body.append(s,d)}
+  FP.k=k;const pop=$("#fpop");pop.innerHTML=fpopHTML(k);pop.classList.add("on");fpopPlace(btn);$$("#fbar [data-fpop]").forEach(b=>b.setAttribute("aria-expanded",b.dataset.fpop===k))}
+function closeFpop(){FP.k=null;const p=$("#fpop");if(p)p.classList.remove("on");const s=$("#fscrim");if(s)s.classList.remove("on");$$("#fbar [data-fpop]").forEach(b=>b.setAttribute("aria-expanded","false"))}
+function fpopSync(){if(!FP.k)return;const b=$(`#fbar [data-fpop="${FP.k}"]`);if(!b||!b.offsetParent){closeFpop();return}$("#fpop").innerHTML=fpopHTML(FP.k);fpopPlace(b);b.setAttribute("aria-expanded","true")}
 document.addEventListener("click",e=>{
   let t;
-  if(t=e.target.closest("#fbar [data-fw]")){S.w=+t.dataset.fw;CUR.refresh();return}
-  if(t=e.target.closest("#fbar [data-fc]")){S.cmp=t.dataset.fc;CUR.refresh();return}
-  if(t=e.target.closest("#fbar [data-fp]")){const p=t.dataset.fp;if(S.pl.has(p)){if(S.pl.size>1)S.pl.delete(p);else toast("Mantém pelo menos uma plataforma.")}else S.pl.add(p);CUR.refresh();return}
-  if(t=e.target.closest("#fbar [data-fb]")){const b=ebyid(t.dataset.fb);b.incluida=!b.incluida;CUR.refresh();return}
-  if(t=e.target.closest("[data-add]")){const b=ebyid(t.dataset.add);if(b){b.incluida=true;b.sugerida=false;toast(b.nome+" entrou no conjunto. O Radar sugere; a equipa decide.");CUR.refresh()}}
-});
+  if(t=e.target.closest("[data-fpop]")){FP.k===t.dataset.fpop?closeFpop():openFpop(t.dataset.fpop,t);return}
+  if(e.target.closest("[data-fclose]")){closeFpop();return}
+  if(e.target.closest("[data-freset]")){S.w=defW();S.cmp="anterior";S.pl=new Set(PL);CUR.refresh();return}
+  if(t=e.target.closest("[data-fw]")){S.w=+t.dataset.fw;CUR.refresh();if(FP.k!=="all")closeFpop();return}
+  if(t=e.target.closest("[data-fc]")){S.cmp=t.dataset.fc;CUR.refresh();if(FP.k!=="all")closeFpop();return}
+  if(t=e.target.closest("[data-fp]")){const p=t.dataset.fp;if(S.pl.has(p)){if(S.pl.size>1)S.pl.delete(p);else toast("Mantém pelo menos uma plataforma.")}else S.pl.add(p);CUR.refresh();return}
+  if(t=e.target.closest("[data-fb]")){const b=ebyid(t.dataset.fb);b.incluida=!b.incluida;CUR.refresh();return}
+  if(t=e.target.closest("[data-add]")){const b=ebyid(t.dataset.add);if(b){b.incluida=true;b.sugerida=false;toast(b.nome+" entrou no conjunto. O Radar sugere; a equipa decide.");CUR.refresh();return}}
+  if(FP.k&&!e.target.closest("#fpop"))closeFpop()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&FP.k)closeFpop()});
+addEventListener("resize",()=>{if(FP.k)fpopSync()});
 
 /* ---------- Gaveta de detalhe ---------- */
 function openDrawer(html){const d=$("#drawer");d.innerHTML=html;d.classList.add("on");$("#scrim").classList.add("on");const c=$("#dclose");if(c)c.focus()}
@@ -1172,7 +1248,6 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(
 function pageVisao(){
   const lista=isCli()?cartoesPub():S.bquiet?[]:D.sinais,sg=lista.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
-   ${isCli()?"":`<div class="no-print" style="margin-top:14px"><button class="chip" id="vquiet" aria-pressed="${!!S.bquiet}" data-tip="Mostra como fica o ecrã quando nada ultrapassa o limiar">Simular semana sem sinais</button></div>`}
    ${kpisHTML()}
    ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
@@ -1181,7 +1256,6 @@ function pageVisao(){
 
 document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão marcado para a vista do cliente. Só sai quando publicares em Relatórios.":"Cartão retirado da vista do cliente.");CUR.refresh()});
 
-document.addEventListener("click",e=>{if(e.target.closest("#vquiet")){S.bquiet=!S.bquiet;CUR.refresh()}});
 
 /* ============================================================
    Página «Mercado»: adapta-se ao tipo de universo.
@@ -1595,6 +1669,117 @@ function pageFontes(){
     <div class="imp"><div class="drop" id="drop"><svg class="ic" style="width:26px;height:26px"><use href="#i-plug"/></svg><span>Arrasta um ficheiro CSV para aqui</span><input type="file" id="impfile" accept=".csv,text/csv"><button class="btn pri" id="impbtn">Escolher ficheiro</button>${EM_ARTEFACTO?"":`<button class="btn ghost" id="imptpl">Descarregar modelo</button>`}<button class="chip" id="impsample">Experimentar com um exemplo</button></div><div id="impres"></div></div></div>`}
 
 /* ============================================================
+   Definições (ícone no topo): aparência (claro/escuro), cor do tema e controlos de demonstração.
+   As cores vêm de config/themes/*.json e passam por validação de contraste AA ao serem aplicadas.
+   ============================================================ */
+function applyTheme(id,announce){const t=AG.temas.find(x=>x.id===id)||AG.temas[0],aa=ensureAA(t.cor),root=document.documentElement;
+  root.style.setProperty("--brand",t.cor);root.style.setProperty("--brand-ink",aa.hex);APPTHEME=t.id;
+  if(announce){const adj=aa.hex.toLowerCase()!==t.cor.toLowerCase();toast(adj?`${t.nome}: a cor tem ${nf(aa.before,1)}:1 de contraste com branco. Para texto e botões o Radar usa ${aa.hex} (${nf(aa.after,1)}:1), acima do mínimo AA de 4,5:1.`:`${t.nome}: contraste ${nf(aa.before,1)}:1, cumpre o mínimo AA de 4,5:1.`)}
+  syncSettings();redrawCharts()}
+let APPTHEME=null;
+function setMode(m){document.documentElement.dataset.mode=m;syncSettings();redrawCharts()}
+const isDark=()=>document.documentElement.dataset.mode==="dark";
+
+/* Tema do visualizador (só na página publicada no claude.ai) */
+function seguirTemaDoVisualizador(){
+  const r=document.documentElement,mq=matchMedia("(prefers-color-scheme: dark)");
+  const aplicar=()=>{const t=r.dataset.theme,dark=t==="dark"||(t!=="light"&&mq.matches);setMode(dark?"dark":"light")};
+  aplicar();mq.addEventListener&&mq.addEventListener("change",aplicar);
+  new MutationObserver(aplicar).observe(r,{attributes:true,attributeFilter:["data-theme"]})}
+
+/* Menu de definições */
+function settingsHTML(){
+  const eq=VIEW!=="cliente"&&ROUTE.scope==="cliente";
+  return`<div class="gh">Aparência</div>
+   <div class="seg" role="group" aria-label="Modo de cor"><button data-modo="light" aria-pressed="${!isDark()}">Claro</button><button data-modo="dark" aria-pressed="${isDark()}">Escuro</button></div>
+   ${VIEW!=="cliente"?`<div class="gh">Cor do tema</div><div class="sw2" role="group" aria-label="Cor do tema">${AG.temas.map(t=>{const aa=ensureAA(t.cor);return`<button data-tid="${t.id}" aria-label="${esc(t.nome)}" aria-pressed="${t.id===APPTHEME}" style="background:${t.cor}" data-tip="<b>${esc(t.nome)}</b><br>Contraste com branco: ${nf(aa.before,1)}:1${aa.hex.toLowerCase()!==t.cor.toLowerCase()?`. Texto e botões usam ${aa.hex} (${nf(aa.after,1)}:1).`:", cumpre AA."}"></button>`}).join("")}</div><p class="t-xs setnote">Só muda as cores de marca. O contraste é validado (WCAG AA).</p>`:""}
+   ${eq?`<div class="gh">Demonstração</div>
+    <button class="mi" data-sq aria-pressed="${!!(S&&S.bquiet)}"><span>Simular semana sem sinais</span><i class="tg" role="switch" aria-checked="${!!(S&&S.bquiet)}"></i></button>
+    <button class="mi" data-reset><span>Repor demonstração</span></button>`:""}`}
+function openSettings(){closeSettings();const m=document.createElement("div");m.id="setmenu";m.className="menu setm";m.setAttribute("role","dialog");m.setAttribute("aria-label","Definições");m.innerHTML=settingsHTML();document.body.appendChild(m);$("#setbtn").setAttribute("aria-expanded","true")}
+function closeSettings(){const m=$("#setmenu");if(m)m.remove();const b=$("#setbtn");if(b)b.setAttribute("aria-expanded","false")}
+function syncSettings(){const m=$("#setmenu");if(m)m.innerHTML=settingsHTML()}
+document.addEventListener("click",e=>{
+  if(e.target.closest("#setbtn")){$("#setmenu")?closeSettings():openSettings();return}
+  const m=e.target.closest("#setmenu");
+  if(m){let t;
+    if(t=e.target.closest("[data-modo]"))setMode(t.dataset.modo);
+    else if(t=e.target.closest("[data-tid]"))applyTheme(t.dataset.tid,true);
+    else if(e.target.closest("[data-sq]")){S.bquiet=!S.bquiet;syncSettings();CUR.refresh()}
+    else if(e.target.closest("[data-reset]")){closeSettings();resetEstado()}
+    return}
+  closeSettings()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSettings()});
+
+/* ============================================================
+   Paleta de comandos e Pergunta ao Radar (Ctrl K): ir para uma página, mudar de cliente, executar uma ação
+   ou fazer uma pergunta sobre os dados do cliente ativo. As respostas são calculadas sobre o dataset, com a sua origem.
+   Na vista do cliente a paleta não existe.
+   ============================================================ */
+const norm=s=>String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+
+function asks(){
+  const a=[{id:"mudou",q:"O que mudou esta semana?",k:/mudou|semana|novidade/i},{id:"pistas",q:"Que pistas já foram decididas?",k:/pista|aceit|decid|a[cç][aã]o/i}];
+  if(hasAds()){a.push({id:"quota",q:`Qual é a quota de voz de ${me().nome}?`,k:/quota|voz/i},{id:"conjunto",q:`Que marcas estão no conjunto de ${D.cliente.vertical_nome}?`,k:/conjunto|marca|concorr/i},{id:"lancou",q:"Quem lançou campanhas novas?",k:/lan[cç]|campanha|nova/i})}
+  if(D.procura){const pr=(D.procura.principais&&serieProcura(D.procura.principais[D.procura.principais.length-1]))||D.procura.series[0];a.push({id:"pico",q:`Quando houve o último pico de «${pr.nome}»?`,k:/pico|d[uú]vida|m[aá]ximo/i,s:pr})}
+  if(D.contexto)D.contexto.indicadores.slice(0,2).forEach((it,i)=>a.push({id:"ind"+i,q:`O que sabemos sobre «${it.rotulo.toLowerCase()}»?`,k:new RegExp(it.id.split("_")[0],"i"),it}));
+  return a}
+function answer(a){
+  const sl=bl=>`<p class="t-xs" style="margin-top:6px">${esc(sealInfo(new Set(bl)).t)}</p>`;
+  if(a.id==="mudou"){const m=D.sinais.filter(s=>s.material),o=D.sinais.filter(s=>!s.material);return`<p>${m.length?`Há <b>${m.length===1?"um sinal":m.length+" sinais"} acima do limiar</b>:`:"Nenhum sinal acima do limiar."}</p><ul style="padding-left:18px;display:grid;gap:6px">${m.map(s=>`<li data-src="${s.bloco}"><b>${esc(s.titulo)}</b></li>`).join("")}</ul>${o.length?`<p>Em observação:</p><ul style="padding-left:18px;display:grid;gap:6px">${o.map(s=>`<li data-src="${s.bloco}">${esc(s.titulo)}</li>`).join("")}</ul>`:""}${sl(D.sinais.map(s=>s.bloco))}<p><button class="btn" data-go="visao">Abrir a Visão geral</button></p>`}
+  if(a.id==="pistas"){const l=D.pistas.map(p=>`<li>${esc(p.titulo)}: <b>${STL[p.s].toLowerCase()}</b></li>`).join("");return`<ul style="padding-left:18px;display:grid;gap:6px">${l||"<li>Sem pistas esta semana.</li>"}</ul><p><button class="btn" data-go="acoes/pistas">Abrir as pistas</button></p>`}
+  if(a.id==="quota"){const s=sov(Z),inc=incl().sort((x,y)=>s[y.id]-s[x.id]),m=me();return`<p>${esc(m.nome)} tem <b>${nf(s[m.id],1)}%</b> da quota de voz, em ${inc.findIndex(e=>e.cliente)+1}.º lugar entre ${inc.length} marcas. ${inc[0].cliente?"É a marca com mais voz.":`${esc(inc[0].nome)} lidera com ${nf(s[inc[0].id],1)}%.`}</p><div>${spark(range(Z-15,Z).map(w=>sov(w)[m.id]),300,44)}</div>${sl(["anuncios"])}<p><button class="btn" data-go="mercado/voz">Abrir a quota de voz</button></p>`}
+  if(a.id==="conjunto"){const inc=incl().map(e=>e.nome).join(", "),sg=D.entidades.find(e=>e.sugerida);return`<p>O conjunto de ${esc(me().nome)} tem <b>${incl().length} marcas</b>: ${esc(inc)}. ${sg?`O Radar sugere ainda ${esc(sg.nome)}, que a equipa pode aceitar.`:""}</p>${sl(["anuncios"])}<p><button class="btn" data-go="mercado/voz">Abrir o conjunto competitivo</button></p>`}
+  if(a.id==="lancou"){const l=D.sinais.filter(s=>s.categoria==="Lançamento");return l.length?`<ul style="padding-left:18px;display:grid;gap:6px">${l.map(s=>`<li><b>${esc(s.titulo)}</b>. ${esc(s.leitura)}</li>`).join("")}</ul>${sl(["anuncios"])}<p><button class="btn" data-go="criativos">Ver criativos</button></p>`:`<p>Nenhum lançamento acima do limiar nas últimas semanas.</p>${sl(["anuncios"])}`}
+  if(a.id==="pico"){const v=a.s.valores,mx=Math.max(...v.filter(x=>x!=null)),i=v.indexOf(mx);return`<p>O valor mais alto de «${esc(a.s.nome)}» é ${i===Z?"o desta semana, ":"o da semana de "}<b>${wLab(i)}</b>: ${mx} em 100.</p>${sl(["procura"])}<p><button class="btn" data-go="procura">Abrir Procura e notícias</button></p>`}
+  if(a.it){const it=a.it;return`<p><b>${esc(it.rotulo)}</b>: ${nf(it.valor,it.decimais||0)}${esc(it.formato||"")}. ${esc(it.detalhe||"")}</p>${sl([it.bloco])}<p><button class="btn" data-go="mercado/ctx">Abrir o contexto de mercado</button></p>`}
+  return`<p>Nesta pré-visualização só respondo às perguntas sugeridas. Na versão real, a pergunta traduz-se numa consulta aos dados recolhidos, e a resposta traz sempre a origem de cada número.</p>`}
+
+/* ---------- Comandos ---------- */
+function comandos(){
+  const L=[],cli=ROUTE.scope==="cliente";
+  if(cli){
+    Object.entries(PAGES).filter(([k,p])=>!p.if||p.if()).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"abrir página",run:()=>go(`${CID}/${k}`)}));
+    mtabs().forEach(x=>L.push({g:"Ir para",t:"Mercado: "+x[1],i:"i-layers",k:"abrir",run:()=>go(`${CID}/mercado/${x[0]}`)}));
+    L.push({g:"Ir para",t:"Relatórios: publicar para o cliente",i:"i-send",k:"publicar vista cliente",run:()=>go(`${CID}/relatorios/publicar`)});
+  }
+  Object.entries(AGPAGES).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"agência",run:()=>go(`agencia/${k}`)}));
+  AG.clientes.forEach(c=>L.push({g:"Mudar de cliente",t:c.nome,i:"i-radar",k:`${c.vertical_nome} cliente`,run:()=>go(`${c.id}/${cli&&ROUTE.page!=="criativos"?ROUTE.page:"visao"}`)}));
+  L.push({g:"Ações",t:"Alternar modo claro e escuro",i:isDark()?"i-sun":"i-moon",k:"tema aparência",run:()=>setMode(isDark()?"light":"dark")});
+  if(tourSteps().length)L.push({g:"Ações",t:"Apresentar: roteiro guiado",i:"i-play",k:"demonstração modo apresentação",run:()=>tourStart()});
+  if(cli){L.push({g:"Ações",t:"Pré-visualizar a vista do cliente",i:"i-eye",k:"cliente publicar",run:()=>go(`${CID}/${ROUTE.page==="acoes"?"visao":ROUTE.page}?v=cliente`)});
+    L.push({g:"Ações",t:"Simular semana sem sinais",i:"i-flask",k:"demonstração vazio",run:()=>{S.bquiet=!S.bquiet;CUR.refresh()}})}
+  L.push({g:"Ações",t:"Repor demonstração",i:"i-x",k:"limpar decisões publicações",run:()=>resetEstado()});
+  if(cli)ask.list.forEach(a=>L.push({g:"Perguntas",t:a.q,i:"i-search",k:"pergunta radar",run:()=>runAsk(a.id)}));
+  return L}
+
+const ask={el:$("#ask"),inp:$("#askin"),list:[],items:[],sel:0};
+function palRender(){
+  const q=norm(ask.inp.value.trim()),all=comandos(),words=q.split(/\s+/).filter(Boolean);
+  let it=all.filter(c=>!words.length||words.every(w=>norm(c.t+" "+(c.k||"")+" "+c.g).includes(w)));
+  if(!words.length)it=it.filter(c=>c.g!=="Mudar de cliente"||AG.clientes.length<=6).slice(0,14);else it=it.slice(0,10);
+  if(!it.length&&q)it=[{g:"Perguntar",t:"Perguntar ao Radar: «"+ask.inp.value.trim()+"»",i:"i-search",run:()=>runAsk("x",ask.inp.value.trim())}];
+  ask.items=it;ask.sel=Math.min(ask.sel,Math.max(0,it.length-1));
+  let g="";$("#asksug").innerHTML=it.map((c,i)=>{const h=c.g!==g?`<div class="gh">${esc(c.g)}</div>`:"";g=c.g;return`${h}<button role="option" data-cmd="${i}" aria-selected="${i===ask.sel}"><svg class="ic" style="color:var(--text-2)"><use href="#${c.i}"/></svg>${esc(c.t)}</button>`}).join("");
+  const sel=$('#asksug [aria-selected="true"]');if(sel)sel.scrollIntoView({block:"nearest"})}
+function openAsk(pre){if(VIEW==="cliente")return;ask.list=ROUTE.scope==="cliente"?asks():[];ask.el.classList.add("on");$("#ans").hidden=true;$("#asksug").hidden=false;ask.inp.value="";ask.sel=0;palRender();setTimeout(()=>ask.inp.focus(),30);if(pre)runAsk(pre)}
+function closeAsk(){ask.el.classList.remove("on")}
+function runAsk(id,text){const a=ask.list.find(x=>x.id===id),q=text||(a?a.q:id);$("#asksug").hidden=true;const box=$("#ans");box.hidden=false;
+  const type=(t,i=0)=>{ask.inp.value=t.slice(0,i);if(i<t.length&&!RM)setTimeout(()=>type(t,i+1),14);else ask.inp.value=t};type(q);
+  box.innerHTML=`<div class="q">${esc(q)}</div><div class="dots" aria-label="A pensar"><i></i><i></i><i></i></div>`;
+  setTimeout(()=>{box.innerHTML=`<div class="q">${esc(q)}</div><div class="ansbody">${answer(a||{id:"x"})}</div>`},RM?0:q.length*14+650)}
+function palExec(i){const c=ask.items[i];if(!c)return;if(c.g==="Perguntas"||c.g==="Perguntar"){c.run();return}closeAsk();c.run()}
+$("#askopen").addEventListener("click",()=>openAsk());
+$("#askclose").addEventListener("click",closeAsk);
+ask.el.addEventListener("click",e=>{if(e.target===ask.el)closeAsk();const c=e.target.closest("[data-cmd]");if(c){palExec(+c.dataset.cmd);return}const g=e.target.closest("[data-go]");if(g){closeAsk();go(g.dataset.go)}});
+ask.inp.addEventListener("input",()=>{$("#ans").hidden=true;$("#asksug").hidden=false;ask.sel=0;palRender()});
+ask.inp.addEventListener("keydown",e=>{
+  if(e.key==="ArrowDown"){e.preventDefault();ask.sel=Math.min(ask.items.length-1,ask.sel+1);palRender()}
+  else if(e.key==="ArrowUp"){e.preventDefault();ask.sel=Math.max(0,ask.sel-1);palRender()}
+  else if(e.key==="Enter"){e.preventDefault();if(!$("#asksug").hidden)palExec(ask.sel);else{const v=ask.inp.value.trim();if(v){const m=ask.list.find(a=>a.k.test(v));runAsk(m?m.id:"x",v)}}}});
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();ask.el.classList.contains("on")?closeAsk():openAsk()}if(e.key==="Escape")closeAsk()});
+
+/* ============================================================
    Modo apresentação: roteiro guiado (config/roteiro.yaml) com notas por ecrã, letra maior e menos distrações.
    Serve para apresentar o Radar à direção ou à equipa. Setas esquerda/direita avançam e recuam.
    Os passos «preparar» só existem para a demonstração e podem ser repostos (Repor demonstração).
@@ -1609,7 +1794,7 @@ function resetEstado(){
   Object.values(CLS).forEach(d=>{d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;p.acao=p.acao0;p.para=p.para0});d.pub={publicada:false,paginas:[...PAGINAS_CLIENTE],cartoes:[],nota:"",quando:null}});
   Object.values(SESS).forEach(s=>{s.bquiet=false;s.bmode="equipa"});
   toast("Demonstração reposta: pistas por decidir e nada publicado.");CUR.refresh()}
-document.addEventListener("click",e=>{if(e.target.closest("#resetdemo"))resetEstado()});
+document.addEventListener("click",e=>{if(e.target.closest("#resetdemo"))resetEstado()});   // (o menu de definições trata o seu próprio botão)
 
 function tourPreparar(cid,tipo){
   const d=CLS[cid];if(!d||!tipo)return;
@@ -1700,7 +1885,7 @@ document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(!
 document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches(".kpi[data-go]")){e.preventDefault();go(e.target.dataset.go)}});
 
 function render(r,scrollTop){
-  stopRace();stopPlay();closeDrawer();closeMenu();$("#pop").classList.remove("on");CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;
+  stopRace();stopPlay();closeDrawer();closeMenu();closeFpop();$("#pop").classList.remove("on");CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;
   if(r.cid){CID=r.cid}if(!D||D.cliente.id!==CID)setClient(CID);else if(!S)setClient(CID);
   VIEW=r.view;document.documentElement.dataset.view=VIEW;
   let pg;
@@ -1717,64 +1902,17 @@ function render(r,scrollTop){
   const html=banner+pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
   buildNav();buildScope();$("#viewseg").hidden=r.scope==="agencia";$$("#viewseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===VIEW));
   document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n+(VIEW==="cliente"?" (vista do cliente)":""));
-  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));scrollTo({top:y,behavior:"auto"})};
+  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync()};
   AFTER.forEach(f=>f());AFTER.length=0;counters(t);syncCounts();
   if(scrollTop&&!r.focus)scrollTo({top:0,behavior:"auto"});
   if(location.hash!==href(r)){try{history.replaceState(null,"",href(r))}catch(e){}}}
 
 document.addEventListener("click",e=>{const b=e.target.closest("#viewseg [data-view]");if(!b)return;const pg=ROUTE.scope==="cliente"&&ROUTE.page!=="acoes"?ROUTE.page:"visao";go(`${CID}/${pg}?v=${b.dataset.view}`)});
 
-/* ---------- Temas por cliente (tokens) e modo escuro ---------- */
-function applyTheme(id,announce){const t=AG.temas.find(x=>x.id===id)||AG.temas[0],aa=ensureAA(t.cor),root=document.documentElement;
-  root.style.setProperty("--brand",t.cor);root.style.setProperty("--brand-ink",aa.hex);
-  $$("#themes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.id===t.id));
-  if(announce){const adj=aa.hex.toLowerCase()!==t.cor.toLowerCase();toast(adj?`${t.nome}: a cor tem ${nf(aa.before,1)}:1 de contraste com branco. Para texto e botões o Radar usa ${aa.hex} (${nf(aa.after,1)}:1), acima do mínimo AA de 4,5:1.`:`${t.nome}: contraste ${nf(aa.before,1)}:1, cumpre o mínimo AA de 4,5:1.`)}
-  redrawCharts()}
-function buildThemes(){$("#themes").innerHTML=AG.temas.map(t=>{const aa=ensureAA(t.cor);return`<button data-id="${t.id}" aria-label="${esc(t.nome)}" aria-pressed="false" style="background:${t.cor}" data-tip="<b>${esc(t.nome)}</b><br>Contraste com branco: ${nf(aa.before,1)}:1${aa.hex.toLowerCase()!==t.cor.toLowerCase()?`. Texto e botões usam ${aa.hex} (${nf(aa.after,1)}:1).`:", cumpre AA."}"></button>`}).join("")}
-$("#themes").addEventListener("click",e=>{const b=e.target.closest("button");if(b)applyTheme(b.dataset.id,true)});
-$("#modebtn").addEventListener("click",()=>{const r=document.documentElement,d=r.dataset.mode==="dark";r.dataset.mode=d?"light":"dark";$("#modebtn use").setAttribute("href",d?"#i-moon":"#i-sun");redrawCharts()});
-
-/* ---------- Pergunta ao Radar (respostas calculadas sobre os dados do cliente ativo) ---------- */
-function asks(){
-  const a=[{id:"mudou",q:"O que mudou esta semana?",k:/mudou|semana|novidade/i},{id:"pistas",q:"Que pistas já foram decididas?",k:/pista|aceit|decid|a[cç][aã]o/i}];
-  if(hasAds()){a.push({id:"quota",q:`Qual é a quota de voz de ${me().nome}?`,k:/quota|voz/i},{id:"conjunto",q:`Que marcas estão no conjunto de ${D.cliente.vertical_nome}?`,k:/conjunto|marca|concorr/i},{id:"lancou",q:"Quem lançou campanhas novas?",k:/lan[cç]|campanha|nova/i})}
-  if(D.procura){const pr=(D.procura.principais&&serieProcura(D.procura.principais[D.procura.principais.length-1]))||D.procura.series[0];a.push({id:"pico",q:`Quando houve o último pico de «${pr.nome}»?`,k:/pico|d[uú]vida|m[aá]ximo/i,s:pr})}
-  if(D.contexto)D.contexto.indicadores.slice(0,2).forEach((it,i)=>a.push({id:"ind"+i,q:`O que sabemos sobre «${it.rotulo.toLowerCase()}»?`,k:new RegExp(it.id.split("_")[0],"i"),it}));
-  return a}
-function answer(a){
-  const sl=bl=>`<p class="t-xs" style="margin-top:6px">${esc(sealInfo(new Set(bl)).t)}</p>`;
-  if(a.id==="mudou"){const m=D.sinais.filter(s=>s.material),o=D.sinais.filter(s=>!s.material);return`<p>${m.length?`Há <b>${m.length===1?"um sinal":m.length+" sinais"} acima do limiar</b>:`:"Nenhum sinal acima do limiar."}</p><ul style="padding-left:18px;display:grid;gap:6px">${m.map(s=>`<li data-src="${s.bloco}"><b>${esc(s.titulo)}</b></li>`).join("")}</ul>${o.length?`<p>Em observação:</p><ul style="padding-left:18px;display:grid;gap:6px">${o.map(s=>`<li data-src="${s.bloco}">${esc(s.titulo)}</li>`).join("")}</ul>`:""}${sl(D.sinais.map(s=>s.bloco))}<p><button class="btn" data-go="visao">Abrir a Visão geral</button></p>`}
-  if(a.id==="pistas"){const l=D.pistas.map(p=>`<li>${esc(p.titulo)}: <b>${STL[p.s].toLowerCase()}</b></li>`).join("");return`<ul style="padding-left:18px;display:grid;gap:6px">${l||"<li>Sem pistas esta semana.</li>"}</ul><p><button class="btn" data-go="acoes/pistas">Abrir as pistas</button></p>`}
-  if(a.id==="quota"){const s=sov(Z),inc=incl().sort((x,y)=>s[y.id]-s[x.id]),m=me();return`<p>${esc(m.nome)} tem <b>${nf(s[m.id],1)}%</b> da quota de voz, em ${inc.findIndex(e=>e.cliente)+1}.º lugar entre ${inc.length} marcas. ${inc[0].cliente?"É a marca com mais voz.":`${esc(inc[0].nome)} lidera com ${nf(s[inc[0].id],1)}%.`}</p><div>${spark(range(Z-15,Z).map(w=>sov(w)[m.id]),300,44)}</div>${sl(["anuncios"])}<p><button class="btn" data-go="mercado/voz">Abrir a quota de voz</button></p>`}
-  if(a.id==="conjunto"){const inc=incl().map(e=>e.nome).join(", "),sg=D.entidades.find(e=>e.sugerida);return`<p>O conjunto de ${esc(me().nome)} tem <b>${incl().length} marcas</b>: ${esc(inc)}. ${sg?`O Radar sugere ainda ${esc(sg.nome)}, que a equipa pode aceitar.`:""}</p>${sl(["anuncios"])}<p><button class="btn" data-go="mercado/voz">Abrir o conjunto competitivo</button></p>`}
-  if(a.id==="lancou"){const l=D.sinais.filter(s=>s.categoria==="Lançamento");return l.length?`<ul style="padding-left:18px;display:grid;gap:6px">${l.map(s=>`<li><b>${esc(s.titulo)}</b>. ${esc(s.leitura)}</li>`).join("")}</ul>${sl(["anuncios"])}<p><button class="btn" data-go="criativos">Ver criativos</button></p>`:`<p>Nenhum lançamento acima do limiar nas últimas semanas.</p>${sl(["anuncios"])}`}
-  if(a.id==="pico"){const v=a.s.valores,mx=Math.max(...v.filter(x=>x!=null)),i=v.indexOf(mx);return`<p>O valor mais alto de «${esc(a.s.nome)}» é ${i===Z?"o desta semana, ":"o da semana de "}<b>${wLab(i)}</b>: ${mx} em 100.</p>${sl(["procura"])}<p><button class="btn" data-go="procura">Abrir Procura e notícias</button></p>`}
-  if(a.it){const it=a.it;return`<p><b>${esc(it.rotulo)}</b>: ${nf(it.valor,it.decimais||0)}${esc(it.formato||"")}. ${esc(it.detalhe||"")}</p>${sl([it.bloco])}<p><button class="btn" data-go="mercado/ctx">Abrir o contexto de mercado</button></p>`}
-  return`<p>Nesta pré-visualização só respondo às perguntas sugeridas. Na versão real, a pergunta traduz-se numa consulta aos dados recolhidos, e a resposta traz sempre a origem de cada número.</p>`}
-const ask={el:$("#ask"),inp:$("#askin"),list:[]};
-function openAsk(pre){if(VIEW==="cliente")return;if(ROUTE.scope!=="cliente"){toast("Escolhe um cliente para perguntar ao Radar.");return}ask.list=asks();ask.el.classList.add("on");$("#ans").hidden=true;$("#asksug").hidden=false;ask.inp.value="";$("#asksug").innerHTML=ask.list.map(a=>`<button data-q="${a.id}"><svg class="ic" style="color:var(--text-2)"><use href="#i-search"/></svg>${esc(a.q)}</button>`).join("");setTimeout(()=>ask.inp.focus(),30);if(pre)runAsk(pre)}
-function closeAsk(){ask.el.classList.remove("on")}
-function runAsk(id,text){const a=ask.list.find(x=>x.id===id),q=text||(a?a.q:id);$("#asksug").hidden=true;const box=$("#ans");box.hidden=false;
-  const type=(t,i=0)=>{ask.inp.value=t.slice(0,i);if(i<t.length&&!RM)setTimeout(()=>type(t,i+1),14);else ask.inp.value=t};type(q);
-  box.innerHTML=`<div class="q">${esc(q)}</div><div class="dots" aria-label="A pensar"><i></i><i></i><i></i></div>`;
-  setTimeout(()=>{box.innerHTML=`<div class="q">${esc(q)}</div><div class="ansbody">${answer(a||{id:"x"})}</div>`},RM?0:q.length*14+650)}
-$("#askopen").addEventListener("click",()=>openAsk());
-$("#askclose").addEventListener("click",closeAsk);
-ask.el.addEventListener("click",e=>{if(e.target===ask.el)closeAsk();const s=e.target.closest("[data-q]");if(s)runAsk(s.dataset.q);const g=e.target.closest("[data-go]");if(g){closeAsk();go(g.dataset.go)}});
-ask.inp.addEventListener("keydown",e=>{if(e.key==="Enter"){const v=ask.inp.value.trim();if(!v)return;const m=ask.list.find(a=>a.k.test(v));runAsk(m?m.id:"x",v)}});
-document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();ask.el.classList.contains("on")?closeAsk():openAsk()}if(e.key==="Escape")closeAsk()});
-
-/* ---------- Tema do visualizador (só na página publicada) ---------- */
-function seguirTemaDoVisualizador(){
-  const r=document.documentElement,mq=matchMedia("(prefers-color-scheme: dark)");
-  const aplicar=()=>{const t=r.dataset.theme,dark=t==="dark"||(t!=="light"&&mq.matches);r.dataset.mode=dark?"dark":"light";const u=$("#modebtn use");if(u)u.setAttribute("href",dark?"#i-sun":"#i-moon");redrawCharts()};
-  aplicar();mq.addEventListener&&mq.addEventListener("change",aplicar);
-  new MutationObserver(aplicar).observe(r,{attributes:true,attributeFilter:["data-theme"]})}
-
 /* ---------- Arranque ---------- */
 function start(){
   if(EM_ARTEFACTO)seguirTemaDoVisualizador();
-  buildThemes();applyTheme(AG.temas[0].id,false);
+  applyTheme(AG.temas[0].id,false);
   const r=parse(location.hash);CID=r.cid||AG.cliente_inicial||AG.clientes[0].id;setClient(CID);render(r,true)}
 const sp=$("#splash");let seen=false;try{seen=sessionStorage.getItem("radar-intro")==="1"}catch(e){}
 if(RM||seen||location.search.includes("nosplash")){sp.remove();start()}

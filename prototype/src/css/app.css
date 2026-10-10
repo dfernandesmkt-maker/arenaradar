@@ -476,3 +476,53 @@ html[data-present] #toast{bottom:116px}
 .top{top:env(safe-area-inset-top,0px)}
 .fbar{top:calc(62px + env(safe-area-inset-top,0px))}
 #tour{bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+
+/* ============ Definições, paleta e topo mais limpo ============ */
+.setm{position:fixed;top:calc(58px + env(safe-area-inset-top,0px));right:16px;left:auto;width:min(300px,calc(100vw - 32px));padding:10px;z-index:70}
+.setm .gh{padding:10px 6px 6px}
+.setm .seg{width:100%}.setm .seg button{flex:1}
+.sw2{display:flex;gap:10px;padding:2px 6px 4px}
+.sw2 button{width:26px;height:26px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);transition:transform .15s;padding:0}
+.sw2 button:hover{transform:scale(1.1)}
+.sw2 button[aria-pressed=true]{box-shadow:0 0 0 2px var(--text)}
+.setnote{padding:4px 6px 2px;color:var(--text-2)}
+.mi{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:9px 8px;border-radius:8px;font-size:13.5px;font-weight:500}
+.mi:hover{background:var(--line-2)}
+.mi .tg{margin-left:0}
+.top .tools{gap:8px}
+.askbtn{white-space:nowrap}
+.askbtn span{overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1280px){.askbtn{flex:none;margin-left:auto;width:auto;padding:0 11px}.askbtn span{display:none}}
+#asksug .gh{font-size:11.5px;font-weight:600;color:var(--text-2);padding:10px 10px 4px}
+#asksug button[aria-selected=true]{background:var(--brand-soft)}
+
+/* ============ Filtros compactos ============ */
+.fbar{display:flex;gap:8px;align-items:center;padding:9px 0;margin:0 0 18px;flex-wrap:nowrap}
+.fdesk{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.fbtn{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 10px 0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:13px;white-space:nowrap;transition:border-color .15s,background .15s}
+.fbtn:hover{border-color:color-mix(in srgb,var(--text) 30%,var(--line))}
+.fbtn .fl{color:var(--text-2);font-weight:500}
+.fbtn b{font-weight:600}
+.fbtn .ic{width:14px;height:14px;color:var(--text-2)}
+.fbtn.on{border-color:var(--brand-ink);background:var(--brand-soft)}
+.fbtn[aria-expanded=true]{border-color:var(--brand-ink)}
+.fbtn.ghost{border-color:transparent;background:transparent;color:var(--brand-ink);font-weight:600;padding:0 8px}
+.fmob{display:none}
+#fpop{position:fixed;left:0;top:0;z-index:72;min-width:210px;max-width:min(340px,calc(100vw - 24px));padding:8px;display:none}
+#fpop.on{display:block}
+#fpop .gh{padding:8px 8px 4px}
+.opt{display:flex;width:100%;align-items:center;gap:8px;text-align:left;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:500;min-height:38px}
+.opt:hover:not([disabled]){background:var(--line-2)}
+.opt[disabled]{opacity:.7;cursor:default}
+.opt em{font-style:normal;color:var(--text-2);font-size:12px;font-weight:500}
+.opt[role=radio]::after,.opt[role=checkbox]::after{content:"";margin-left:auto;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.opt[role=checkbox]::after{border-radius:5px}
+.opt[aria-checked=true]{font-weight:600}
+.opt[aria-checked=true]::after{background:var(--brand-ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.2 4.2L19 7'/%3E%3C/svg%3E") center/12px no-repeat;border-color:var(--brand-ink)}
+.opt.sug{border:1px dashed var(--line);margin-top:4px}
+#fscrim{position:fixed;inset:0;z-index:71;background:rgba(10,25,23,.35);opacity:0;pointer-events:none;transition:opacity .2s}
+#fscrim.on{opacity:1;pointer-events:auto}
+#fpop.sheet{top:auto!important;left:0!important;right:0;bottom:0;max-width:none;width:100%;border-radius:18px 18px 0 0;padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));max-height:80vh;overflow:auto}
+.fsheetf{display:flex;gap:10px;justify-content:space-between;margin-top:12px;position:sticky;bottom:0;background:var(--surface);padding-top:8px}
+.fsheetf .btn{flex:1;justify-content:center;height:42px}
+@media (max-width:680px){.fdesk{display:none}.fmob{display:inline-flex;width:100%;height:42px;justify-content:flex-start}.fmob b{margin-left:auto}.fbar{position:static;padding:6px 0}}

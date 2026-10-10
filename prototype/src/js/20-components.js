@@ -32,23 +32,47 @@ function secHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class
 function cardHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class="card"><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}</header>${body}${src?foot(src):""}</div>`}
 function pheadHTML(kick,title,lead,{sm=false}={}){return`<div class="phead ${sm?"sm":""}"><div class="kick"><span>${kick}</span><span id="sealslot">${sealHTML(USED)}</span></div><h1 class="t-display">${title}</h1>${lead?`<p class="lead">${lead}</p>`:""}</div>`}
 
-/* ---------- Barra de filtros global (período, comparação, plataforma, marcas) ---------- */
-function filterBar({brands=false,platforms=false,compare=true}={}){
-  const ads=hasAds();
+/* ---------- Barra de filtros global (uma linha; cada filtro abre um painel; em telemóvel, uma folha «Filtros») ---------- */
+const FCFG={brands:false,platforms:false,compare:true}, FP={k:null};
+const defW=()=>isTema()?NW:12;
+function filterBar(cfg={}){
+  Object.assign(FCFG,{brands:false,platforms:false,compare:true},cfg);
+  const ads=hasAds(),{brands,platforms,compare}=FCFG,perL=isTema()&&S.w===NW?"Tudo":S.w+" sem.";
+  const btn=(k,l,v,on)=>`<button class="fbtn ${on?"on":""}" data-fpop="${k}" aria-haspopup="true" aria-expanded="${FP.k===k}"><span class="fl">${l}</span><b>${v}</b><svg class="ic"><use href="#i-down"/></svg></button>`;
+  const alt=[S.w!==defW(),compare&&S.cmp!=="anterior",platforms&&ads&&S.pl.size!==PL.length].filter(Boolean).length;
   return`<div class="fbar" id="fbar" role="group" aria-label="Filtros desta página">
-   <div class="grp2"><span class="fl">Período</span><div class="seg">${periodos().map(n=>`<button data-fw="${n}" aria-pressed="${S.w===n}">${isTema()&&n===NW?"Tudo":n+" sem."}</button>`).join("")}</div></div>
-   ${compare?`<div class="grp2"><span class="fl">Comparar com</span><div class="seg">${[["anterior","Período anterior"],["nenhum","Sem comparação"]].map(([k,l])=>`<button data-fc="${k}" aria-pressed="${S.cmp===k}">${l}</button>`).join("")}</div></div>`:""}
-   ${platforms&&ads?`<div class="grp2"><span class="fl">Plataforma</span>${PL.map(p=>`<button class="fchip" data-fp="${p}" aria-pressed="${S.pl.has(p)}">${p}</button>`).join("")}</div>`:""}
-   ${brands&&ads&&!isTema()?`<div class="grp2"><span class="fl">Marcas</span>${D.entidades.map(e=>e.incluida?`<button class="fchip" data-fb="${e.id}" aria-pressed="true" ${e.cliente?`disabled aria-label="${esc(e.nome)}, cliente"`:""}><i style="background:${col(e)}"></i>${esc(e.nome)}</button>`:e.sugerida?(isCli()?"":`<button class="fchip sug" data-add="${e.id}" data-tip="O Radar sugere ${esc(e.nome)}: aparece em ${e.sobreposicao}% das mesmas pesquisas. A equipa decide.">${dot(e)}${esc(e.nome)}, sugerida</button>`):`<button class="fchip" data-fb="${e.id}" aria-pressed="false"><i style="background:${col(e)}"></i>${esc(e.nome)}</button>`).join("")}</div>`:""}
-  </div>`}
+   <div class="fdesk">${btn("per","Período",perL,S.w!==defW())}${compare?btn("cmp","Comparar",S.cmp==="anterior"?"Período anterior":"Sem comparação",S.cmp!=="anterior"):""}${platforms&&ads?btn("pl","Plataformas",S.pl.size===PL.length?"Todas":`${S.pl.size} de ${PL.length}`,S.pl.size!==PL.length):""}${brands&&ads&&!isTema()?btn("br","Marcas",`${incl().length} marcas`,false):""}${alt?`<button class="fbtn ghost" data-freset>Repor filtros</button>`:""}</div>
+   <button class="fbtn fmob ${alt?"on":""}" data-fpop="all" aria-haspopup="true" aria-expanded="${FP.k==="all"}"><svg class="ic"><use href="#i-sliders"/></svg><span>Filtros</span><b>${perL}${alt?` · ${alt} alterado${alt>1?"s":""}`:""}</b></button></div>`}
+function fpopSec(k){
+  if(k==="per")return`<div class="gh">Período</div>`+periodos().map(n=>`<button class="opt" role="radio" aria-checked="${S.w===n}" data-fw="${n}">${isTema()&&n===NW?"Tudo":n+" semanas"}</button>`).join("");
+  if(k==="cmp")return`<div class="gh">Comparar com</div>`+[["anterior","Período anterior"],["nenhum","Sem comparação"]].map(([v,l])=>`<button class="opt" role="radio" aria-checked="${S.cmp===v}" data-fc="${v}">${l}</button>`).join("");
+  if(k==="pl")return`<div class="gh">Plataformas</div>`+PL.map(p=>`<button class="opt chk" role="checkbox" aria-checked="${S.pl.has(p)}" data-fp="${p}">${p}</button>`).join("");
+  if(k==="br")return`<div class="gh">Marcas do conjunto</div>`+D.entidades.map(e=>e.incluida?`<button class="opt chk" role="checkbox" aria-checked="true" data-fb="${e.id}" ${e.cliente?'disabled':""}>${dot(e)}${esc(e.nome)}${e.cliente?" <em>cliente</em>":""}</button>`:e.sugerida?(isCli()?"":`<button class="opt sug" data-add="${e.id}">${dot(e)}${esc(e.nome)} <em>sugerida pelo Radar. Aceitar</em></button>`):`<button class="opt chk" role="checkbox" aria-checked="false" data-fb="${e.id}">${dot(e)}${esc(e.nome)}</button>`).join("");
+  return""}
+function fpopHTML(k){
+  if(k!=="all")return fpopSec(k);
+  const ks=["per",FCFG.compare?"cmp":null,FCFG.platforms&&hasAds()?"pl":null,FCFG.brands&&hasAds()&&!isTema()?"br":null].filter(Boolean);
+  return ks.map(fpopSec).join("")+`<div class="fsheetf"><button class="btn" data-freset>Repor filtros</button><button class="btn pri" data-fclose>Ver resultados</button></div>`}
+function fpopPlace(btn){const pop=$("#fpop"),mob=FP.k==="all"||innerWidth<=680;pop.classList.toggle("sheet",mob);$("#fscrim").classList.toggle("on",mob);
+  if(mob){pop.style.left=pop.style.top="";return}
+  const r=btn.getBoundingClientRect();pop.style.top=(r.bottom+6)+"px";pop.style.left=Math.max(12,Math.min(r.left,innerWidth-pop.offsetWidth-12))+"px"}
+function openFpop(k,btn){if(!$("#fpop")){const d=document.createElement("div");d.id="fpop";d.className="menu";d.setAttribute("role","dialog");const s=document.createElement("div");s.id="fscrim";document.body.append(s,d)}
+  FP.k=k;const pop=$("#fpop");pop.innerHTML=fpopHTML(k);pop.classList.add("on");fpopPlace(btn);$$("#fbar [data-fpop]").forEach(b=>b.setAttribute("aria-expanded",b.dataset.fpop===k))}
+function closeFpop(){FP.k=null;const p=$("#fpop");if(p)p.classList.remove("on");const s=$("#fscrim");if(s)s.classList.remove("on");$$("#fbar [data-fpop]").forEach(b=>b.setAttribute("aria-expanded","false"))}
+function fpopSync(){if(!FP.k)return;const b=$(`#fbar [data-fpop="${FP.k}"]`);if(!b||!b.offsetParent){closeFpop();return}$("#fpop").innerHTML=fpopHTML(FP.k);fpopPlace(b);b.setAttribute("aria-expanded","true")}
 document.addEventListener("click",e=>{
   let t;
-  if(t=e.target.closest("#fbar [data-fw]")){S.w=+t.dataset.fw;CUR.refresh();return}
-  if(t=e.target.closest("#fbar [data-fc]")){S.cmp=t.dataset.fc;CUR.refresh();return}
-  if(t=e.target.closest("#fbar [data-fp]")){const p=t.dataset.fp;if(S.pl.has(p)){if(S.pl.size>1)S.pl.delete(p);else toast("Mantém pelo menos uma plataforma.")}else S.pl.add(p);CUR.refresh();return}
-  if(t=e.target.closest("#fbar [data-fb]")){const b=ebyid(t.dataset.fb);b.incluida=!b.incluida;CUR.refresh();return}
-  if(t=e.target.closest("[data-add]")){const b=ebyid(t.dataset.add);if(b){b.incluida=true;b.sugerida=false;toast(b.nome+" entrou no conjunto. O Radar sugere; a equipa decide.");CUR.refresh()}}
-});
+  if(t=e.target.closest("[data-fpop]")){FP.k===t.dataset.fpop?closeFpop():openFpop(t.dataset.fpop,t);return}
+  if(e.target.closest("[data-fclose]")){closeFpop();return}
+  if(e.target.closest("[data-freset]")){S.w=defW();S.cmp="anterior";S.pl=new Set(PL);CUR.refresh();return}
+  if(t=e.target.closest("[data-fw]")){S.w=+t.dataset.fw;CUR.refresh();if(FP.k!=="all")closeFpop();return}
+  if(t=e.target.closest("[data-fc]")){S.cmp=t.dataset.fc;CUR.refresh();if(FP.k!=="all")closeFpop();return}
+  if(t=e.target.closest("[data-fp]")){const p=t.dataset.fp;if(S.pl.has(p)){if(S.pl.size>1)S.pl.delete(p);else toast("Mantém pelo menos uma plataforma.")}else S.pl.add(p);CUR.refresh();return}
+  if(t=e.target.closest("[data-fb]")){const b=ebyid(t.dataset.fb);b.incluida=!b.incluida;CUR.refresh();return}
+  if(t=e.target.closest("[data-add]")){const b=ebyid(t.dataset.add);if(b){b.incluida=true;b.sugerida=false;toast(b.nome+" entrou no conjunto. O Radar sugere; a equipa decide.");CUR.refresh();return}}
+  if(FP.k&&!e.target.closest("#fpop"))closeFpop()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&FP.k)closeFpop()});
+addEventListener("resize",()=>{if(FP.k)fpopSync()});
 
 /* ---------- Gaveta de detalhe ---------- */
 function openDrawer(html){const d=$("#drawer");d.innerHTML=html;d.classList.add("on");$("#scrim").classList.add("on");const c=$("#dclose");if(c)c.focus()}
