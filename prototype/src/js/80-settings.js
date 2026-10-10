@@ -22,6 +22,7 @@ function settingsHTML(){
   const eq=VIEW!=="cliente"&&ROUTE.scope==="cliente";
   return`<div class="gh">Aparência</div>
    <div class="seg" role="group" aria-label="Modo de cor"><button data-modo="light" aria-pressed="${!isDark()}">Claro</button><button data-modo="dark" aria-pressed="${isDark()}">Escuro</button></div>
+   ${VIEW!=="cliente"?`<div class="gh">A minha função</div><div class="roles" role="radiogroup" aria-label="A minha função">${ROLES.map(r=>`<button class="opt" role="radio" aria-checked="${PREFS.role===r[0]}" data-role="${r[0]}">${r[1]}</button>`).join("")}</div><p class="t-xs setnote">Muda o que aparece primeiro: as pistas da tua área, o início da Direção. Nada fica escondido.</p>`:""}
    ${VIEW!=="cliente"?`<div class="gh">Cor do tema</div><div class="sw2" role="group" aria-label="Cor do tema">${AG.temas.map(t=>{const aa=ensureAA(t.cor);return`<button data-tid="${t.id}" aria-label="${esc(t.nome)}" aria-pressed="${t.id===APPTHEME}" style="background:${t.cor}" data-tip="<b>${esc(t.nome)}</b><br>Contraste com branco: ${nf(aa.before,1)}:1${aa.hex.toLowerCase()!==t.cor.toLowerCase()?`. Texto e botões usam ${aa.hex} (${nf(aa.after,1)}:1).`:", cumpre AA."}"></button>`}).join("")}</div><p class="t-xs setnote">Só muda as cores de marca. O contraste é validado (WCAG AA).</p>`:""}
    ${eq?`<div class="gh">Demonstração</div>
     <button class="mi" data-sq aria-pressed="${!!(S&&S.bquiet)}"><span>Simular semana sem sinais</span><i class="tg" role="switch" aria-checked="${!!(S&&S.bquiet)}"></i></button>
@@ -33,7 +34,8 @@ document.addEventListener("click",e=>{
   if(e.target.closest("#setbtn")){$("#setmenu")?closeSettings():openSettings();return}
   const m=e.target.closest("#setmenu");
   if(m){let t;
-    if(t=e.target.closest("[data-modo]"))setMode(t.dataset.modo);
+    if(t=e.target.closest("[data-role]")){PREFS.role=t.dataset.role;savePrefs();S.minhas=undefined;syncSettings();CUR.refresh();toast(PREFS.role==="todos"?"A ver tudo.":"Vista de "+roleLabel()+". As pistas dessa área aparecem primeiro.")}
+    else if(t=e.target.closest("[data-modo]"))setMode(t.dataset.modo);
     else if(t=e.target.closest("[data-tid]"))applyTheme(t.dataset.tid,true);
     else if(e.target.closest("[data-sq]")){S.bquiet=!S.bquiet;syncSettings();CUR.refresh()}
     else if(e.target.closest("[data-reset]")){closeSettings();resetEstado()}

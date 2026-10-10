@@ -100,6 +100,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("#viewseg [data-v
 function start(){
   if(EM_ARTEFACTO)seguirTemaDoVisualizador();
   applyTheme(AG.temas[0].id,false);
+  if(PREFS.role==="direcao"&&!location.hash.replace(/^#\/?/,""))try{history.replaceState(null,"","#/agencia/torre")}catch(e){}   // a Direção começa na Torre de controlo
   const r=parse(location.hash);CID=r.cid||AG.cliente_inicial||AG.clientes[0].id;setClient(CID);render(r,true)}
 const sp=$("#splash");let seen=false;try{seen=sessionStorage.getItem("radar-intro")==="1"}catch(e){}
 if(RM||seen||location.search.includes("nosplash")){sp.remove();start()}

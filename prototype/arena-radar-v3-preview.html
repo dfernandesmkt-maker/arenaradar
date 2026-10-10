@@ -647,6 +647,23 @@ html[data-present] #toast{bottom:116px}
 .kpis.five .kpi .big{font-size:28px}
 .kpis.five .kv .sp{width:58px}
 
+/* alertas e vista por função */
+.alist{padding:4px 0}
+.alrow{display:grid;grid-template-columns:96px minmax(0,1fr) 92px auto;gap:6px 16px;align-items:start;padding:14px 18px;border-top:1px solid var(--line-2)}
+.alrow:first-child{border-top:0}
+.alrow.nv{background:color-mix(in srgb,var(--accent) 5%,transparent);box-shadow:inset 3px 0 0 var(--accent)}
+.alsev{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--line-2);color:var(--text-2);width:max-content}
+.alsev[data-s=material]{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn-ink)}
+.alb b{font-weight:600}
+.alb p{margin-top:2px}
+.alq{text-align:right;font-variant-numeric:tabular-nums}
+.alact{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+@media (max-width:900px){.alrow{grid-template-columns:minmax(0,1fr) auto}.alsev{grid-column:1}.alb{grid-column:1/-1}.alq{text-align:left}.alact{grid-column:1/-1;justify-content:flex-start}}
+.rolebar{margin:10px 0 4px;padding:9px 12px;border-radius:10px;background:var(--brand-soft);font-size:13px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;background:var(--line-2);padding:1px 5px;border-radius:5px}
+.setm .roles{display:grid;gap:0;margin-bottom:2px}
+.setm .roles .opt{min-height:34px;padding:6px 8px}
+
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
 :root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
   /* Temas e assuntos (notícias, procura por tema): família própria, para a cor nunca sugerir uma marca. Validada: CVD, visão normal e contraste. */
@@ -990,7 +1007,8 @@ let VIEW="equipa";                      // vista ativa: «equipa» (completa) ou
 
 /* ---------- Preferências da pessoa (função e última visita): só neste navegador ---------- */
 const PKEY="radar-prefs-v1";
-let PREFS={role:"todos",visit:{}};try{PREFS=Object.assign(PREFS,JSON.parse(localStorage.getItem(PKEY)||"{}"))}catch(e){}
+let PREFS={role:"todos",seen:{},notif:{}};try{PREFS=Object.assign(PREFS,JSON.parse(localStorage.getItem(PKEY)||"{}"))}catch(e){}
+if(!PREFS.seen)PREFS.seen={};if(!PREFS.notif)PREFS.notif={};
 const savePrefs=()=>{try{localStorage.setItem(PKEY,JSON.stringify(PREFS))}catch(e){}};
 const ROLES=[["todos","Toda a equipa"],["performance","Performance"],["brand","Brand"],["account","Account"],["direcao","Direção"]];
 const ROLE_PARA={performance:"Performance",brand:"Brand",account:"Account"};   // a que atribuição de pistas corresponde
@@ -1384,7 +1402,7 @@ function sigCard(s,i){
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
-   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
+   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${p&&ROLE_PARA[PREFS.role]===p.para?`<span class="tag hi" data-tip="A pista deste cartão está atribuída à tua função.">Para ti</span>`:""}${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
@@ -1450,13 +1468,15 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(
 function sinceHTML(){
   if(isCli()||S.bquiet)return"";
   const nov=D.sinais.filter(s=>s.novo),mant=D.sinais.filter(s=>s.material&&!s.novo),res=D.sinais_resolvidos||[];
-  const parts=[nov.length?`<span class="sn nw"><i></i>${nov.length} ${nov.length===1?"novo":"novos"}</span>`:"",mant.length?`<span class="sn">${mant.length} ${mant.length===1?"mantém-se":"mantêm-se"}</span>`:"",res.length?`<span class="sn">${res.length} ${res.length===1?"deixou":"deixaram"} de estar acima do limiar</span>`:""].filter(Boolean);
-  if(!parts.length)return"";
+  const an=alertasNovos().length;
+  const parts=[an?`<button class="lnk" data-go="acoes/alertas">${an} ${an===1?"alerta novo":"alertas novos"}</button>`:"",nov.length?`<span class="sn nw"><i></i>${nov.length} ${nov.length===1?"novo":"novos"}</span>`:"",mant.length?`<span class="sn">${mant.length} ${mant.length===1?"mantém-se":"mantêm-se"}</span>`:"",res.length?`<span class="sn">${res.length} ${res.length===1?"deixou":"deixaram"} de estar acima do limiar</span>`:""].filter(Boolean);
+  if(!nov.length&&!mant.length&&!res.length&&!an)return"";
   const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:"";
   return`<details class="since"><summary><span class="sl">Desde a semana passada</span>${parts.join("")}<svg class="ic"><use href="#i-down"/></svg></summary>
    <div class="sbody">${nov.length?`<h4>Novos</h4>${li(nov,s=>`<li>${esc(s.titulo)}</li>`)}`:""}${mant.length?`<h4>Mantêm-se acima do limiar</h4>${li(mant,s=>`<li>${esc(s.titulo)}${s.valor_anterior!=null&&s.valor!=null?` <span class="muted">(semana passada: ${sgn(s.valor_anterior,Math.abs(s.valor_anterior)<10?1:0)}${sigUnit(s)})</span>`:""}</li>`)}`:""}${res.length?`<h4>Deixaram de estar acima do limiar</h4>${li(res,s=>`<li>${esc(s.titulo)}</li>`)}`:""}</div></details>`}
 function pageVisao(){
-  const lista=isCli()?cartoesPub():S.bquiet?[]:D.sinais,sg=lista.map(sigCard).join("");
+  const mp=s=>{const p=s.pista_id&&D.pistas.find(x=>x.id===s.pista_id);return p&&ROLE_PARA[PREFS.role]===p.para?1:0};
+  const lista=isCli()?cartoesPub():S.bquiet?[]:[...D.sinais].sort((a,b)=>mp(b)-mp(a)),sg=lista.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
    ${kpisHTML()}
    ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`${sinceHTML()}<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
@@ -1786,7 +1806,7 @@ document.addEventListener("input",e=>{if(e.target.id==="pubnota"){D.pub.nota=e.t
    A plataforma sugere; a equipa decide. Nada chega ao cliente sem decisão da equipa.
    O estado das pistas vive em memória (a persistência em ficheiro é a tarefa RB-22).
    ============================================================ */
-const ATABS=[["pistas","Pistas de ação"],["impacto","Impacto"]];
+const ATABS=[["pistas","Pistas de ação"],["alertas","Alertas"],["impacto","Impacto"]];
 function pistaHTML(p){
   const dec=p.s==="aceite"||p.s==="ajustada";let act="";
   if(p.s==="sugerida")act=`<button class="btn pri" data-a="aceitar"><svg class="ic"><use href="#i-check"/></svg>Aceitar</button><button class="btn" data-a="ajustar"><svg class="ic"><use href="#i-pen"/></svg>Ajustar</button><button class="btn" data-a="descartar"><svg class="ic"><use href="#i-x"/></svg>Descartar</button>`;
@@ -1799,10 +1819,45 @@ function pistaHTML(p){
    <div class="pfoot">${act}${res}<span class="sp"></span><span class="t-xs">Atribuída a</span><div class="seg">${["Performance","Brand","Account"].map(x=>`<button data-a="para" data-v="${x}" aria-pressed="${p.para===x}">${x}</button>`).join("")}</div></div><p class="conf" style="margin-top:10px">${esc(p.confianca)}</p></article>`}
 function syncCounts(){const n=pistasPend(D),c=$("#navcnt");if(c){c.textContent=n;c.hidden=n===0}}
 function refreshPista(id,flash){const p=D.pistas.find(x=>x.id===id),old=document.getElementById(id);if(!old)return;const tmp=document.createElement("div");tmp.innerHTML=pistaHTML(p);const n=tmp.firstElementChild;n.classList.add("in");if(flash)n.classList.add("just");old.replaceWith(n);syncCounts()}
+/* ---------- Alertas: só eventos materiais (D: alertas apenas para o que muda de facto) ---------- */
+const LIMLAB={anuncios_variacao_4s:["Variação da pressão publicitária (4 semanas face às 4 anteriores)",v=>nf(v*100)+"%"],quota_voz_pp_8s:["Variação da quota de voz do cliente (8 semanas)",v=>nf(v,1)+" p.p."],lancamento_criativos_2s:["Criativos novos de um concorrente (2 semanas)",v=>nf(v)+" criativos"],pesquisas_variacao_vs_media_8s:["Subida da procura face à média das 8 semanas anteriores",v=>nf(v*100)+"%"]};
+const semanaFim=()=>new Date(wDateMs(Z)+6*DAY).toISOString().slice(0,10);
+function alertas(){
+  const out=[],q0=semanaFim(),lanc=new Set(D.sinais.filter(s=>s.categoria==="Lançamento").map(s=>s.entidade));
+  D.sinais.filter(s=>s.material).forEach(s=>out.push({id:`s:${s.id}:${s.titulo}`,q:q0,sev:"material",t:s.titulo,d:s.leitura,e:s.entidade,go:s.pista_id?`acoes/pistas#${s.pista_id}`:sigGo(s),goL:s.pista_id?"Ver pista":"Ver detalhe",why:s.id,nw:!!s.novo}));
+  if(hasAds()&&!isTema()){const cp={};ADS.filter(a=>a.camp&&!a.imp).forEach(a=>{const e=ebyid(a.b);if(!e||e.cliente||lanc.has(a.b))return;const k=a.b+"|"+a.camp,c=cp[k]||(cp[k]={b:a.b,n:a.camp,st:a.st,ds:a.ds,k:0,p:new Set()});c.st=Math.min(c.st,a.st);c.ds=Math.min(c.ds,a.ds);c.k++;c.p.add(a.p)});
+   Object.values(cp).filter(c=>c.st>=Z-1&&c.k>=3).forEach(c=>out.push({id:`c:${c.b}:${c.n}`,q:new Date(c.ds).toISOString().slice(0,10),sev:"material",t:`${ebyid(c.b).nome} lançou «${c.n}»`,d:`${c.k} anúncios em ${[...c.p].join(", ")}.`,e:c.b,go:`criativos`,goL:"Ver criativos",cr:c.b}))}
+  D.entidades.filter(e=>e.sugerida&&!e.incluida).forEach(e=>out.push({id:`b:${e.id}`,q:q0,sev:"info",t:`${e.nome}: marca sugerida pelo Radar`,d:`Aparece em ${e.sobreposicao}% das mesmas pesquisas. A equipa decide se entra no conjunto.`,e:e.id,go:"mercado/voz",goL:"Rever o conjunto"}));
+  D.sinais.filter(s=>!s.material&&s.categoria==="Agenda").forEach(s=>out.push({id:`s:${s.id}:${s.titulo}`,q:q0,sev:"info",t:s.titulo,d:s.leitura,go:s.pista_id?`acoes/pistas#${s.pista_id}`:sigGo(s),goL:s.pista_id?"Ver pista":"Ver detalhe",why:s.id}));
+  return out.sort((a,b)=>b.q.localeCompare(a.q)||(a.sev==="material"?-1:1))}
+const alertasSeen=()=>new Set(PREFS.seen[D.cliente.id]||[]);
+const alertasNovos=()=>{const s=alertasSeen();return alertas().filter(a=>!s.has(a.id))};
+function marcarVistos(){PREFS.seen[D.cliente.id]=alertas().map(a=>a.id);savePrefs()}
+const quandoRel=q=>{const d=Math.round((pd(semanaFim())-pd(q))/DAY);return d<=0?"esta semana":d===1?"há 1 dia":"há "+d+" dias"};
+function aAlertas(){
+  D.sinais.forEach(s=>use(s.bloco));if(hasAds())use("anuncios");
+  const all=alertas(),seen=alertasSeen(),novos=all.filter(a=>!seen.has(a.id)),ant=all.filter(a=>seen.has(a.id)),nt=PREFS.notif[D.cliente.id]||{email:true,teams:false};
+  later(()=>{marcarVistos();const b=$("#alcnt");if(b)b.hidden=true});
+  const row=(a,nv)=>{const e=a.e?ebyid(a.e):null;return`<div class="alrow ${nv?"nv":""}"><span class="alsev" data-s="${a.sev}" data-tip="${a.sev==="material"?"Material: acima do limiar ou evento relevante":"Informativo: não ultrapassa o limiar"}">${a.sev==="material"?"Material":"Informativo"}</span>
+    <div class="alb"><b>${esc(a.t)}</b>${a.nw?` <span class="tag nw">Novo</span>`:""}<p class="t-sm muted">${esc(a.d)}</p></div>
+    <span class="alq t-sm muted">${quandoRel(a.q)}<br>${fmtShort(a.q)}</span>
+    <div class="alact">${a.why?`<button class="btn ghost sm" data-why="${a.why}">Porquê?</button>`:""}${a.cr?`<button class="btn sm" data-cr-b="${a.cr}">${a.goL}</button>`:`<button class="btn sm" data-go="${a.go}">${a.goL}</button>`}</div></div>`};
+  const lim=Object.entries(D.limiares||{}).filter(([k])=>LIMLAB[k]).map(([k,v])=>`<tr><td>${LIMLAB[k][0]}</td><td class="n">${LIMLAB[k][1](v)}</td></tr>`).join("");
+  return`<p class="t-sm muted" style="max-width:70ch;margin-bottom:14px">O Radar só avisa de eventos materiais: um sinal acima do limiar, o lançamento de uma campanha ou uma mudança que justifica olhar. «Sem alertas» também é um resultado.</p>
+   ${all.length?`${novos.length?`<h2 class="t-h3" style="margin:6px 0 8px">Novos desde a tua última visita <span class="tag nw">${novos.length}</span></h2><div class="panel alist">${novos.map(a=>row(a,true)).join("")}</div>`:`<div class="empty" style="margin-bottom:14px"><svg class="ic"><use href="#i-check"/></svg><div><b>Tudo visto</b><br>Não há alertas novos desde a tua última visita.</div></div>`}
+    ${ant.length?`<h2 class="t-h3" style="margin:22px 0 8px">Anteriores</h2><div class="panel alist">${ant.map(a=>row(a,false)).join("")}</div>`:""}`:emptyHTML("Sem alertas esta semana","Nenhum evento material. O Radar continua a observar.")}
+   ${secHTML("Como o Radar te avisa",`Preferências de ${esc(D.cliente.nome)}. Só guardadas neste navegador; a entrega real por e-mail e Teams liga-se com o IT.`,`<div class="panel" style="padding:6px 18px"><div class="setlist">
+     <div class="setitem"><span class="nm">Resumo semanal por e-mail<br><span class="t-xs" style="font-weight:500">Segunda-feira às 9h00, com o briefing.</span></span><button class="tg" role="switch" aria-checked="${!!nt.email}" aria-label="Resumo semanal por e-mail" data-notif="email"></button></div>
+     <div class="setitem"><span class="nm">Alerta imediato no Teams<br><span class="t-xs" style="font-weight:500">Só para alertas materiais.</span></span><button class="tg" role="switch" aria-checked="${!!nt.teams}" aria-label="Alerta imediato no Teams" data-notif="teams"></button></div></div></div>
+    ${lim?`<h3 class="t-h3" style="margin:18px 0 8px">Limiares que decidem o que é material</h3><div class="panel tblwrap"><table><thead><tr><th>Regra</th><th class="n">Limiar</th></tr></thead><tbody>${lim}</tbody></table></div><p class="t-xs" style="margin-top:8px">Os limiares são da agência e cada cliente pode ajustá-los em <code>config/clients/${esc(D.cliente.id)}.yaml</code>.</p>`:""}`)}`}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-notif]");if(!t)return;const k=t.dataset.notif,c=D.cliente.id,o=PREFS.notif[c]||(PREFS.notif[c]={email:true,teams:false});o[k]=!o[k];savePrefs();t.setAttribute("aria-checked",String(!!o[k]));toast(k==="email"?(o[k]?"Resumo semanal por e-mail ligado.":"Resumo semanal por e-mail desligado."):(o[k]?"Alertas no Teams ligados.":"Alertas no Teams desligados."))});
 function aPistas(){
   if(!D.pistas.length)return emptyHTML("Sem pistas esta semana","Quando um sinal ultrapassar o limiar, aparece aqui uma pista para a equipa decidir.");
   later(()=>requestAnimationFrame(()=>$$(".pista").forEach(e=>e.classList.add("in"))));
-  return`<p class="t-sm muted" style="max-width:70ch;margin-bottom:6px">Cada pista liga o sinal à leitura e a uma ação de meios possível, atribuída a Performance, Brand ou Account. É uma ferramenta interna: levar uma pista ao cliente é opcional e decisão da equipa.</p><div id="pistas">${D.pistas.map(pistaHTML).join("")}</div>`}
+  const mine=ROLE_PARA[PREFS.role],filt=mine&&S.minhas!==false,lista=filt?D.pistas.filter(p=>p.para===mine):D.pistas;
+  const rb=mine?`<div class="rolebar">${filt?`A mostrar as pistas atribuídas a <b>${mine}</b> (${lista.length} de ${D.pistas.length}).`:`A mostrar todas as pistas.`} <button class="lnk" data-minhas="${filt?"0":"1"}">${filt?"Ver todas":"Só as minhas"}</button></div>`:"";
+  return`<p class="t-sm muted" style="max-width:70ch;margin-bottom:6px">Cada pista liga o sinal à leitura e a uma ação de meios possível, atribuída a Performance, Brand ou Account. É uma ferramenta interna: levar uma pista ao cliente é opcional e decisão da equipa.</p>${rb}<div id="pistas">${lista.length?lista.map(pistaHTML).join(""):emptyHTML("Nenhuma pista atribuída a "+mine,"Muda a atribuição de uma pista ou escolhe «Ver todas».")}</div>`}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-minhas]");if(!t)return;S.minhas=t.dataset.minhas==="1";CUR.refresh()});
 function aImpacto(){
   const P=D.pistas,s=P.length,a=pistasDecididas(D).length,c=P.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada")).length,d=P.filter(p=>p.s==="descartada").length;
   const st=[["Sinais que originaram pistas",D.sinais.filter(x=>x.pista_id).length,100],["Pistas sugeridas",s,100],["Aceites pela equipa",a,s?a/s*100:0],["Marcadas para o cliente",c,s?c/s*100:0],["Adotadas pelo cliente","—",0]];
@@ -1812,9 +1867,9 @@ function aImpacto(){
    ${secHTML("Decisões desta semana","Do sinal ao resultado. O histórico real começa no piloto; até lá, estes números contam as decisões desta pré-visualização.",s?`<div class="panel tblwrap"><table><thead><tr><th>Pista</th><th>Atribuída a</th><th>Estado</th></tr></thead><tbody>${P.map(p=>`<tr class="go" data-go="acoes/pistas#${p.id}"><td style="font-weight:600">${esc(p.titulo)}</td><td>${esc(p.para)}</td><td>${STL[p.s]}${p.cli?", marcada para o cliente":""}</td></tr>`).join("")}</tbody></table></div>`:emptyHTML("Sem decisões","Ainda não há pistas."))}`}
 function pageAcoes(sub,focus){
   const t=ATABS.find(x=>x[0]===sub)?sub:"pistas";S.tab.acoes=t;SEAL_HIDE=t==="impacto";
-  const body=`<div class="tabs sub" role="tablist" aria-label="Ações">${ATABS.map(x=>`<button role="tab" aria-selected="${x[0]===t}" data-go="acoes/${x[0]}">${x[1]}${x[0]==="pistas"&&pistasPend(D)?` <span class="cnt" style="display:inline-grid;margin-left:4px;vertical-align:middle;min-width:20px;height:20px;border-radius:99px;background:var(--brand-ink);color:#fff;font-size:11px;font-weight:600;place-items:center;padding:0 6px">${pistasPend(D)}</span>`:""}</button>`).join("")}</div>${t==="pistas"?aPistas():aImpacto()}`;
+  const body=`<div class="tabs sub" role="tablist" aria-label="Ações">${ATABS.map(x=>{const n=x[0]==="pistas"?pistasPend(D):x[0]==="alertas"&&t!=="alertas"?alertasNovos().length:0;return`<button role="tab" aria-selected="${x[0]===t}" data-go="acoes/${x[0]}">${x[1]}${n?` <span class="cnt" ${x[0]==="alertas"?'id="alcnt"':""} style="display:inline-grid;margin-left:4px;vertical-align:middle;min-width:20px;height:20px;border-radius:99px;background:var(--brand-ink);color:#fff;font-size:11px;font-weight:600;place-items:center;padding:0 6px">${n}</span>`:""}</button>`}).join("")}</div>${t==="pistas"?aPistas():t==="alertas"?aAlertas():aImpacto()}`;
   if(focus)later(()=>setTimeout(()=>{const el=document.getElementById(focus);if(el){el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});el.classList.add("just")}},120));
-  return pheadHTML("A plataforma sugere. A equipa decide.","Ações",`Pistas de ação e impacto de ${esc(D.cliente.nome)}.`,{sm:true})+body}
+  return pheadHTML("A plataforma sugere. A equipa decide.","Ações",`Pistas de ação, alertas e impacto de ${esc(D.cliente.nome)}.`,{sm:true})+body}
 document.addEventListener("click",e=>{const b=e.target.closest("#pistas [data-a]");if(!b)return;const el=b.closest(".pista"),p=D.pistas.find(x=>x.id===el.dataset.id),a=b.dataset.a;
   if(a==="aceitar"){p.s="aceite";toast("Pista aceite. Nada é enviado ao cliente: a equipa decide se e como a leva.")}
   else if(a==="descartar"){p.s="descartada";toast("Pista descartada. Fica registada no Impacto.")}
@@ -1847,8 +1902,8 @@ function pageTorre(){
     later(()=>{const h=$(`.spark[data-v="${v.id}"]`);if(h)h.innerHTML=spark(c0.pulso,160,34)});
     return`<button class="vert" data-go="${c0.id}/visao"><div class="tt"><span class="t-h3">${esc(v.nome)}</span></div><span class="t-sm muted">${esc(nm)}<br>${c0.tipo_universo==="tema"?"Tema":"Concorrência, "+c0.n_entidades+" marcas"}</span><div class="spark" data-v="${v.id}"></div><span class="t-sm" style="font-weight:600">${n?`${n} ${n===1?"sinal":"sinais"} acima do limiar`:"Sem sinais acima do limiar"}</span></button>`}).join("");
   const rows=cs.map(c=>{const o=c.origens.includes("real")&&c.origens.includes("demo")?"misto":c.origens.includes("real")?"real":"demo";return`<tr class="go" data-go="${c.id}/visao"><td style="font-weight:600">${esc(c.nome)}${c.ficticio?' <span class="tag">fictício</span>':""}</td><td>${esc(c.vertical_nome)}</td><td>${c.tipo_universo==="tema"?"Tema":"Concorrência"}</td><td class="n">${c.sinais_material}</td><td class="n">${pistasPend(CLS[c.id])}</td><td>${pubSeal(CLS[c.id])}</td><td><span class="seal" data-o="${o}" style="height:22px;font-size:11px">${o==="misto"?"Misto":o==="real"?"Real":"Demonstração"}</span></td></tr>`}).join("");
-  const fila=cs.flatMap(c=>CLS[c.id].pistas.filter(p=>p.s==="sugerida").map(p=>({c,p}))),
-   filaHTML=fila.length?`<div class="panel tblwrap"><table><thead><tr><th>Cliente</th><th>Pista</th><th>Atribuída a</th><th></th></tr></thead><tbody>${fila.map(({c,p})=>`<tr class="go" data-go="${c.id}/acoes/pistas#${p.id}"><td style="font-weight:600">${esc(c.nome)}</td><td>${esc(p.titulo)}</td><td>${esc(p.para)}</td><td class="n"><span class="muted t-sm">Decidir</span></td></tr>`).join("")}</tbody></table></div>`:emptyHTML("Tudo decidido","Não há pistas à espera da equipa.");
+  const meu=x=>ROLE_PARA[PREFS.role]===x.p.para,fila=cs.flatMap(c=>CLS[c.id].pistas.filter(p=>p.s==="sugerida").map(p=>({c,p}))).sort((a,b)=>meu(b)-meu(a)),
+   filaHTML=fila.length?`<div class="panel tblwrap"><table><thead><tr><th>Cliente</th><th>Pista</th><th>Atribuída a</th><th></th></tr></thead><tbody>${fila.map(({c,p})=>`<tr class="go" data-go="${c.id}/acoes/pistas#${p.id}"><td style="font-weight:600">${esc(c.nome)}</td><td>${esc(p.titulo)}</td><td>${esc(p.para)}${meu({p})?' <span class="tag hi">Para ti</span>':""}</td><td class="n"><span class="muted t-sm">Decidir</span></td></tr>`).join("")}</tbody></table></div>`:emptyHTML("Tudo decidido","Não há pistas à espera da equipa.");
   const body=`<div class="kpis k5">${kp.map(k=>kpiHTML({l:k[0],v:`<span ${typeof k[1]==="number"?`data-count="${k[1]}"`:""}>${k[1]}</span>`,sub:`<span class="muted">${k[2]}</span>`})).join("")}</div>
    ${secHTML("Fila de decisões","Pistas à espera da equipa, em todos os clientes. A plataforma sugere; a equipa decide.",filaHTML)}
    <div class="sec"><header><div><h2 class="t-h2">Verticais</h2><p>Cada vertical traz o seu conjunto de concorrentes por defeito (config/verticals/). O cliente herda e ajusta.</p></div></header><div class="verts">${vert}</div></div>
@@ -2016,6 +2071,7 @@ function settingsHTML(){
   const eq=VIEW!=="cliente"&&ROUTE.scope==="cliente";
   return`<div class="gh">Aparência</div>
    <div class="seg" role="group" aria-label="Modo de cor"><button data-modo="light" aria-pressed="${!isDark()}">Claro</button><button data-modo="dark" aria-pressed="${isDark()}">Escuro</button></div>
+   ${VIEW!=="cliente"?`<div class="gh">A minha função</div><div class="roles" role="radiogroup" aria-label="A minha função">${ROLES.map(r=>`<button class="opt" role="radio" aria-checked="${PREFS.role===r[0]}" data-role="${r[0]}">${r[1]}</button>`).join("")}</div><p class="t-xs setnote">Muda o que aparece primeiro: as pistas da tua área, o início da Direção. Nada fica escondido.</p>`:""}
    ${VIEW!=="cliente"?`<div class="gh">Cor do tema</div><div class="sw2" role="group" aria-label="Cor do tema">${AG.temas.map(t=>{const aa=ensureAA(t.cor);return`<button data-tid="${t.id}" aria-label="${esc(t.nome)}" aria-pressed="${t.id===APPTHEME}" style="background:${t.cor}" data-tip="<b>${esc(t.nome)}</b><br>Contraste com branco: ${nf(aa.before,1)}:1${aa.hex.toLowerCase()!==t.cor.toLowerCase()?`. Texto e botões usam ${aa.hex} (${nf(aa.after,1)}:1).`:", cumpre AA."}"></button>`}).join("")}</div><p class="t-xs setnote">Só muda as cores de marca. O contraste é validado (WCAG AA).</p>`:""}
    ${eq?`<div class="gh">Demonstração</div>
     <button class="mi" data-sq aria-pressed="${!!(S&&S.bquiet)}"><span>Simular semana sem sinais</span><i class="tg" role="switch" aria-checked="${!!(S&&S.bquiet)}"></i></button>
@@ -2027,7 +2083,8 @@ document.addEventListener("click",e=>{
   if(e.target.closest("#setbtn")){$("#setmenu")?closeSettings():openSettings();return}
   const m=e.target.closest("#setmenu");
   if(m){let t;
-    if(t=e.target.closest("[data-modo]"))setMode(t.dataset.modo);
+    if(t=e.target.closest("[data-role]")){PREFS.role=t.dataset.role;savePrefs();S.minhas=undefined;syncSettings();CUR.refresh();toast(PREFS.role==="todos"?"A ver tudo.":"Vista de "+roleLabel()+". As pistas dessa área aparecem primeiro.")}
+    else if(t=e.target.closest("[data-modo]"))setMode(t.dataset.modo);
     else if(t=e.target.closest("[data-tid]"))applyTheme(t.dataset.tid,true);
     else if(e.target.closest("[data-sq]")){S.bquiet=!S.bquiet;syncSettings();CUR.refresh()}
     else if(e.target.closest("[data-reset]")){closeSettings();resetEstado()}
@@ -2066,6 +2123,7 @@ function comandos(){
     Object.entries(PAGES).filter(([k,p])=>!p.hide&&(!p.if||p.if())).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"abrir página",run:()=>go(`${CID}/${k}`)}));
     if(hasAds()&&!isTema())incl().forEach(e=>L.push({g:"Ir para",t:"Ficha de marca: "+e.nome,i:"i-layers",k:"marca concorrente "+e.id,run:()=>go(`${CID}/marca/${e.id}`)}));
     mtabs().forEach(x=>L.push({g:"Ir para",t:"Mercado: "+x[1],i:"i-layers",k:"abrir",run:()=>go(`${CID}/mercado/${x[0]}`)}));
+    L.push({g:"Ir para",t:"Ações: alertas",i:"i-spark",k:"alertas avisos novos",run:()=>go(`${CID}/acoes/alertas`)});
     L.push({g:"Ir para",t:"Relatórios: publicar para o cliente",i:"i-send",k:"publicar vista cliente",run:()=>go(`${CID}/relatorios/publicar`)});
   }
   Object.entries(AGPAGES).forEach(([k,p])=>L.push({g:"Ir para",t:p.n,i:p.i,k:"agência",run:()=>go(`agencia/${k}`)}));
@@ -2249,6 +2307,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("#viewseg [data-v
 function start(){
   if(EM_ARTEFACTO)seguirTemaDoVisualizador();
   applyTheme(AG.temas[0].id,false);
+  if(PREFS.role==="direcao"&&!location.hash.replace(/^#\/?/,""))try{history.replaceState(null,"","#/agencia/torre")}catch(e){}   // a Direção começa na Torre de controlo
   const r=parse(location.hash);CID=r.cid||AG.cliente_inicial||AG.clientes[0].id;setClient(CID);render(r,true)}
 const sp=$("#splash");let seen=false;try{seen=sessionStorage.getItem("radar-intro")==="1"}catch(e){}
 if(RM||seen||location.search.includes("nosplash")){sp.remove();start()}

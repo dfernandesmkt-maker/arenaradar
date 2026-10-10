@@ -24,7 +24,8 @@ let VIEW="equipa";                      // vista ativa: «equipa» (completa) ou
 
 /* ---------- Preferências da pessoa (função e última visita): só neste navegador ---------- */
 const PKEY="radar-prefs-v1";
-let PREFS={role:"todos",visit:{}};try{PREFS=Object.assign(PREFS,JSON.parse(localStorage.getItem(PKEY)||"{}"))}catch(e){}
+let PREFS={role:"todos",seen:{},notif:{}};try{PREFS=Object.assign(PREFS,JSON.parse(localStorage.getItem(PKEY)||"{}"))}catch(e){}
+if(!PREFS.seen)PREFS.seen={};if(!PREFS.notif)PREFS.notif={};
 const savePrefs=()=>{try{localStorage.setItem(PKEY,JSON.stringify(PREFS))}catch(e){}};
 const ROLES=[["todos","Toda a equipa"],["performance","Performance"],["brand","Brand"],["account","Account"],["direcao","Direção"]];
 const ROLE_PARA={performance:"Performance",brand:"Brand",account:"Account"};   // a que atribuição de pistas corresponde

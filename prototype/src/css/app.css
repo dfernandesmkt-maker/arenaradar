@@ -637,3 +637,20 @@ html[data-present] #toast{bottom:116px}
 .cmpbar select{height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px;font-size:13.5px;color:var(--text)}
 .kpis.five .kpi .big{font-size:28px}
 .kpis.five .kv .sp{width:58px}
+
+/* alertas e vista por função */
+.alist{padding:4px 0}
+.alrow{display:grid;grid-template-columns:96px minmax(0,1fr) 92px auto;gap:6px 16px;align-items:start;padding:14px 18px;border-top:1px solid var(--line-2)}
+.alrow:first-child{border-top:0}
+.alrow.nv{background:color-mix(in srgb,var(--accent) 5%,transparent);box-shadow:inset 3px 0 0 var(--accent)}
+.alsev{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--line-2);color:var(--text-2);width:max-content}
+.alsev[data-s=material]{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn-ink)}
+.alb b{font-weight:600}
+.alb p{margin-top:2px}
+.alq{text-align:right;font-variant-numeric:tabular-nums}
+.alact{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+@media (max-width:900px){.alrow{grid-template-columns:minmax(0,1fr) auto}.alsev{grid-column:1}.alb{grid-column:1/-1}.alq{text-align:left}.alact{grid-column:1/-1;justify-content:flex-start}}
+.rolebar{margin:10px 0 4px;padding:9px 12px;border-radius:10px;background:var(--brand-soft);font-size:13px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;background:var(--line-2);padding:1px 5px;border-radius:5px}
+.setm .roles{display:grid;gap:0;margin-bottom:2px}
+.setm .roles .opt{min-height:34px;padding:6px 8px}

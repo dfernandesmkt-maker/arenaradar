@@ -33,7 +33,7 @@ function sigCard(s,i){
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
-   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
+   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${p&&ROLE_PARA[PREFS.role]===p.para?`<span class="tag hi" data-tip="A pista deste cartão está atribuída à tua função.">Para ti</span>`:""}${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
@@ -99,13 +99,15 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(
 function sinceHTML(){
   if(isCli()||S.bquiet)return"";
   const nov=D.sinais.filter(s=>s.novo),mant=D.sinais.filter(s=>s.material&&!s.novo),res=D.sinais_resolvidos||[];
-  const parts=[nov.length?`<span class="sn nw"><i></i>${nov.length} ${nov.length===1?"novo":"novos"}</span>`:"",mant.length?`<span class="sn">${mant.length} ${mant.length===1?"mantém-se":"mantêm-se"}</span>`:"",res.length?`<span class="sn">${res.length} ${res.length===1?"deixou":"deixaram"} de estar acima do limiar</span>`:""].filter(Boolean);
-  if(!parts.length)return"";
+  const an=alertasNovos().length;
+  const parts=[an?`<button class="lnk" data-go="acoes/alertas">${an} ${an===1?"alerta novo":"alertas novos"}</button>`:"",nov.length?`<span class="sn nw"><i></i>${nov.length} ${nov.length===1?"novo":"novos"}</span>`:"",mant.length?`<span class="sn">${mant.length} ${mant.length===1?"mantém-se":"mantêm-se"}</span>`:"",res.length?`<span class="sn">${res.length} ${res.length===1?"deixou":"deixaram"} de estar acima do limiar</span>`:""].filter(Boolean);
+  if(!nov.length&&!mant.length&&!res.length&&!an)return"";
   const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:"";
   return`<details class="since"><summary><span class="sl">Desde a semana passada</span>${parts.join("")}<svg class="ic"><use href="#i-down"/></svg></summary>
    <div class="sbody">${nov.length?`<h4>Novos</h4>${li(nov,s=>`<li>${esc(s.titulo)}</li>`)}`:""}${mant.length?`<h4>Mantêm-se acima do limiar</h4>${li(mant,s=>`<li>${esc(s.titulo)}${s.valor_anterior!=null&&s.valor!=null?` <span class="muted">(semana passada: ${sgn(s.valor_anterior,Math.abs(s.valor_anterior)<10?1:0)}${sigUnit(s)})</span>`:""}</li>`)}`:""}${res.length?`<h4>Deixaram de estar acima do limiar</h4>${li(res,s=>`<li>${esc(s.titulo)}</li>`)}`:""}</div></details>`}
 function pageVisao(){
-  const lista=isCli()?cartoesPub():S.bquiet?[]:D.sinais,sg=lista.map(sigCard).join("");
+  const mp=s=>{const p=s.pista_id&&D.pistas.find(x=>x.id===s.pista_id);return p&&ROLE_PARA[PREFS.role]===p.para?1:0};
+  const lista=isCli()?cartoesPub():S.bquiet?[]:[...D.sinais].sort((a,b)=>mp(b)-mp(a)),sg=lista.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
    ${kpisHTML()}
    ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`${sinceHTML()}<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
