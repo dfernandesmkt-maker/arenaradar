@@ -17,7 +17,7 @@
 | Tipo | Quando usar | O que mostra em «Mercado» |
 |---|---|---|
 | `concorrencia` | O cliente compete com marcas identificáveis (ex.: energia, seguros, combustíveis) | Quota de voz, atividade, campanhas, formatos e mensagens, investimento |
-| `tema` | A disputa é por atenção e clareza de mensagem, não por quota (ex.: a SPV) | Voz no tema, agenda e contexto de mercado |
+| `tema` | A disputa é por atenção e clareza de mensagem, não por quota (ex.: o cliente fictício Verdia, em `config/clients/verdia.yaml`) | Voz no tema, agenda e contexto de mercado |
 
 ## O que fica em demonstração até ligar as fontes
 Enquanto uma fonte não estiver ligada, o bloco correspondente usa dados de **demonstração** (marcas fictícias) e o selo da página diz «Demonstração». Quando houver dados em `data/raw/` (recolhidos pelos scripts), `build_dataset.py` usa-os e o selo muda para «Real» ou «Misto», sem alterar a interface. Ver `docs/09-pontos-de-ligacao.md`.

@@ -3,14 +3,14 @@
 Prioridades: **P0** antes da reunião com a direção · **P1** materiais da reunião · **P2** só se o piloto for aprovado · **Futuro**.
 Cada tarefa = um commit com o ID.
 
-## P0 — Protótipo v3 SPV
+## P0 — Protótipo v3
 
 ### RB-01 · Recuperar o protótipo v2 *(manual, David)*
 Descarregar o `arena-radar.html` da conversa de junho no claude.ai e guardar como `prototype/arena-radar-v2.html`. Guardar o documento estratégico de abril em `docs/legacy/`.
 **Aceitação:** ficheiros no repositório; v2 abre no browser.
 
 ### RB-02 · Criar a v3 e trocar o logo
-Copiar v2 para `prototype/arena-radar-v3-spv.html`. Substituir o logo recriado pelo oficial (`assets/arena_media_portugal_logo.jpg`, embebido em base64 para o HTML continuar autocontido).
+Copiar v2 para `prototype/arena-radar-v3-preview.html`. Substituir o logo recriado pelo oficial (`assets/arena_media_portugal_logo.jpg`, embebido em base64 para o HTML continuar autocontido).
 **Aceitação:** nenhum logo desenhado em SVG/CSS; o oficial aparece nítido na sidebar e no rodapé.
 
 ### RB-02b · Reenquadrar "Recomendar" como "Pistas de ação"
@@ -21,12 +21,12 @@ Renomear a camada e o ecrã. Cartões passam a "ação possível", com botões *
 Componente reutilizável `badge-origem` com três estados: **Real** (verde), **Estimado** (âmbar), **Demo** (cinzento tracejado). Ao passar o cursor mostra fonte, data de recolha e método. Aplicar a todos os KPIs, gráficos, tabelas e cartões.
 **Aceitação:** zero números na interface sem etiqueta; a faixa global "dados de demonstração" da v2 é substituída por etiquetas por componente.
 
-### RB-04 · Cliente SPV por defeito
-SPV no seletor, como cliente ativo. Clientes fictícios (Lumio, Vael, Kob) ocultos por defeito, acessíveis num interruptor "mostrar clientes demo". Nome, universo e pesquisas lidos de um objeto JSON embebido, gerado a partir de `config/clients/spv.yaml`.
-**Aceitação:** nenhum dado demo atribuído a Novo Verde, Electrão ou SDR Portugal.
+### RB-04 · Cliente por defeito e clientes fictícios
+*(Reformulada em out. 2026, D33.)* O protótipo mostra só clientes fictícios (Lumio, Vael, Kob e Verdia); o cliente inicial é `cliente_inicial` em `config/agencia.yaml`. Nome, universo e pesquisas vêm de `config/clients/<cliente>.yaml`.
+**Aceitação:** nenhum dado demo atribuído a uma entidade real de terceiros (verificado por `scripts/check_dataset.py`).
 
-### RB-05 · Camada Observar adaptada à SPV
-Substituir a lógica "concorrentes / share of voice" por quatro blocos: **Procura e dúvidas** (Trends por cluster), **Voz no tema** (anúncios ativos por entidade e mensagem), **Agenda** (notícias por tema), **Utilização ELO** (demo até haver autorização). Manter o heatmap, mas como entidades × canais observados.
+### RB-05 · Camada Observar para clientes de tipo «tema»
+Substituir a lógica "concorrentes / share of voice" por quatro blocos: **Procura e dúvidas** (Trends por cluster), **Voz no tema** (anúncios ativos por entidade e mensagem), **Agenda** (notícias por tema), **Dados internos do cliente** (bloqueados até haver autorização). Manter o heatmap, mas como entidades × canais observados.
 **Aceitação:** os quatro blocos com dados etiquetados; as hipóteses H1–H3 aparecem em Ler como "hipótese", não como conclusão.
 
 ### RB-06 · Ecrã "Briefing de segunda-feira"
@@ -42,7 +42,7 @@ Interruptor que esconde ⌘K, skeletons e animações acessórias, aumenta a tip
 **Aceitação:** percorrível em 3 minutos numa reunião, sem cliques perdidos.
 
 ### RB-09 · Ligar dados reais ao protótipo *(feito em out. 2026: `scripts/build_dataset.py`; falta correr as recolhas reais, RB-76)*
-Criar `scripts/build_dataset.py`: lê `data/raw/**`, agrega por semana e gera `data/processed/spv.json` com proveniência. Um passo de build injeta o JSON no HTML v3.
+Criar `scripts/build_dataset.py`: lê `data/raw/**`, agrega por semana e gera `data/processed/<cliente>.json` com proveniência. Um passo de build injeta o JSON no HTML v3.
 **Aceitação:** correr os coletores + build atualiza o protótipo sem editar o HTML à mão.
 
 ## P1 — Materiais para a direção
@@ -90,10 +90,10 @@ Especificação em `docs/08-especificacao-ux.md`. Por fases:
 - **RB-70** ✅ *(fase C, out. 2026)* Seletor de âmbito e menu único para todos os clientes.
 - **RB-71** ✅ *(fase C)* Barra de filtros global (período, comparação, plataforma, marcas) onde afeta o conteúdo: Visão geral, Mercado (concorrência), Procura e notícias, Criativos.
 - **RB-72** ✅ *(fase C)* Componentes reutilizáveis: KPI, cartão-conclusão, gráfico, tabela, gaveta, estado vazio (`prototype/src/js/20-components.js`, `30-charts.js`).
-- **RB-73** ✅ *(fase C)* Dados por cliente: `config/` → `scripts/build_dataset.py` (RB-09) → JSON lido pelo protótipo; clientes e marcas já não estão no código. `config/verticals/` criado (RB-40). Quatro clientes: SPV (tema, real) e Lumio, Vael, Kob (concorrência, fictícios).
+- **RB-73** ✅ *(fase C)* Dados por cliente: `config/` → `scripts/build_dataset.py` (RB-09) → JSON lido pelo protótipo; clientes e marcas já não estão no código. `config/verticals/` criado (RB-40). Quatro clientes fictícios: Lumio, Vael e Kob (concorrência) e Verdia (tema).
 - **RB-74** ✅ *(fase C)* Selo de dados por página (D27 confirmada).
 - **RB-75** ✅ *(fase D, out. 2026)* Vista Cliente e publicação pela equipa. O tema de cor por cliente está pronto (`cliente.tema`) mas não é usado até a Q09 ser respondida. Falta a entrega real ao cliente (acesso e autenticação), a decidir com IT e Compliance.
-- **RB-76** *(fase E)* Dados reais nos blocos Procura e Notícias para a home; Meta quando houver token (Q10). **Estado:** o ambiente cloud não tem acesso de rede a `news.google.com`, `trends.google.com` nem `graph.facebook.com`; importador de exportações manuais do Trends pronto (`scripts/import_trends_csv.py`). Falta correr a recolha (ver `docs/09`, «Ligar a SPV a dados reais»).
+- **RB-76** *(fase E)* Dados reais nos blocos Procura e Notícias para a home; Meta quando houver token (Q10). **Estado:** o ambiente cloud não tem acesso de rede a `news.google.com`, `trends.google.com` nem `graph.facebook.com`; importador de exportações manuais do Trends pronto (`scripts/import_trends_csv.py`). Falta correr a recolha (ver `docs/09`, «Ligar um cliente a dados reais»).
 
 ## Concorrência e fontes (out. 2026)
 - **RB-60** Ligar a Meta Ad Library (`collect_meta_ads.py`) ao módulo Concorrência: substituir os anúncios simulados pelos recolhidos, com `origem=real`, fonte e data. Depende de Q10.

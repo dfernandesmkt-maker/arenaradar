@@ -4,6 +4,9 @@
 agencia:
   nome: Arena Media Portugal
 
+# Cliente que abre por defeito no protótipo.
+cliente_inicial: lumio
+
 calendario:
   inicio: 2026-01-05         # segunda-feira da semana 0
   semanas: 39                # número de semanas da série

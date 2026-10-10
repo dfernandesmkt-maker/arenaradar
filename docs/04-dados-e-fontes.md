@@ -11,7 +11,7 @@ Cada registo, em qualquer ficheiro de `data/`, tem estas colunas:
 | Coluna | Valores | Obrigatório |
 |---|---|---|
 | `origem` | `real` · `estimado` · `demo` | Sempre |
-| `fonte` | Emissor identificado (ex.: "Google Trends", "Meta Ad Library", "Lusa via Diário de Viseu") | Se `real` |
+| `fonte` | Emissor identificado (ex.: "Google Trends", "Meta Ad Library", "Agência de notícias via meio de comunicação") | Se `real` |
 | `data_recolha` | ISO 8601 | Sempre |
 | `metodo` | Como foi obtido ou calculado | Se `estimado`; recomendado nos outros |
 | `url` | Ligação para verificação | Quando existir |
@@ -30,7 +30,7 @@ Regras:
 | Google Ads Transparency Center | Anúncios Google por anunciante | Consulta manual | Boa, sem API oficial | Manual |
 | TikTok Ad Library (DSA) | Anúncios TikTok entregues na UE | API de investigação com candidatura; consulta manual | Boa | Manual por agora |
 | Marktest AdCheck | Investimento publicitário estimado por meio | Licença da agência | Referência de mercado | Manual (exportação) |
-| Dados do cliente (ELO) | Sessões, primeiras mensagens, temas | Autorização do cliente | Alta | Manual, fora do Git |
+| Dados internos do cliente (ex.: chatbot) | Sessões, primeiras mensagens, temas | Autorização do cliente | Alta | Manual, fora do Git |
 
 ### Notas de viabilidade
 - **Google Trends.** A Google anunciou uma API oficial em alpha em julho de 2025, com acesso por candidatura. A biblioteca `pytrends` foi arquivada em abril de 2025 e funciona apenas em parte. Recomendação: candidatar a agência à alpha; entretanto usar `pytrends` com repetição limitada e, se falhar, exportação manual de CSV a partir de trends.google.com e importação com `scripts/import_trends_csv.py` (grava em `data/raw/trends/<cliente>/`).
@@ -41,7 +41,7 @@ Regras:
 ```
 scripts/collect_*.py  →  data/raw/<fonte>/<cliente>/<data>.csv   (com proveniência)
             ↓ (a construir: RB-09)
-scripts/build_dataset.py  →  data/processed/<cliente>.json  →  prototype/arena-radar-v3-spv.html
+scripts/build_dataset.py  →  data/processed/<cliente>.json  →  prototype/arena-radar-v3-preview.html
 ```
 
 ## Limiares de materialidade (proposta inicial, a calibrar no piloto)
@@ -50,4 +50,4 @@ scripts/build_dataset.py  →  data/processed/<cliente>.json  →  prototype/are
 | Pesquisas | Semana ≥ 30% acima da média das 8 semanas anteriores, no cluster |
 | Anúncios | Nova campanha de uma entidade de prioridade alta, ativa há ≥ 3 dias |
 | Notícias | Tema presente em ≥ 3 meios nacionais na mesma semana |
-| ELO | Variação semanal de utilização ≥ 25% (se houver dados) |
+| Dados internos do cliente | Variação semanal de utilização ≥ 25% (se houver dados e autorização) |

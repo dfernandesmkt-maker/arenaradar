@@ -6,7 +6,7 @@
 ## 1. Em síntese
 - O Arena Radar é um produto interno que deteta o que muda no mercado de um cliente, interpreta o que isso significa e aponta à equipa as ações de meios possíveis. A plataforma sugere; a equipa decide.
 - Conceito e experiência estão fechados: existe um protótipo navegável de alta fidelidade. Dados reais, motor de leitura e entrega automática ainda não existem.
-- Proposta: um piloto de 6 semanas com a Sociedade Ponto Verde, sem desenvolvimento técnico pesado, para provar valor antes de pedir investimento.
+- Proposta: um piloto de 6 semanas com um cliente real a escolher, sem desenvolvimento técnico pesado, para provar valor antes de pedir investimento.
 
 ## 2. O problema que resolve
 - Os clientes esperam que a agência antecipe movimentos do mercado, não que os relate depois.
@@ -30,7 +30,7 @@ Três modos de entrega: alertas apenas para eventos materiais, briefing semanal 
 | Abril 2026 | Conceito inicial, documento estratégico, wireframes e primeiro protótipo. Piloto pensado para a PRIO. |
 | Maio 2026 | Radar identificado como ponto em aberto no plano de conta PRIO 2026. |
 | Junho 2026 | Reposicionamento: de "plataforma preditiva" para "antecipação acionável". Produto agnóstico ao cliente. Protótipo v2 ao nível de SaaS e módulo Impacto. |
-| Setembro 2026 | Retoma para ponto de situação. Versão exemplo com a Sociedade Ponto Verde. |
+| Setembro 2026 | Retoma para ponto de situação. Versão de demonstração com clientes fictícios. |
 
 Detalhe e registo de decisões em `01-historico-e-decisoes.md`.
 
@@ -38,26 +38,27 @@ Detalhe e registo de decisões em `01-historico-e-decisoes.md`.
 | Componente | Estado | Nota |
 |---|---|---|
 | Conceito e proposta de valor | ✅ Fechado | Três camadas, três modos de entrega |
-| Experiência (protótipo) | ✅ Alta fidelidade | v2 navegável com clientes fictícios; v3 SPV em construção |
+| Experiência (protótipo) | ✅ Alta fidelidade | v2 navegável com clientes fictícios; v3 multi-cliente, com clientes fictícios |
 | Recolha de dados | 🟡 Iniciada | Scripts para notícias, Google Trends e Meta Ad Library; por testar em produção |
 | Motor de leitura e pistas de ação | ⚪ Por construir | Hoje simulado no protótipo |
 | Entrega automática (briefing) | ⚪ Por construir | Formato desenhado, sem automatização |
-| Validação com cliente | ⚪ Não iniciada | Proposta: piloto SPV |
+| Validação com cliente | ⚪ Não iniciada | Proposta: piloto com um cliente real |
 | Modelo de valor | 🟡 Desenhado | Módulo Impacto pronto a medir, sem histórico real |
 | Stack de produção | ⚪ Por decidir | Depende do IT (Microsoft vs. outro) |
 
-## 6. Porquê a Sociedade Ponto Verde como exemplo
-- **Contexto de mudança real.** O sistema de depósito Volta arrancou a 10 de abril de 2026 e generalizou-se a 10 de agosto. Muda o que o consumidor faz com garrafas e latas.
-- **Pressão de resultados.** Em 2025 Portugal ficou nos 60,5% de retoma de embalagens, abaixo da meta europeia de 65%. No 1.º semestre de 2026 a recolha seletiva cresceu cerca de 1%.
-- **Ligação a um ativo que já gerimos.** O chatbot ELO responde à dúvida "onde separo isto?". O Radar pode detetar quando essa dúvida aumenta e apontar quando e onde ativar.
-- **Universo legível.** Poucas entidades a comunicar sobre o tema (SPV, Novo Verde, Electrão, SDR Portugal), muita conversa pública e sazonalidade clara.
+## 6. Como escolher o cliente do piloto
+O protótipo mostra o potencial com **clientes fictícios**. O cliente real do piloto é uma decisão da direção. Critérios propostos:
+- **Contexto de mudança no mercado**, que torne a leitura útil logo nas primeiras semanas.
+- **Universo legível:** poucas entidades a vigiar, com dados públicos disponíveis (Meta Ad Library, pesquisa, notícias).
+- **Ligação a um ativo que já gerimos** (por exemplo, um assistente virtual do cliente), para o Radar apontar quando e onde ativar.
+- **Acordo do cliente** para o uso do nome em demonstrações e, mais tarde, de dados internos (Q04 e Q05).
 
-Nota: aqui a "concorrência" é sobretudo disputa de atenção e clareza de mensagem, não quota de mercado. O Radar SPV lê procura, dúvidas e voz no tema. Detalhe em `03-cliente-exemplo-spv.md`.
+Nota: em alguns clientes a "concorrência" é sobretudo disputa de atenção e clareza de mensagem, não quota de mercado. O Radar tem dois tipos de universo, «concorrência» e «tema», para os dois casos (ver `docs/02-produto.md` e `docs/10-como-acrescentar-um-cliente.md`).
 
 ## 7. Cenários
 | Cenário | O que implica | Investimento | Risco |
 |---|---|---|---|
-| **A. Piloto SPV** (recomendado) | 6 semanas de briefing semanal com dados públicos e leitura da equipa | Tempo do David (estimativa: 3 a 4 h/semana) | Baixo |
+| **A. Piloto com um cliente real** (recomendado) | 6 semanas de briefing semanal com dados públicos e leitura da equipa | Tempo do David (estimativa: 3 a 4 h/semana) | Baixo |
 | B. MVP funcional | Recolha automatizada, motor de leitura, stack decidido com IT | Tempo, IT, possíveis licenças | Médio: investir antes de provar valor |
 | C. Arquivar | Fica como ativo de pitch | Nenhum | Perder a janela e o trabalho feito |
 
@@ -65,7 +66,7 @@ Nota: aqui a "concorrência" é sobretudo disputa de atenção e clareza de mens
 
 ### Desenho do piloto
 - Semanas 1 a 3, **modo sombra**: o briefing é produzido e avaliado internamente, sem sair da agência.
-- Semanas 4 a 6, **com o cliente**: a equipa escolhe as pistas que leva à SPV, com o acordo prévio do contacto do cliente.
+- Semanas 4 a 6, **com o cliente**: a equipa escolhe as pistas que leva ao cliente, com o acordo prévio do contacto do cliente.
 - Ponto de decisão na semana 7, com os critérios abaixo.
 
 ### Critérios de sucesso (proposta, a validar)
@@ -79,9 +80,9 @@ Nota: aqui a "concorrência" é sobretudo disputa de atenção e clareza de mens
 | Ações adotadas pelo cliente | ≥ 1 |
 
 ## 8. O que pedimos à direção
-1. Aprovação do piloto SPV de 6 semanas, com o tempo alocado.
-2. Autorização para usar internamente dados de utilização do ELO, se o cliente concordar.
-3. Acesso à Marktest AdCheck para o universo SPV, se ainda não estiver disponível.
+1. Aprovação do piloto de 6 semanas, com o cliente a escolher, com o tempo alocado.
+2. Autorização para usar internamente dados do cliente (por exemplo, utilização de um assistente virtual), se o cliente concordar.
+3. Acesso à Marktest AdCheck para o universo do piloto, se ainda não estiver disponível.
 4. Um contacto no IT para a decisão de stack, a preparar em paralelo para o cenário B.
 
 ## 9. Riscos e mitigação
@@ -102,7 +103,7 @@ Nota: aqui a "concorrência" é sobretudo disputa de atenção e clareza de mens
 | 2 | O problema | Os dados tornaram-se comuns; a leitura não | 3 factos, sem texto corrido |
 | 3 | A resposta | Observar, Ler, Pistas de ação. A plataforma sugere, a equipa decide | Diagrama das três camadas + três modos |
 | 4 | Onde estamos | Conceito e experiência fechados; dados e motor por construir | Tabela de estado com semáforo |
-| 5 | Demo: Sociedade Ponto Verde | Como seria uma segunda-feira com o Radar | Captura do briefing v3 + 1 pista de ação exemplo |
+| 5 | Demo: cliente fictício | Como seria uma segunda-feira com o Radar | Captura do briefing v3 + 1 pista de ação exemplo |
 | 6 | Cenários | Três caminhos, um recomendado | A / B / C lado a lado |
 | 7 | O piloto | 6 semanas, sombra depois cliente, critérios claros | Cronograma + tabela de critérios |
 | 8 | O pedido | Quatro decisões concretas | Lista numerada |

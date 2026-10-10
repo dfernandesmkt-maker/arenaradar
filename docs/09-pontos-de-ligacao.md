@@ -39,19 +39,19 @@ Cada fonte segue o mesmo caminho: **recolha → `data/raw/` → `scripts/build_d
 | `google-trends` | Google Trends | Recolha escrita (biblioteca arquivada); CSV manual como alternativa | `scripts/collect_trends.py` → `data/raw/trends/<cliente>/` → `real_trends` → bloco `procura` | Interesse relativo 0–100 | Volume absoluto | IT; candidatura à API alpha (RB-23) |
 | `news-rss` | Google News RSS | Recolha escrita; ingestão pronta (acumula semana a semana) | `scripts/collect_news.py` → `data/raw/noticias/<cliente>/` → `real_noticias` → bloco `noticias` | Notícias por pesquisa em PT | Exaustividade | Compliance (termos) |
 | `google-ads-auction` | Google Ads, informações do leilão | Bloqueado | `scripts/demo_data.py` (`leilao_demo`) → bloco `leilao`; ver RB-65 | Quota de impressões, sobreposição | — | Compliance + cliente (Q12) |
-| `elo` | Utilização do chatbot ELO | Bloqueado | `data/raw/internal/elo/` (fora do Git) | Sessões e temas | — | Compliance + cliente (Q05) |
+| `dados-internos-cliente` | Dados internos do cliente (ex.: chatbot) | Bloqueado | `data/raw/internal/<fonte>/` (fora do Git) | Sessões e temas | — | Compliance + cliente (Q05) |
 | `importador-csv` | Importador CSV | Ativo | `prototype/src/js/57-fontes.js` | Qualquer fonte, com validação de proveniência | — | Equipa |
 
 Nota: o estado e as capacidades de cada API devem ser **confirmados na documentação atual de cada fornecedor** antes de ligar; os campos acima refletem o que está registado em `04-dados-e-fontes.md`.
 
-## Ligar a SPV (ou outro cliente) a dados reais, passo a passo
+## Ligar um cliente a dados reais, passo a passo
 Há três caminhos para os dados de procura e notícias. Escolhe o que for possível no teu ambiente.
 
 | Caminho | Quando | Como |
 |---|---|---|
-| **A. Recolha automática no ambiente cloud** | O ambiente tiver acesso de rede aos domínios das fontes | Em Definições do ambiente → Acesso à rede, acrescentar `news.google.com` e `trends.google.com` (e `graph.facebook.com` para a Meta). Depois: `python3 scripts/collect_news.py --client spv` e `python3 scripts/collect_trends.py --client spv` |
+| **A. Recolha automática no ambiente cloud** | O ambiente tiver acesso de rede aos domínios das fontes | Em Definições do ambiente → Acesso à rede, acrescentar `news.google.com` e `trends.google.com` (e `graph.facebook.com` para a Meta). Depois: `python3 scripts/collect_news.py --client <cliente>` e `python3 scripts/collect_trends.py --client <cliente>` |
 | **B. Recolha no teu computador** | Tens Python instalado | `pip install -r scripts/requirements.txt` e os mesmos comandos; faz commit dos ficheiros novos de `data/raw/` |
-| **C. Exportação manual do Google Trends** | Sem rede nem Python no ambiente; fonte que a própria Google disponibiliza | Em trends.google.com, pesquisa os termos de cada cluster (Portugal, «Últimos 5 anos») → Descarregar CSV; coloca os ficheiros no repositório e corre `python3 scripts/import_trends_csv.py --client spv --cluster volta=ficheiro1.csv --cluster ecoponto=ficheiro2.csv --cluster duvidas=ficheiro3.csv` |
+| **C. Exportação manual do Google Trends** | Sem rede nem Python no ambiente; fonte que a própria Google disponibiliza | Em trends.google.com, pesquisa os termos de cada cluster (Portugal, «Últimos 5 anos») → Descarregar CSV; coloca os ficheiros no repositório e corre `python3 scripts/import_trends_csv.py --client <cliente> --cluster cluster1=ficheiro1.csv --cluster cluster2=ficheiro2.csv` |
 
 Depois de qualquer caminho: `python3 scripts/build_dataset.py && python3 scripts/check_dataset.py && python3 prototype/build_preview.py`. A recolha de notícias acumula-se semana a semana (o RSS só devolve os dias mais recentes); o histórico começa na primeira recolha.
 

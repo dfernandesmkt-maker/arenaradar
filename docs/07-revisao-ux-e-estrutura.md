@@ -1,11 +1,11 @@
 # Revisão de UX/UI e de estrutura (outubro 2026)
 
-**Estado:** Rascunho para validação do David · **Base:** protótipo `arena-radar-v3-preview.html` percorrido ecrã a ecrã (Torre de controlo, Vertical Energia, SPV: Início, Observar, Pistas de ação, Briefing, Impacto, Fontes de dados).
+**Estado:** Revisão histórica (out. 2026; o cliente real de tema foi entretanto retirado, ver D33). Rascunho para validação do David · **Base:** protótipo `arena-radar-v3-preview.html` percorrido ecrã a ecrã (Torre de controlo, Vertical Energia, cliente de tema: Início, Observar, Pistas de ação, Briefing, Impacto, Fontes de dados).
 
 Nada neste documento está decidido. São observações e propostas para escolher em conjunto.
 
 ## 1. Nova direção a registar
-O David pediu que a plataforma traga valor **à agência e ao cliente**, com leitura **natural, fácil e fluida, como num dashboard de reporting**, e que funcione para **vários clientes** (a SPV é só um exemplo).
+O David pediu que a plataforma traga valor **à agência e ao cliente**, com leitura **natural, fácil e fluida, como num dashboard de reporting**, e que funcione para **vários clientes** (a cliente de tema é só um exemplo).
 
 Isto ajusta a D23 («uso interno primeiro»). Proposta de formulação, a confirmar como D26:
 > O Radar serve a agência e o cliente a partir dos mesmos dados, em duas vistas: **Equipa** (completa, com pistas de ação) e **Cliente** (reporting limpo, só com o que a equipa decidiu publicar). Mantém-se o princípio: a plataforma sugere, a equipa decide; nada chega ao cliente sem decisão da equipa.
@@ -21,10 +21,10 @@ Isto ajusta a D23 («uso interno primeiro»). Proposta de formulação, a confir
 
 | # | Observação | Efeito |
 |---|---|---|
-| U1 | **Navegação mistura níveis.** Em «Vertical Energia / Lumio» a barra lateral continua a mostrar o menu da SPV (Início, Observar, Pistas, Briefing, Impacto). | Não se percebe em que cliente se está. Com 10 clientes torna-se ingerível. |
-| U2 | **Cada tipo de cliente tem um ecrã diferente.** SPV («tema») tem «Observar»; Lumio («concorrência») tem «Concorrência» com 6 separadores, filtros de período, plataforma e marca. | Experiência inconsistente; a SPV não tem filtro de período. |
+| U1 | **Navegação mistura níveis.** Em «Vertical Energia / Lumio» a barra lateral continua a mostrar o menu da cliente de tema (Início, Observar, Pistas, Briefing, Impacto). | Não se percebe em que cliente se está. Com 10 clientes torna-se ingerível. |
+| U2 | **Cada tipo de cliente tem um ecrã diferente.** cliente de tema («tema») tem «Observar»; Lumio («concorrência») tem «Concorrência» com 6 separadores, filtros de período, plataforma e marca. | Experiência inconsistente; a cliente de tema não tem filtro de período. |
 | U3 | **Não há filtros globais.** Período, comparação e plataforma só existem no módulo Concorrência. | Um dashboard de reporting tem sempre a barra de filtros no mesmo sítio. |
-| U4 | **Páginas muito longas** (a Observar da SPV tem ~2 700 px, sete secções). | Leitura em scroll contínuo, sem hierarquia clara entre o essencial e o detalhe. |
+| U4 | **Páginas muito longas** (a Observar da cliente de tema tem ~2 700 px, sete secções). | Leitura em scroll contínuo, sem hierarquia clara entre o essencial e o detalhe. |
 | U5 | **A conclusão e os números estão separados.** A home tem a frase-herói; os restantes ecrãs têm ou texto ou gráficos. | Falta o padrão de reporting: KPIs com variação → gráfico → detalhe. |
 | U6 | **A frase-herói da home («subiu 41%») é Demo.** | Para a direção, o primeiro ecrã assenta num número ilustrativo. Resolve-se com dados reais de Trends ou com um modo «simulação» assumido. |
 | U7 | **Linguagem de produto em vez de linguagem de leitura.** «Observar», «Pistas de ação», «Impacto» descrevem a metodologia, não o que o utilizador procura. A camada «Ler» existe nos documentos, mas não tem ecrã. | Quem vem de reporting procura «Visão geral», «Concorrência», «Procura», «Notícias», «Criativos». |
@@ -40,7 +40,7 @@ Isto ajusta a D23 («uso interno primeiro»). Proposta de formulação, a confir
 | E2 | **Não existe `config/verticals/`**, apesar de a hierarquia Agência → Vertical → Cliente estar no CLAUDE.md e no backlog (RB-40, RB-64). | O conceito central não tem suporte. |
 | E3 | **Dados, regras e interface no mesmo ficheiro.** `competition.js` (48 KB em 340 linhas) mistura gerador de dados demo, regras e desenho; `preview.template.html` tem 90 KB. | Difícil de rever, testar e entregar a quem vai implementar. |
 | E4 | **Dois «modelos de universo» (tema e concorrência) sem contrato comum.** | Cada novo cliente arrisca um terceiro ecrã à medida. |
-| E5 | **Documentação desfasada do produto.** O ponto de situação e o README ainda falam de «piloto SPV de setembro»; o backlog não marca o que o preview já fez; CLAUDE.md fala em `arena-radar-v3-spv.html`, que não existe. | Quem pega no projeto não sabe o que é atual. |
+| E5 | **Documentação desfasada do produto.** O ponto de situação e o README ainda falam de um piloto com o cliente real de setembro; o backlog não marca o que o preview já fez; CLAUDE.md fala em um ficheiro do protótipo, que não existe. | Quem pega no projeto não sabe o que é atual. |
 | E6 | **Sem verificação automática.** Nada garante que o build funciona nem que nenhum número aparece sem origem. | A regra de ouro depende de memória humana. |
 
 ## 5. Proposta de solução
@@ -94,4 +94,4 @@ O Briefing atual (separadores «Equipa / Cliente») é o embrião desta ideia.
 ## 7. Decisões pedidas ao David
 1. Confirmas a formulação da **D26** (duas vistas, publicação pela equipa)?
 2. Aceitas o **menu único + seletor de âmbito** (5.1) como base?
-3. Para a demonstração à direção, queres mostrar **um segundo cliente com dados reais de concorrência** (precisa do token da Meta, Q10) ou ficamos com a SPV real + vertical fictícia, tudo etiquetado?
+3. Para a demonstração à direção, queres mostrar **um segundo cliente com dados reais de concorrência** (precisa do token da Meta, Q10) ou ficamos com a cliente de tema real + vertical fictícia, tudo etiquetado?

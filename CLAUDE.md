@@ -5,7 +5,7 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 ## Quem e o quê
 - Owner: David, Senior Account/Media Manager na Arena Media Portugal (Havas Media Network).
 - Arena Radar: produto interno de inteligência de mercado que aponta pistas de ação de meios à equipa de conta. Ainda não foi apresentado à direção.
-- Objetivo imediato: ponto de situação para a direção, com uma versão exemplo para a Sociedade Ponto Verde (SPV).
+- Objetivo imediato: ponto de situação para a direção, com um protótipo de demonstração só com **clientes fictícios** (decisão D33: não se usam clientes reais na demonstração).
 
 ## Idioma e tom
 - Português europeu (PT-PT, Acordo Ortográfico), sempre. Nunca português do Brasil.
@@ -23,9 +23,9 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 1. Nenhum número inventado apresentado como real. Cada dado tem `origem`: `real`, `estimado` ou `demo`.
 2. Dado `real` tem sempre `fonte` (emissor identificado) e `data_recolha`.
 3. Dado `estimado` explica o método num campo `metodo`.
-4. Dado `demo` nunca é atribuído a uma entidade terceira real (Novo Verde, Electrão, SDR Portugal, etc.). Para terceiros: dado real ou nada.
+4. Dado `demo` nunca é atribuído a uma entidade terceira real (concorrentes, entidades gestoras, outras empresas). Para terceiros: dado real ou nada.
 5. A interface mostra a origem de cada dado (etiqueta visível + fonte ao passar o cursor). *D27 (confirmada pelo David): um **selo de dados por página** (Demonstração, Real, Estimado ou Misto) em vez de etiquetas por bloco; o detalhe abre ao clicar no selo e em cada número ao passar o cursor. `origem` continua obrigatória em cada bloco de dados.*
-6. Dados internos de clientes (ex.: utilização do chatbot ELO) ficam em `data/raw/internal/`, que está no `.gitignore`. Nunca fazer commit destes dados.
+6. Dados internos de clientes (ex.: utilização de um chatbot) ficam em `data/raw/internal/`, que está no `.gitignore`. Nunca fazer commit destes dados.
 
 ## Marca Arena Media
 - Tipografia: **Inter em todo o Radar** (decisão do David, D22), incluindo apresentações e documentos do Radar. As Brand Guidelines indicam Poppins; a exceção é do Radar e está por validar com Marketing/Brand (Q08). Os restantes materiais da Arena seguem as Brand Guidelines (Poppins em PowerPoint; Arial Nova em Word e Excel).
@@ -76,6 +76,6 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
 
 ## Convenções
 - Protótipos: `prototype/arena-radar-v2.html` (referência da versão de junho, não editar; recuperar manualmente) e `prototype/arena-radar-v3-preview.html` (atual, multi-cliente). A fonte está em `prototype/src/` (`index.template.html`, `css/`, `js/`); gerar com `python3 scripts/build_dataset.py && python3 prototype/build_preview.py`. Não editar o HTML gerado à mão.
-- **A interface não tem clientes, marcas nem séries escritos no código.** Tudo vem de `config/` (agência, verticais, clientes, temas, fontes) → `scripts/build_dataset.py` → `data/processed/*.json`. Acrescentar um cliente = um ficheiro (ver `docs/10-como-acrescentar-um-cliente.md`).
+- **A interface não tem clientes, marcas nem séries escritos no código.** Tudo vem de `config/` (agência, verticais, clientes, temas, fontes) → `scripts/build_dataset.py` → `data/processed/*.json`. Acrescentar um cliente = um ficheiro (ver `docs/10-como-acrescentar-um-cliente.md`). O protótipo só mostra clientes **fictícios** (Lumio, Vael, Kob e Verdia); um cliente real só entra depois de a Q04 estar respondida.
 - Um commit por tarefa do backlog, mensagem em PT-PT com o ID (ex.: `RB-03 etiquetas de proveniência`).
 - Antes de dar uma tarefa por concluída: abrir o HTML, verificar consola sem erros, confirmar que nenhum dado sem origem aparece na interface.

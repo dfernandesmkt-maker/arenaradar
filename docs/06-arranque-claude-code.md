@@ -19,7 +19,7 @@ Lê o CLAUDE.md e todos os ficheiros em docs/. Depois:
 
 **Prompt 2 — Dados reais**
 ```
-Cria o ambiente Python, instala scripts/requirements.txt e corre collect_news.py e collect_trends.py para o cliente spv.
+Cria o ambiente Python, instala scripts/requirements.txt e corre collect_news.py e collect_trends.py para o cliente indicado.
 Mostra-me o que foi recolhido e o que falhou. Não inventes dados para preencher falhas.
 ```
 
@@ -37,11 +37,11 @@ Executa RB-09 a RB-12. Para o deck segue o guião do anexo de docs/00-ponto-de-s
 ## 3. Boas práticas
 - Um pedido de cada vez; rever o que mudou antes de avançar.
 - Se o Claude Code propuser algo contra as regras do `CLAUDE.md`, corrigir e pedir para atualizar o `CLAUDE.md` se a regra mudar.
-- Dados do ELO: colocar em `data/raw/internal/` manualmente. Nunca colar no chat nem fazer commit.
+- Dados internos de clientes (ex.: chatbot): colocar em `data/raw/internal/` manualmente. Nunca colar no chat nem fazer commit.
 - Conta Claude pessoal + dados de clientes: confirmar com o IT da Havas o que é aceitável antes de usar dados internos.
 
 ## 4. Meta Ad Library (quando houver tempo)
 1. Confirmar identidade na Meta (necessário para aceder à Ad Library API).
 2. Criar uma app em developers.facebook.com e gerar um token de utilizador.
 3. Colocar o token em `.env` (`META_ACCESS_TOKEN`). O `.env` nunca vai para o Git.
-4. Correr `python scripts/collect_meta_ads.py --client spv`.
+4. Correr `python scripts/collect_meta_ads.py --client <cliente>`.

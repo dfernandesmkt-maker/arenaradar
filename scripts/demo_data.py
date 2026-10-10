@@ -126,6 +126,13 @@ def noticias_demo(temas: list[str], n: int, seed: int) -> list[dict]:
     return out
 
 
+def voz_demo(entidades: list[dict], seed: int) -> list[dict]:
+    """Anúncios ativos e artigos por entidade, simulados. Só se chama quando TODAS as entidades são fictícias."""
+    r = _r(seed + 555)
+    return [{"entidade": e["id"], "anuncios_meta": int(r.random() * 14) + (3 if e.get("cliente") else 0),
+             "noticias": int(r.random() * 40) + 5} for e in entidades]
+
+
 def leilao_demo(entidades: list[dict], quota_google: dict[str, float], seed: int) -> list[dict]:
     """Quota de impressões e sobreposição simuladas (formato do relatório «Informações do leilão»).
 

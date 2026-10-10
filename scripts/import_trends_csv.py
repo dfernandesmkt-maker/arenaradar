@@ -5,8 +5,8 @@ Serve quando a recolha automática (collect_trends.py) não está disponível ou
 Como exportar: em trends.google.com, pesquisa até 5 termos, escolhe Portugal, «Últimos 5 anos» (dados semanais) e
 carrega em «Descarregar» (CSV). Um ficheiro por cluster de termos (ver `trends.clusters` em config/clients/<cliente>.yaml).
 
-    python3 scripts/import_trends_csv.py --client spv \\
-        --cluster volta=exportacao_volta.csv --cluster ecoponto=exportacao_ecoponto.csv --cluster duvidas=exportacao_duvidas.csv
+    python3 scripts/import_trends_csv.py --client <cliente> \\
+        --cluster cluster1=exportacao1.csv --cluster cluster2=exportacao2.csv
 
 Grava em data/raw/trends/<cliente>/<data>.csv com proveniência (origem real, fonte «Google Trends (exportação manual)»).
 Depois: python3 scripts/build_dataset.py && python3 prototype/build_preview.py

@@ -46,7 +46,7 @@ function parse(hash){
   const h=(hash||"").replace(/^#\/?/,""),[pth,focus]=h.split("#"),[path,q]=pth.split("?"),p=path.split("/").filter(Boolean),view=/(^|&)v=cliente/.test(q||"")?"cliente":"equipa";
   if(p[0]==="agencia")return{scope:"agencia",view:"equipa",cid:CID,page:AGPAGES[p[1]]?p[1]:"torre",sub:null,focus};
   if(p[0]&&CLS[p[0]])return{scope:"cliente",view,cid:p[0],page:PAGES[p[1]]?p[1]:"visao",sub:p[2]||null,focus};
-  return{scope:"cliente",view:"equipa",cid:CID||AG.clientes[0].id,page:"visao",sub:null,focus:null}}
+  return{scope:"cliente",view:"equipa",cid:CID||AG.cliente_inicial||AG.clientes[0].id,page:"visao",sub:null,focus:null}}
 function href(r){return r.scope==="agencia"?"#/agencia/"+r.page:`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${r.view==="cliente"?"?v=cliente":""}${r.focus?"#"+r.focus:""}`}
 function go(path){
   const first=path.split(/[\/#]/)[0];
@@ -136,7 +136,7 @@ function seguirTemaDoVisualizador(){
 function start(){
   if(EM_ARTEFACTO)seguirTemaDoVisualizador();
   buildThemes();applyTheme(AG.temas[0].id,false);
-  const r=parse(location.hash);CID=r.cid||AG.clientes[0].id;setClient(CID);render(r,true)}
+  const r=parse(location.hash);CID=r.cid||AG.cliente_inicial||AG.clientes[0].id;setClient(CID);render(r,true)}
 const sp=$("#splash");let seen=false;try{seen=sessionStorage.getItem("radar-intro")==="1"}catch(e){}
 if(RM||seen||location.search.includes("nosplash")){sp.remove();start()}
 else{start();const end=()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),600);try{sessionStorage.setItem("radar-intro","1")}catch(e){}};setTimeout(end,2300);sp.addEventListener("click",end)}

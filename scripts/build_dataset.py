@@ -1,7 +1,7 @@
 """Gera os datasets que alimentam o protótipo (RB-09, RB-73).
 
     python3 scripts/build_dataset.py            # todos os clientes de config/clients/
-    python3 scripts/build_dataset.py --client spv
+    python3 scripts/build_dataset.py --client lumio
 
 Saída:
     data/processed/<cliente>.json   dataset completo de um cliente (tudo o que a interface mostra)
@@ -299,12 +299,13 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
     indicadores = []
     for it in ctx.get("indicadores", []):
         bid = "ctx_" + it["id"]
-        blocos[bid] = _bloco("real", it["rotulo"], it["fonte"], None, None, it["data_recolha"])
-        indicadores.append({**{k: v for k, v in it.items() if k not in ("fonte", "data_recolha")}, "bloco": bid})
+        og = it.get("origem", "real")           # «real» exige fonte e data; «demo» é inventado e fica sem fonte
+        blocos[bid] = _bloco(og, it["rotulo"], it.get("fonte"), it.get("metodo"), None, it.get("data_recolha", ref))
+        indicadores.append({**{k: v for k, v in it.items() if k not in ("fonte", "data_recolha", "origem")}, "bloco": bid})
     variacoes = None
     if ctx.get("variacoes"):
         v = ctx["variacoes"]
-        blocos["ctx_variacoes"] = _bloco("real", v["titulo"], v["fonte"], None, None, v["data_recolha"])
+        blocos["ctx_variacoes"] = _bloco(v.get("origem", "real"), v["titulo"], v.get("fonte"), v.get("metodo"), None, v.get("data_recolha", ref))
         variacoes = {"titulo": v["titulo"], "descricao": v["descricao"], "itens": v["itens"], "bloco": "ctx_variacoes"}
     agenda = []
     data_ctx = (ctx.get("indicadores") or [{}])[0].get("data_recolha", ref)
@@ -328,6 +329,9 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
             ads_t, bt = real_ads
             blocos["voz"] = _bloco("real", "Voz no tema", bt["fonte"], "Anúncios ativos por entidade (Meta Ad Library); notícias por entidade por ligar", None, bt["data_recolha"])
             voz = [{"entidade": e["id"], "anuncios_meta": sum(1 for a in ads_t if a["marca"] == e["id"] and not a["data_fim"]), "noticias": None} for e in ents]
+        elif demo and all(e["ficticia"] for e in ents):
+            blocos["voz"] = _bloco("demo", "Voz no tema", None, "Valores simulados para entidades fictícias", None, ref)
+            voz = demo_data.voz_demo(ents, sum(map(ord, cid)))
         else:
             blocos["voz"] = _bloco("pendente", "Voz no tema", None, "Por ligar: Meta Ad Library e notícias por entidade", None, None)
             voz = [{"entidade": e["id"], "anuncios_meta": None, "noticias": None} for e in ents]
@@ -415,7 +419,7 @@ def build_agency(datasets: list[dict], ag: dict, fontes: dict) -> dict:
                          "origens": sorted({b["origem"] for b in d["blocos"].values()}),
                          "pulso": d["pulso"], "n_entidades": sum(1 for e in d["entidades"] if e["incluida"])})
     return {"versao": 1, "gerado_em": ag["calendario"]["data_referencia"], "agencia": ag["agencia"],
-            "calendario": ag["calendario"], "rotulo_semana_atual": rotulo_semana(ag["calendario"]["inicio"], ag["calendario"]["semana_atual"]), "verticais": list(verts.values()), "clientes": clientes,
+            "cliente_inicial": ag.get("cliente_inicial"), "calendario": ag["calendario"], "rotulo_semana_atual": rotulo_semana(ag["calendario"]["inicio"], ag["calendario"]["semana_atual"]), "verticais": list(verts.values()), "clientes": clientes,
             "fontes": fontes["fontes"], "temas": temas, "piloto": ag["piloto"],
             "roteiro": carregar_roteiro({c["id"] for c in clientes})}
 

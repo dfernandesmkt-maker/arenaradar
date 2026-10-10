@@ -8,7 +8,7 @@
 | Q02 | Qual é o ambiente aprovado pelo grupo para desenvolvimento e para produção? | IT | Por confirmar |
 | Q03 | Existe autorização formal para o projeto, e de quem? | Direção | Por confirmar |
 | Q04 | Que dados de clientes podem ser usados em demonstrações internas (incluindo o nome do cliente)? Os contratos permitem? | Direção / Jurídico | Por confirmar |
-| Q05 | Dados do chatbot ELO: ficam fora do âmbito até haver parecer? | Compliance / cliente | Por confirmar |
+| Q05 | Dados internos de clientes (ex.: chatbot): ficam fora do âmbito até haver parecer? | Compliance / cliente | Por confirmar |
 | Q06 | Que fontes oficiais ou licenciadas já estão disponíveis ao grupo para a fase de produção? | David / IT | Por confirmar |
 | Q07 | A conta de desenvolvimento atual é adequada para a demonstração com dados públicos? | IT | Por confirmar |
 | Q08 | As Brand Guidelines indicam Poppins. O Radar usa Inter em tudo (interface, apresentações e documentos do Radar). Marketing/Brand valida esta exceção? | Marketing / Brand | Por confirmar |

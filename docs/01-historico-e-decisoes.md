@@ -35,8 +35,8 @@ No planeamento PRIO 2026 surgiu a nota "Arena Radar? Rever este ponto". Foram po
 
 ## Fase 4 · Setembro 2026 — Retoma
 - Pedido de ponto de situação para a direção.
-- Cliente exemplo: Sociedade Ponto Verde, com dados mistos (reais onde houver).
-- Próximo passo (protótipo vs. MVP) por definir; recomendação: piloto SPV de 6 semanas.
+- Cliente exemplo real, com dados mistos (reais onde houver). Retirado em outubro de 2026 (D33): a demonstração passou a usar só clientes fictícios.
+- Próximo passo (protótipo vs. MVP) por definir; recomendação: piloto de 6 semanas com um cliente real a escolher.
 - Desenvolvimento migra para Claude Code com repositório GitHub.
 - Direção de produto definida: ferramenta para todos os clientes e verticais, torre de controlo da concorrência, posicionamento complementar à Research, interface clara com temas por cliente e motion com propósito (D19 a D21). Detalhe no backlog, secção "Evolução do produto".
 - Reenquadramento da terceira camada: de "Recomendar" para "Pistas de ação". A plataforma dá informação e pistas; a equipa decide o que fazer e o que leva ao cliente (D16).
@@ -58,10 +58,10 @@ No planeamento PRIO 2026 surgiu a nota "Arena Radar? Rever este ponto". Foram po
 | D10 | Jun 2026 | Alertas só para eventos materiais | Evitar fadiga de alertas |
 | D11 | Jun 2026 | Módulo Impacto | O produto documenta o próprio valor |
 | D12 | Jun 2026 | Estética clara, SaaS, marca Arena | A estética escura editorial não servia um produto de uso diário |
-| D13 | Set 2026 | SPV como cliente exemplo, dados mistos | Contexto de mudança real (Volta) e ligação ao ELO |
+| D13 | Set 2026 | Cliente real como exemplo, com dados mistos. **Substituída pela D33** | Contexto de mudança real e ligação a um ativo gerido pela agência |
 | D14 | Set 2026 | Etiqueta de origem em cada dado (real / estimado / demo) | Dados mistos exigem transparência total perante a direção |
 | D15 | Set 2026 | Desenvolvimento em Claude Code + GitHub | Persistência, versões e execução real de recolha de dados |
 | D16 | Set 2026 | "Recomendar" passa a "Pistas de ação": a plataforma sugere, a equipa decide | O controlo e o poder de decisão ficam com a equipa; nada chega ao cliente sem essa decisão |
 
 ## Ideias paralelas ligadas ao Radar (não integradas)
-- **Visibilidade em assistentes de IA ("share of model").** Medir como as marcas aparecem nas respostas de ChatGPT, Gemini e outros. Candidato natural a módulo futuro do Radar. Uma auditoria semelhante para a SPV foi ponderada e posta de parte por agora.
+- **Visibilidade em assistentes de IA ("share of model").** Medir como as marcas aparecem nas respostas de ChatGPT, Gemini e outros. Candidato natural a módulo futuro do Radar. Uma auditoria semelhante para um cliente real foi ponderada e posta de parte por agora.

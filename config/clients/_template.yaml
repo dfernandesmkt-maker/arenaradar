@@ -8,7 +8,7 @@ cliente:
   vertical:              # id de config/verticals/<vertical>.yaml
   geo: PT
   idioma: pt-PT
-  tipo_universo: concorrencia   # "concorrencia" (compara marcas) ou "tema" (conversa pública; ver config/clients/spv.yaml)
+  tipo_universo: concorrencia   # "concorrencia" (compara marcas) ou "tema" (conversa pública; ver config/clients/verdia.yaml)
   ficticio: false        # true só para clientes de demonstração
 
 universo:                # o cliente e, se não vierem da vertical, as outras entidades

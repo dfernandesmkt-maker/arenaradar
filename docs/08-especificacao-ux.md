@@ -17,7 +17,7 @@ Decisões de base (D26 a D28, em `docs/dossier/04-registos/decisoes.md`): duas v
 
 ### Seletor de âmbito (topo, à esquerda)
 ```
-Arena Radar   [ Agência ▾ ] › [ Ambiente e economia circular ▾ ] › [ Sociedade Ponto Verde ▾ ]
+Arena Radar   [ Agência ▾ ] › [ Ambiente e economia circular ▾ ] › [ Verdia ▾ ]
 ```
 - Três níveis: **Agência › Vertical › Cliente**. É a única forma de mudar de contexto.
 - No nível Agência o menu é o da Torre de controlo; nos outros, o do cliente.
@@ -142,7 +142,7 @@ Gerado por `scripts/build_dataset.py` a partir de `config/` e `data/raw/`; um fi
 | Critério | Estado |
 |---|---|
 | Trocar de cliente no seletor muda **todo** o conteúdo e o menu mantém-se igual | ✅ |
-| Dois clientes de tipos diferentes (*tema* e *concorrência*) usam as mesmas páginas e componentes | ✅ SPV (tema) e Lumio, Vael, Kob (concorrência) |
+| Dois clientes de tipos diferentes (*tema* e *concorrência*) usam as mesmas páginas e componentes | ✅ Verdia (tema) e Lumio, Vael, Kob (concorrência) |
 | Filtros de período e comparação onde afetam o conteúdo | ✅ Visão geral, Mercado (concorrência), Procura e notícias e Criativos. Em Mercado de um universo de tema não há filtros porque nada nessa vista depende do período |
 | Nenhum cliente, marca ou série escrito no código | ✅ Tudo vem do JSON do cliente |
 | A vista Cliente só mostra conteúdo publicado | ✅ Fase D (RB-75). Verificado de ponta a ponta: sem publicar o cliente não vê nada; publicado, não vê limiares, hipóteses, atribuições, Ações nem marcas por aceitar |

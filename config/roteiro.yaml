@@ -22,12 +22,12 @@ roteiro:
     nota: "Criativos, formatos e mensagens. Com a Meta Ad Library ligada, aqui entram os anúncios reais."
   - id: tema
     titulo: O mesmo produto noutro tipo de cliente
-    rota: spv/visao
-    nota: "A Sociedade Ponto Verde não compete por quota: disputa atenção e clareza. O contexto é real, com fonte e data; as curvas de pesquisa são de demonstração até ligarmos o Google Trends."
+    rota: verdia/visao
+    nota: "A Verdia, cliente fictício de tema, não compete por quota: disputa atenção e clareza de mensagem. O ecrã tem a mesma estrutura, com blocos próprios deste tipo de cliente."
   - id: procura
     titulo: Procura e notícias
-    rota: spv/procura
-    nota: "O selo mostra a mistura de dados reais e de demonstração. Clica nele para ver o detalhe, ou passa o cursor num número para ver a origem."
+    rota: verdia/procura
+    nota: "O selo no topo diz de onde vêm os dados. Clica nele para ver o detalhe por bloco, ou passa o cursor num número para ver a origem."
   - id: pistas
     titulo: A equipa decide
     rota: lumio/acoes/pistas

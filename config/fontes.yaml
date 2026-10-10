@@ -119,9 +119,9 @@ fontes:
     responsavel: "Equipa"
     campos: ["marca", "plataforma", "formato", "data_inicio", "texto", "origem", "fonte", "data_recolha", "metodo"]
 
-  - id: elo
-    nome: "Utilização do chatbot ELO"
-    tipo: "Dados internos do cliente"
+  - id: dados-internos-cliente
+    nome: "Dados internos do cliente"
+    tipo: "Ex.: chatbot, CRM, vendas"
     como: "—"
     estado: "lk"
     estado_rotulo: "Bloqueado"
