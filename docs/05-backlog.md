@@ -100,6 +100,14 @@ Especificação em `docs/08-especificacao-ux.md`. Por fases:
 - **RB-83** ✅ Cartões «O que mudou» redesenhados: altura uniforme, texto contido, medidor de valor face ao limiar, ação principal «Ver pista» e menu «⋯» (detalhe, publicar para o cliente, pedir aprofundamento).
 - **RB-84** ✅ Ajuda «?» nos KPIs, dica «pontos percentuais», marcadores de lançamento de campanha no gráfico principal, «Copiar tabela» (TSV), resumo «O cliente verá…» na publicação, fila de decisões na Torre de controlo, estado vazio do Impacto.
 - **RB-85** ✅ Acessibilidade: ligação «Saltar para o conteúdo», foco no título ao navegar, anúncio da página para leitores de ecrã, alvos de 44 px em ecrãs tácteis.
+- **RB-86** ✅ *(out. 2026, auditoria UX)* Correções: controlos de demonstração fora das páginas e sem «ilustrativo» nos blocos; paleta própria para temas e assuntos (validada) separada das cores das marcas; chips de seleção com estado visível; janela de cálculo em cada número; medidor de limiar; contraste do chip negativo; menu lateral com a página ativa visível; telemóvel sem cortes.
+- **RB-87** ✅ Publicação com **rascunho e publicado** (D34): o cliente só vê a cópia publicada; estados «Por publicar», «Publicado» e «Alterações por publicar»; publicar alterações, descartar, retirar; pré-visualização ao lado; histórico (quem, quando, o quê); «Ver como ficaria» na vista do cliente.
+- **RB-88** ✅ **«Porquê?»** (D35): regra, números, janela, limiar, semana passada, gráfico e origem de cada sinal; «Como se calcula» em cada KPI; etiqueta «Novo» e faixa «Desde a semana passada» (sinais novos e que deixaram de estar acima do limiar).
+- **RB-89** ✅ **Ficha de marca** (Mercado › marca) com KPIs, campanhas, formatos, mensagens, criativos longevos e sinais; **comparar com outra marca**.
+- **RB-90** ✅ **Alertas** (Ações › Alertas) só para eventos materiais, com novos desde a última visita, preferências de aviso e limiares; **vista por função** (D36): Performance, Brand, Account e Direção.
+- **RB-91** ✅ **Copiar gráfico como imagem** com título, legenda e origem dos dados (D37); «Ao briefing» em gráficos, respostas, criativos e fichas; briefing organizado por sinal (sinal, leitura, pista).
+- **RB-92** ✅ Acabamento: Torre com clientes por vertical e fila por sinal vs limiar; **Agência › Piloto**; Impacto com percurso sinal, decisão, resultado; pistas criadas pela equipa; tabelas ordenáveis; filtros na ligação e **vistas guardadas**; Fontes em dois níveis (resumo e detalhe técnico); heatmap com coluna offline única.
+- **RB-93** *(por fazer)* Medir o **resultado observado** de cada pista aceite (hoje «A medir») e o tempo até decidir, assim que houver histórico real. Depende do piloto e de RB-22.
 
 ## Concorrência e fontes (out. 2026)
 - **RB-60** Ligar a Meta Ad Library (`collect_meta_ads.py`) ao módulo Concorrência: substituir os anúncios simulados pelos recolhidos, com `origem=real`, fonte e data. Depende de Q10.

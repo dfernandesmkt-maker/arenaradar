@@ -1,6 +1,6 @@
 # Especificação de UX/UI — padrão de página e componentes
 
-**Estado:** Aprovada pelo David; implementada na fase C (out. 2026) · **Fase:** B → C · **Ponto de partida:** `07-revisao-ux-e-estrutura.md`
+**Estado:** Aprovada pelo David; implementada nas fases C e D e na ronda de melhorias de 10 out. 2026 (RB-86 a RB-92) · **Fase:** B → C · **Ponto de partida:** `07-revisao-ux-e-estrutura.md`
 
 Decisões de base (D26 a D28, em `docs/dossier/04-registos/decisoes.md`): duas vistas (Equipa e Cliente), menu único com seletor de âmbito e selo de dados por página.
 
@@ -27,13 +27,13 @@ Arena Radar   [ Agência ▾ ] › [ Ambiente e economia circular ▾ ] › [ Ve
 | Item | Para quê | Adaptação por tipo de universo |
 |---|---|---|
 | **Visão geral** | KPIs, o que mudou, tendência principal | Igual |
-| **Mercado** | Quem está a comunicar e com que peso | *Concorrência*: marcas, quota de voz, campanhas. *Tema*: entidades, voz no tema, agenda |
+| **Mercado** | Quem está a comunicar e com que peso | *Concorrência*: marcas, quota de voz, campanhas, e a **ficha de cada marca** (comparável com outra). *Tema*: entidades, voz no tema, agenda |
 | **Procura e notícias** | O que se pesquisa e o que se diz | Igual |
 | **Criativos** | Galeria de anúncios, formatos e mensagens | Aparece só se houver anúncios |
 | **Relatórios** | Briefing semanal, vista cliente, exportações | Igual |
-| **Ações** *(só vista Equipa)* | Pistas de ação, decisões, impacto | Igual |
+| **Ações** *(só vista Equipa)* | Pistas de ação, **alertas** (só eventos materiais), impacto | Igual |
 
-Nível Agência: **Torre de controlo** · **Fontes de dados**.
+Nível Agência: **Torre de controlo** (fila de decisões e clientes por vertical) · **Piloto** (fases e critérios) · **Fontes de dados** (resumo, com detalhe técnico a pedido).
 
 ## 3. Padrão de página
 
@@ -84,9 +84,20 @@ Regras:
 | **Gaveta de detalhe** | Anúncio, notícia ou série com origem completa | Registo individual | Aberta/fechada; teclado |
 | **Estado vazio** | «Sem sinais materiais» ou «Por ligar: <fonte>» | Limiares e estado da fonte | — |
 | **Pista de ação** *(Equipa)* | Sinal → leitura → ação; Aceitar, Ajustar, Descartar; atribuição | Pista + estado | Sugerida → decidida → levada ao cliente → adotada |
-| **Publicar para o cliente** *(Equipa)* | Marca um cartão ou relatório como visível ao cliente | Cartão + autor | Rascunho, publicado, retirado |
+| **Publicar para o cliente** *(Equipa)* | Escolhas à esquerda e pré-visualização ao lado; estado, publicar, descartar, retirar; histórico | Rascunho, publicado e histórico por cliente | Por publicar, publicado, alterações por publicar, retirado |
+| **Porquê?** *(sinais; KPIs na vista do cliente também)* | Gaveta com a regra, os números, a janela, o limiar, a semana passada, o gráfico e a origem; nos KPIs, «Como se calcula» | `regra`, `janela`, `detalhe` do sinal; `why` do KPI | Fechada, aberta |
+| **Ficha de marca** *(Equipa)* | KPIs, anúncios por plataforma com lançamentos, campanhas, formatos, mensagens, criativos longevos, sinais; comparação com outra marca | Anúncios e entidades do cliente | Normal, sem criativos, marca fora do conjunto |
+| **Alerta** *(Equipa)* | Evento material (sinal, lançamento, marca sugerida, agenda), novo desde a última visita, com preferências e limiares | Sinais, anúncios, entidades | Novo, visto; sem alertas |
+| **Tabela ordenável** | Cabeçalho clicável (↑↓), números à direita, seta nas linhas que abrem detalhe | Agregados | Por ordem original, ordenada |
+| **Copiar imagem / Ao briefing** | Gráfico para PNG com título, legenda, origem e semana; acrescentar ao briefing semanal | O gráfico visível | Copiado, sem gráfico neste bloco |
 
 Os componentes já existem em parte no preview (KPIs, cartões, gráficos SVG, gaveta, etiquetas); a fase C extrai-os e uniformiza-os.
+
+**Cor.** A cor segue a entidade (D35): cada marca tem a sua cor, fixa; temas e assuntos (notícias, procura por tema) usam uma paleta própria (`--t1` a `--t5`); plataformas e formatos usam a rampa azul. Nenhuma cor muda de significado dentro da mesma página. Qualquer paleta nova passa por `validate_palette.js` (daltonismo, visão normal e contraste) em claro e em escuro.
+
+**Números com janela.** Cada variação diz contra o quê («vs há 12 sem.», «em 4 sem.», «vs média 8 sem.»); os sinais têm janela própria e não seguem o filtro de período. Clicar no «?» de um KPI ou em «Porquê?» abre a explicação completa.
+
+**Filtros na ligação e vistas.** Período, comparação, plataformas e marcas vão na ligação (`?w=8&c=n&p=Meta,Google&b=…`), por isso copiar a ligação partilha a vista. «Vistas» guarda a página com os filtros, por cliente, neste navegador.
 
 **Comandos e definições.** A barra superior só tem a pergunta/comando (Ctrl K), «Apresentar», o seletor Equipa/Cliente e as definições (aparência, cor do tema, controlos de demonstração). A paleta Ctrl K junta navegação, mudar de cliente, ações e perguntas ao Radar; não existe na vista do cliente.
 
@@ -104,11 +115,13 @@ Os componentes já existem em parte no preview (KPIs, cartões, gráficos SVG, g
 | Tema | Arena | Tema do cliente, se configurado (`cliente.tema`) e aprovado (Q09) |
 | Como o conteúdo chega | Automático a partir dos dados | **Só por publicação da equipa**; nada é automático |
 
-**Como se publica.** Em Relatórios › «Publicar para o cliente» a equipa escolhe as páginas visíveis, os cartões, as pistas (só as aceites ou ajustadas) e uma nota opcional, e carrega em «Publicar». Enquanto não publicar, a vista do cliente mostra «Ainda não há relatório publicado». Marcar cartões ou pistas **não** publica. A publicação pode ser retirada. O que sai é assinado pela Arena Media, sem autoria individual (D03).
+**Como se publica (D34).** Em Relatórios › «Publicar para o cliente» a equipa prepara um **rascunho**: páginas visíveis, cartões, pistas (só as aceites ou ajustadas) e uma nota opcional, vendo ao lado o que o cliente verá. «Publicar» faz uma **cópia** do rascunho; é essa cópia, e só ela, que a vista do cliente mostra. Alterar o rascunho depois muda o estado para «Alterações por publicar» sem mexer no que o cliente vê, até haver «Publicar alterações» (ou «Descartar alterações»). «Retirar publicação» faz o cliente deixar de ver. Cada publicação fica no histórico (quem, quando, quantas páginas, cartões e pistas). Sem publicação, a vista do cliente mostra «Ainda não há relatório publicado», com «Ver como ficaria» (rascunho com a seleção sugerida, sem publicar).
 
 **Alternância.** O botão «Equipa | Cliente» no topo abre a **pré-visualização** da vista do cliente, com uma faixa a lembrá-lo. A entrega real ao cliente (acesso, convite, autenticação) não está construída: decide-se com IT e Compliance.
 
-**Persistência.** As decisões sobre pistas e a publicação ficam guardadas no navegador (localStorage), para a equipa preparar e retomar. A persistência em ficheiro ou base de dados, partilhada pela equipa, é a tarefa RB-22.
+**Vista por função (D36).** Em Definições › «A minha função» (Performance, Brand, Account, Direção) as pistas dessa área aparecem primeiro («Para ti», «Só as minhas») e a Direção começa na Torre. Nada fica escondido.
+
+**Persistência.** As decisões sobre pistas, o rascunho e a publicação, os destaques do briefing e as preferências ficam guardados no navegador (localStorage), para a equipa preparar e retomar. A persistência em ficheiro ou base de dados, partilhada pela equipa, é a tarefa RB-22.
 
 ## 6. Selo de dados (substitui as etiquetas em cada bloco)
 

@@ -42,6 +42,15 @@ Cada fonte segue o mesmo caminho: **recolha → `data/raw/` → `scripts/build_d
 | `dados-internos-cliente` | Dados internos do cliente (ex.: chatbot) | Bloqueado | `data/raw/internal/<fonte>/` (fora do Git) | Sessões e temas | — | Compliance + cliente (Q05) |
 | `importador-csv` | Importador CSV | Ativo | `prototype/src/js/57-fontes.js` | Qualquer fonte, com validação de proveniência | — | Equipa |
 
+### Ligações da plataforma (não são fontes de dados)
+Também marcadas com `LIGAÇÃO[<id>]` no código; dependem do IT e de Compliance, não de um fornecedor de dados.
+
+| `id` | O quê | Onde se liga | Hoje | Quem decide |
+|---|---|---|---|---|
+| `persistencia-equipa` | Guardar decisões, rascunho e publicação, destaques do briefing e preferências para toda a equipa | `saveState()` e `savePrefs()` em `prototype/src/js/10-data.js` | Só no navegador de cada pessoa (localStorage, D32). Tarefa RB-22 | IT |
+| `entrega-cliente` | Entregar ao cliente o que está publicado (acesso, convite, autenticação) | `pubPublicar()` em `10-data.js`; vista do cliente em `90-app.js` | Pré-visualização dentro do protótipo; nada sai da agência | IT e Compliance |
+| `alertas-entrega` | Enviar o resumo semanal por e-mail e os alertas materiais para o Teams | `alertas()` e as preferências em `prototype/src/js/55-page-acoes.js` | Alertas calculados no protótipo; sem envio | IT |
+
 Nota: o estado e as capacidades de cada API devem ser **confirmados na documentação atual de cada fornecedor** antes de ligar; os campos acima refletem o que está registado em `04-dados-e-fontes.md`.
 
 ## Ligar um cliente a dados reais, passo a passo

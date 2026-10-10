@@ -1,6 +1,6 @@
 # Registo de decisões
 
-**Responsável:** David · **Estado:** Rascunho · **Última atualização:** 2026-10-01
+**Responsável:** David · **Estado:** Rascunho · **Última atualização:** 2026-10-10
 
 O histórico completo (D01 a D16) está em `docs/01-historico-e-decisoes.md` e será migrado para aqui. Decisões novas ficam registadas neste ficheiro.
 
@@ -23,3 +23,7 @@ O histórico completo (D01 a D16) está em `docs/01-historico-e-decisoes.md` e s
 | D31 | Out 2026 | Vista Cliente por **publicação da equipa**: o cliente só vê as páginas, cartões e pistas que a equipa publicar (e só pistas aceites), assinados pela Arena sem autoria individual; marcar não publica; a publicação pode ser retirada. Hoje é uma pré-visualização dentro do protótipo | Concretiza D26 e D03 mantendo «a plataforma sugere, a equipa decide». A entrega real ao cliente fica por decidir com IT e Compliance |
 | D32 | Out 2026 | Decisões sobre pistas e publicação guardadas no navegador (localStorage) até haver persistência partilhada (RB-22) | Permitir à equipa preparar e retomar uma publicação sem infraestrutura; limitação conhecida: não é partilhado entre pessoas nem computadores |
 | D33 | Out 2026 | O protótipo de demonstração usa **só clientes fictícios** (Lumio, Vael, Kob e Verdia). O cliente real que servia de exemplo foi retirado da configuração, dos dados, do código e da documentação ativa. Substitui a D13 | Pedido do David. Evita usar o nome de um cliente real em demonstrações enquanto a Q04 não estiver respondida. Nota: o histórico do Git ainda guarda as versões anteriores |
+| D34 | Out 2026 | A publicação para o cliente tem **rascunho e publicado**: o cliente só vê a cópia publicada; alterar o rascunho não muda nada até haver novo «Publicar»; fica um histórico (quem, quando, o quê). Concretiza D31 | Governança Havas: nada chega ao cliente sem decisão da equipa, e a decisão tem de ser rastreável. Aprovada pelo David («Avança com tudo», 10 out 2026); por validar com a direção |
+| D35 | Out 2026 | **Cor segue a entidade:** as marcas usam a paleta categórica de marcas; temas e assuntos (notícias, procura por tema) usam uma paleta própria, validada para daltonismo e contraste, para que a mesma cor nunca signifique duas coisas na mesma página. Cada sinal e cada KPI explicam-se («Porquê?», «Como se calcula») e cada número diz a sua janela | Auditoria UX: confiança nos números e leitura sem ambiguidades. Aprovada pelo David (10 out 2026) |
+| D36 | Out 2026 | **Vista por função** (Performance, Brand, Account, Direção): muda o que aparece primeiro (as pistas da função, a Torre para a Direção) mas nunca esconde nada | Adoção pelas equipas; coerente com D23 (uso interno, pistas atribuídas a uma função). Aprovada pelo David (10 out 2026) |
+| D37 | Out 2026 | Os gráficos copiados como imagem levam sempre o título, a legenda, a **origem dos dados** (a mesma do selo da página) e a semana | Regra de ouro 5 fora da ferramenta: um gráfico colado num slide não pode perder a origem. Aprovada pelo David (10 out 2026) |

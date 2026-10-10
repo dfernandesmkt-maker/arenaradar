@@ -7,15 +7,19 @@ roteiro:
   - id: torre
     titulo: Todos os clientes num só sítio
     rota: agencia/torre
-    nota: "A Torre de controlo junta os clientes por vertical: o que mudou, quantos sinais estão acima do limiar e quantas pistas esperam decisão da equipa."
+    nota: "A Torre de controlo junta os clientes por vertical. A fila de decisões põe primeiro as pistas da tua função e depois as de sinal mais forte: a plataforma sugere a ordem, a equipa decide."
   - id: visao
     titulo: O primeiro ecrã diz logo o que mudou
     rota: lumio/visao
-    nota: "Cada cartão traz o número, o limiar e uma pista. A plataforma sugere; a equipa decide. O selo no topo diz de onde vêm os dados (aqui, demonstração com marcas fictícias)."
+    nota: "Cada cartão traz o número, o limiar, a janela de cálculo e uma pista; «Porquê?» mostra a regra e os números por trás. A faixa «Desde a semana passada» diz o que é novo. O selo no topo diz de onde vêm os dados."
   - id: mercado
     titulo: A concorrência de relance
     rota: lumio/mercado/voz
     nota: "Quota de voz por marca. Mexe na semana e o ranking refaz-se. O conjunto competitivo é da equipa: o Radar só sugere."
+  - id: marca
+    titulo: Cada marca por dentro
+    rota: lumio/marca/aurea
+    nota: "A ficha de uma marca junta campanhas, formatos, mensagens e criativos. Dá para a comparar com outra marca e acrescentar o que importa ao briefing."
   - id: criativos
     titulo: O que a concorrência põe no ar
     rota: lumio/criativos
@@ -31,12 +35,12 @@ roteiro:
   - id: pistas
     titulo: A equipa decide
     rota: lumio/acoes/pistas
-    nota: "Aceitar, ajustar ou descartar, e atribuir a Performance, Brand ou Account. Cada pista mostra a cadeia sinal, leitura e ação."
+    nota: "Aceitar, ajustar ou descartar, e atribuir a Performance, Brand ou Account. Cada pista mostra a cadeia sinal, leitura e ação, e o separador Alertas avisa só do que é material."
     preparar: demo-pistas
   - id: publicar
     titulo: Para o cliente só sai o que a equipa publicar
     rota: lumio/relatorios/publicar
-    nota: "A equipa escolhe páginas, cartões e pistas aceites. Nada é automático e nada sai sem esta decisão."
+    nota: "A equipa escolhe páginas, cartões e pistas aceites e vê, ao lado, o que o cliente verá. O que está publicado só muda quando a equipa volta a publicar."
   - id: cliente
     titulo: A vista do cliente
     rota: lumio/visao?v=cliente

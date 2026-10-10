@@ -29,10 +29,13 @@ A interface **não tem clientes, marcas nem séries escritos no código**: lê o
 | `20-components.js` | Selo de dados, KPI, cartão, estado vazio, **barra de filtros**, gaveta |
 | `30-charts.js` | Gráficos SVG (linha, área, barras, empilhado), tabela, miniaturas |
 | `40-metrics.js` | Janela de análise (período e comparação) e catálogo de KPIs |
-| `50` a `57-page-*.js` | Páginas: Visão geral, Mercado, Procura e notícias, Criativos, Relatórios, Ações, Agência, Fontes |
+| `50` a `58-page-*.js` | Páginas: Visão geral, Mercado, Procura e notícias, Criativos, Relatórios (briefing e publicação), Ações (pistas, alertas, impacto), Agência (Torre e Piloto), Fontes, **ficha de marca** |
+| `59-export.js` | Copiar gráfico como imagem (com origem dos dados) e destaques do briefing |
+| `80-settings.js`, `82-palette.js` | Definições (aparência, tema, função, demonstração) e paleta Ctrl K |
+| `85-tour.js` | Modo apresentação |
 | `90-app.js` | Rotas, seletor de âmbito, menu único, Pergunta ao Radar, arranque |
 
-Rotas: `#/<cliente>/<página>[/<separador>]` e `#/agencia/<torre|fontes>`.
+Rotas: `#/<cliente>/<página>[/<separador>][?v=cliente&rasc=1&w=…&c=…&p=…&b=…]` e `#/agencia/<torre|piloto|fontes>`. `v=cliente` abre a vista do cliente (publicado), `rasc=1` a pré-visualização do rascunho; `w`, `c`, `p`, `b` são os filtros (período, comparação, plataformas, marcas), por isso uma ligação partilha a vista.
 
 ## Notas
 - Cada bloco de dados tem origem (real, estimado, demonstração, por ligar). Cada página mostra **um selo de dados** que resume a origem; ao clicar vê-se o detalhe, e ao passar o cursor num número vê-se a sua origem (decisão D27).
@@ -40,5 +43,7 @@ Rotas: `#/<cliente>/<página>[/<separador>]` e `#/agencia/<torre|fontes>`.
 - Sem CDNs. Temas por variáveis CSS, com proteção de contraste AA (`config/themes/`).
 - Pontos de ligação às fontes: `grep -rn "LIGAÇÃO\[" prototype/src scripts config` e `docs/09-pontos-de-ligacao.md`.
 - **Modo apresentação:** o botão «Apresentar» abre um roteiro guiado (`config/roteiro.yaml`) com uma nota por ecrã; setas esquerda/direita avançam e recuam; «Repor» deixa as pistas por decidir e nada publicado. Para mudar a história da demonstração edita o roteiro e volta a gerar o protótipo.
-- **Vista Cliente (D31):** o botão «Equipa | Cliente» abre a pré-visualização do que o cliente vê. O cliente só vê o que a equipa publicar em Relatórios › Publicar para o cliente.
+- **Vista Cliente (D31, D34):** o botão «Equipa | Cliente» abre a pré-visualização do que o cliente vê. O cliente só vê o que a equipa **publicou** em Relatórios › Publicar para o cliente; alterar o rascunho não muda o publicado até haver novo «Publicar». «Ver como ficaria» mostra o rascunho sem publicar.
+- **Leitura e trabalho:** «Porquê?» nos sinais e «?» nos KPIs explicam regra, números e janela; a ficha de marca (Mercado › marca) compara marcas; Ações › Alertas avisa só do que é material; «Copiar imagem» e «Ao briefing» levam os gráficos para onde a agência trabalha; definições › «A minha função» muda o que aparece primeiro.
+- **Temas e assuntos** usam a paleta `--t1…--t5` (validada com `validate_palette.js`), nunca as cores das marcas (D35).
 - Limitações conhecidas: a «Pergunta ao Radar» responde a perguntas sugeridas; as decisões sobre pistas e a publicação ficam só neste navegador (localStorage, D32; RB-22 para partilhar entre a equipa); as importações CSV vivem só na sessão (RB-63); a entrega real ao cliente não está construída.

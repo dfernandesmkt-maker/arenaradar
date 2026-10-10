@@ -706,3 +706,5 @@ tbody tr.go:hover td:last-child::after{transform:translateX(3px);opacity:1}
 .vblock table.fx{table-layout:fixed}
 .vblock:not(:first-child) thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .vblock:not(:first-child) .vhead{border-bottom:1px solid var(--line-2)}
+.cmpbar{flex-wrap:wrap}
+.grid2>*{min-width:0}

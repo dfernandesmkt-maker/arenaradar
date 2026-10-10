@@ -19,6 +19,9 @@
 | `concorrencia` | O cliente compete com marcas identificáveis (ex.: energia, seguros, combustíveis) | Quota de voz, atividade, campanhas, formatos e mensagens, investimento |
 | `tema` | A disputa é por atenção e clareza de mensagem, não por quota (ex.: o cliente fictício Verdia, em `config/clients/verdia.yaml`) | Voz no tema, agenda e contexto de mercado |
 
+## Sinais de um cliente de tema (`sinais_modelo`)
+Num universo de tipo «tema» os sinais são descritos no YAML do cliente. Cada sinal tem um **gatilho** genérico (`procura_variacao`, `indicador` ou `agenda`) e os textos (`titulo`, `sinal`, `leitura`, `pista`). Opcionalmente acrescenta `regra` (a frase que aparece em «Porquê este sinal?»), `janela` e `janela_curta` (o período de cálculo, mostrado no medidor). Sem eles o Radar usa uma regra genérica. Num universo de concorrência os sinais vêm das regras e dos limiares da agência (`config/agencia.yaml`, `scripts/signals.py`), sem nada para escrever.
+
 ## O que fica em demonstração até ligar as fontes
 Enquanto uma fonte não estiver ligada, o bloco correspondente usa dados de **demonstração** (marcas fictícias) e o selo da página diz «Demonstração». Quando houver dados em `data/raw/` (recolhidos pelos scripts), `build_dataset.py` usa-os e o selo muda para «Real» ou «Misto», sem alterar a interface. Ver `docs/09-pontos-de-ligacao.md`.
 

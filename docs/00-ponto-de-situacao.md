@@ -33,7 +33,11 @@ Protótipo em HTML único, que abre no browser sem servidor, com quatro **client
 - **Selo de dados em cada página** (Demonstração, Real, Estimado ou Misto) e verificação automática da regra de ouro dos dados (`scripts/check_dataset.py`, também no GitHub).
 - **Agnóstico ao cliente:** clientes, marcas e séries vêm de `config/`, não do código. Acrescentar um cliente é acrescentar um ficheiro (`docs/10-como-acrescentar-um-cliente.md`). Foi provado com clientes novos sem alterar código.
 - **Pontos de ligação** marcados no código (`LIGAÇÃO[...]`, `docs/09-pontos-de-ligacao.md`) onde entram a Meta Ad Library, o Google, o TikTok e a Marktest.
-- Paleta de comandos (Ctrl K), modo apresentação, modo escuro e acessibilidade básica.
+- **Confiança nos números:** «Porquê?» em cada sinal (regra, números, janela, limiar, origem) e «Como se calcula» em cada KPI; cada número diz a sua janela.
+- **Publicação com rascunho e publicado** (D34): o cliente só vê o que foi publicado, com pré-visualização ao lado e histórico de quem publicou e quando.
+- **Ficha de marca** com comparação entre marcas; **alertas** só para eventos materiais; vista por função (Performance, Brand, Account, Direção).
+- **Levar o Radar para onde a agência trabalha:** gráficos copiados como imagem com a origem dos dados, destaques acrescentados ao briefing semanal.
+- Paleta de comandos (Ctrl K), modo apresentação, modo escuro e acessibilidade (teclado, leitores de ecrã, alvos tácteis).
 
 ## 4. Percurso até aqui
 | Quando | Marco |
@@ -53,7 +57,8 @@ Detalhe e registo de decisões em `01-historico-e-decisoes.md`.
 | Experiência (protótipo) | ✅ Alta fidelidade | v3 multi-cliente, vistas Equipa e Cliente, só com clientes fictícios |
 | Arquitetura de dados e configuração | ✅ Feita no protótipo | `config/` → `build_dataset.py` → JSON; regra de ouro verificada automaticamente |
 | Recolha de dados | 🟡 Iniciada | Scripts para notícias, Google Trends e Meta Ad Library, ainda sem dados reais (falta token da Meta e acesso de rede nos ambientes de teste) |
-| Persistência e partilha entre a equipa | ⚪ Por construir | Decisões e publicações ficam só no browser de cada pessoa (RB-22) |
+| Persistência e partilha entre a equipa | ⚪ Por construir | Decisões, rascunho, publicações e preferências ficam só no browser de cada pessoa (RB-22). Ponto de ligação `persistencia-equipa` |
+| Entrega ao cliente e alertas por e-mail e Teams | ⚪ Por construir | Pré-visualização e cálculo dos alertas feitos; pontos de ligação `entrega-cliente` e `alertas-entrega`, com IT e Compliance |
 | Motor de leitura e pistas de ação | ⚪ Por construir | Hoje simulado no protótipo |
 | Entrega automática (briefing) | ⚪ Por construir | Formato desenhado, sem automatização |
 | Validação com cliente | ⚪ Não iniciada | Proposta: piloto com um cliente real. O uso de nomes de clientes em demonstrações está por responder (Q04) |
@@ -94,7 +99,7 @@ Nota: em alguns clientes a "concorrência" é sobretudo disputa de atenção e c
 | Ações adotadas pelo cliente | ≥ 1 |
 
 ## 7.1 Próximos passos do produto (antes e durante o piloto)
-1. Persistência partilhada pela equipa (decisões e publicações), hoje só no browser (RB-22).
+1. Persistência partilhada pela equipa (decisões, rascunho e publicações), hoje só no browser (RB-22); entrega ao cliente e alertas por e-mail e Teams, com IT.
 2. Ligar dados reais: Meta Ad Library (depende de token e de Q10), Google Trends e notícias.
 3. Motor de leitura: passar as regras de sinal do protótipo para o pipeline de produção.
 4. Capturas de ecrã e deck para a direção (RB-10).
