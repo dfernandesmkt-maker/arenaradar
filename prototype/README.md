@@ -37,4 +37,5 @@ Rotas: `#/<cliente>/<página>[/<separador>]` e `#/agencia/<torre|fontes>`.
 - As marcas dos clientes de demonstração (Lumio, Vael, Kob e os seus concorrentes) são fictícias.
 - Sem CDNs. Temas por variáveis CSS, com proteção de contraste AA (`config/themes/`).
 - Pontos de ligação às fontes: `grep -rn "LIGAÇÃO\[" prototype/src scripts config` e `docs/09-pontos-de-ligacao.md`.
-- Limitação conhecida: a «Pergunta ao Radar» responde a perguntas sugeridas; o estado das pistas e as importações CSV vivem só na sessão do navegador (RB-22, RB-63).
+- **Vista Cliente (D31):** o botão «Equipa | Cliente» abre a pré-visualização do que o cliente vê. O cliente só vê o que a equipa publicar em Relatórios › Publicar para o cliente.
+- Limitações conhecidas: a «Pergunta ao Radar» responde a perguntas sugeridas; as decisões sobre pistas e a publicação ficam só neste navegador (localStorage, D32; RB-22 para partilhar entre a equipa); as importações CSV vivem só na sessão (RB-63); a entrega real ao cliente não está construída.

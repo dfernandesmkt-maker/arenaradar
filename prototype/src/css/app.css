@@ -434,3 +434,18 @@ textarea.edit{width:100%;min-height:78px;border-radius:10px;border:1px solid var
   .menu{left:0!important}
 }
 @media (max-width:680px){.fbar{position:static}}
+
+/* ============ Vista do cliente e publicação ============ */
+.vbanner{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:-8px 0 22px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--accent) 22%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 60%,var(--line));font-size:13.5px}
+.vtag{display:inline-flex;align-items:center;height:24px;padding:0 10px;margin-left:8px;border-radius:99px;background:color-mix(in srgb,var(--accent) 30%,transparent);font-size:12px;font-weight:600;color:var(--text)}
+html[data-view=cliente] #askopen,html[data-view=cliente] .sw{display:none}
+html[data-view=cliente] .legend{display:none}
+#viewseg[hidden]{display:none}
+#viewseg{margin-right:4px}
+.pubbox{display:flex;gap:18px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:var(--sh);margin-bottom:6px}
+.publ{padding:4px 16px}
+.pubrow{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line-2);cursor:pointer;font-size:14px}
+.pubrow:first-child{border-top:0}
+.pubrow input{margin-top:4px;width:17px;height:17px;accent-color:var(--brand-ink);flex:none}
+.pubrow.off{opacity:.55;cursor:default}
+@media (max-width:680px){#viewseg button{padding:0 9px}.vbanner{margin-top:0}}

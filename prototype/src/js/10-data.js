@@ -17,7 +17,21 @@ const fmtShort=iso=>{if(!iso)return"";const d=new Date(pd(iso));return d.getUTCD
 /* ---------- Cliente ativo ---------- */
 let D=null, S=null, W0=0, NW=0, Z=0, PL=[], PW={}, PC={}, FM=[], TH=[], ADS=[], AD={}, NA={};
 const SESS={};
-Object.values(CLS).forEach(d=>d.pistas.forEach(p=>{p.s=p.s||"sugerida";p.cli=!!p.cli;p.res=!!p.res}));   // estado inicial das pistas de todos os clientes
+let VIEW="equipa";                      // vista ativa: «equipa» (completa) ou «cliente» (só o que a equipa publicou)
+
+/* ---------- Estado da equipa: decisões sobre pistas e publicação para o cliente ----------
+   Guardado só neste navegador (localStorage). A persistência em ficheiro/base de dados é a tarefa RB-22.
+   Só se reaproveita o que ainda corresponde aos dados atuais (o título da pista tem de coincidir). */
+const STKEY="radar-estado-v1";
+let SAVED={};try{SAVED=JSON.parse(localStorage.getItem(STKEY)||"{}")}catch(e){}
+const PAGINAS_CLIENTE=["visao","mercado","procura","criativos","relatorios"];
+Object.values(CLS).forEach(d=>{
+  const sv=SAVED[d.cliente.id]||{},pk=sv.pistas||{};
+  d.pistas.forEach(p=>{p.s="sugerida";p.cli=false;p.res=false;const o=pk[p.id];if(o&&o.t===p.titulo){p.s=o.s||"sugerida";p.cli=!!o.cli;p.res=!!o.res;if(o.para)p.para=o.para;if(o.acao)p.acao=o.acao}});
+  const pb=sv.pub||{};
+  d.pub={publicada:!!pb.publicada,paginas:Array.isArray(pb.paginas)?pb.paginas.filter(x=>PAGINAS_CLIENTE.includes(x)):[...PAGINAS_CLIENTE],cartoes:(pb.cartoes||[]).filter(id=>d.sinais.some(s=>s.id===id)),nota:pb.nota||"",quando:pb.quando||null};
+  if(!d.pub.paginas.includes("visao"))d.pub.paginas.unshift("visao")});
+function saveState(){try{const o={};Object.values(CLS).forEach(d=>{o[d.cliente.id]={pistas:Object.fromEntries(d.pistas.map(p=>[p.id,{t:p.titulo,s:p.s,para:p.para,acao:p.acao,cli:p.cli,res:p.res}])),pub:d.pub}});localStorage.setItem(STKEY,JSON.stringify(o))}catch(e){}}
 const isTema=()=>D.cliente.tipo_universo==="tema";
 const periodos=()=>isTema()?[8,12,26,NW]:[4,8,12,26];
 const ebyid=id=>D.entidades.find(e=>e.id===id);
@@ -25,6 +39,10 @@ const incl=()=>D.entidades.filter(e=>e.incluida);
 const me=()=>D.entidades.find(e=>e.cliente);
 const col=e=>e?CAT[e.cor%5]:"#6b7a77";
 const hasAds=()=>!!(D&&D.anuncios&&D.anuncios.itens.length);
+const isCli=()=>VIEW==="cliente";
+const paginasCliente=()=>D.pub.publicada?PAGINAS_CLIENTE.filter(p=>D.pub.paginas.includes(p)&&(p!=="criativos"||hasAds())):[];
+const cartoesPub=()=>D.sinais.filter(s=>D.pub.cartoes.includes(s.id));
+const pistasPub=()=>D.pistas.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada"));
 
 function wDateMs(i){return W0+i*7*DAY}
 function wLab(i){const d=new Date(wDateMs(i));return d.getUTCDate()+" "+MES[d.getUTCMonth()]}
@@ -38,7 +56,6 @@ function setClient(id){
   FM=D.formatos;TH=D.territorios;
   if(!SESS[id])SESS[id]={w:isTema()?NW:12,cmp:"anterior",pl:new Set(PL),ew:Z,imp:[],tab:{},fm:new Set(),sort:"rec",only:false,br:null,more:12,hl:null,chart:{}};
   S=SESS[id];
-  D.pistas.forEach(p=>{if(!p.s){p.s="sugerida";p.cli=false;p.res=false}});
   rebuildAds();
   return true}
 

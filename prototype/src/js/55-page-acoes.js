@@ -34,11 +34,11 @@ function pageAcoes(sub,focus){
 document.addEventListener("click",e=>{const b=e.target.closest("#pistas [data-a]");if(!b)return;const el=b.closest(".pista"),p=D.pistas.find(x=>x.id===el.dataset.id),a=b.dataset.a;
   if(a==="aceitar"){p.s="aceite";toast("Pista aceite. Nada é enviado ao cliente: a equipa decide se e como a leva.")}
   else if(a==="descartar"){p.s="descartada";toast("Pista descartada. Fica registada no Impacto.")}
-  else if(a==="para"){p.para=b.dataset.v;toast("Pista atribuída a "+p.para+".");refreshPista(p.id);return}
+  else if(a==="para"){p.para=b.dataset.v;saveState();toast("Pista atribuída a "+p.para+".");refreshPista(p.id);return}
   else if(a==="repor"){p.s="sugerida";p.cli=false}
   else if(a==="cliente"){p.cli=!p.cli;toast(p.cli?"Marcada para a versão do briefing para o cliente. Nada sai sem a equipa o enviar.":"Retirada da versão para o cliente.")}
   else if(a==="research"){p.res=true;toast("Pedido de aprofundamento enviado à Research (simulação).")}
   else if(a==="ajustar"){const pa=$("[data-act]",el);pa.innerHTML=`<textarea class="edit" aria-label="Ação possível">${esc(p.acao)}</textarea><div style="margin-top:8px;display:flex;gap:8px"><button class="btn pri" data-a="guardar"><svg class="ic"><use href="#i-check"/></svg>Guardar ajuste</button><button class="btn ghost" data-a="cancelar">Cancelar</button></div>`;$("textarea",pa).focus();return}
   else if(a==="guardar"){p.acao=$("textarea",el).value.trim()||p.acao;p.s="ajustada";toast("Ajuste guardado. A pista fica aceite com a tua versão.")}
   else if(a==="cancelar"){refreshPista(p.id);return}
-  refreshPista(p.id,a!=="research"&&a!=="cliente")});
+  saveState();refreshPista(p.id,a!=="research"&&a!=="cliente")});

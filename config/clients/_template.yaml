@@ -27,6 +27,8 @@ trends:                  # LIGAÇÃO[google-trends]
 noticias:                # LIGAÇÃO[news-rss]
   queries: []
 
+# tema: exemplo-verde   # opcional: tema de cor do cliente (config/themes/), usado SÓ na vista do cliente. Depende da Q09 (uso de marcas de clientes).
+
 canais_observados: [meta, google_search, youtube, tiktok, tv, radio, ooh, imprensa]
 
 dados_internos: {}       # dados do cliente que só entram com autorização, ex.: {chatbot: {nome: ..., descricao: ..., estado: Bloqueado, pasta: data/raw/internal/chatbot/}}

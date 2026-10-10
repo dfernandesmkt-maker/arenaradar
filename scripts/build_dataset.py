@@ -169,6 +169,15 @@ def real_noticias(cid: str, cfg: dict, n: int, inicio: date) -> tuple[list[dict]
 
 
 # ---------------------------------------------------------------- construção de um cliente
+def tema_cliente(cl: dict) -> str | None:
+    """Tema de cor do cliente (config/themes/<id>.json), usado só na vista do cliente. Depende da Q09."""
+    tid = cl.get("tema")
+    if tid and not (ROOT / "config" / "themes" / f"{tid}.json").exists():
+        print(f"  AVISO: o tema «{tid}» de {cl['id']} não existe em config/themes/; usa o tema Arena.")
+        return None
+    return tid
+
+
 def _exigir(d: dict, chaves: list[str], onde: str) -> None:
     falta = [c for c in chaves if not d.get(c)]
     if falta:
@@ -359,7 +368,7 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
         "versao": 1, "gerado_em": ref,
         "cliente": {"id": cid, "nome": cl["nome"], "setor": cl.get("setor", ""), "vertical": cl["vertical"],
                     "vertical_nome": vert["vertical"]["nome"], "tipo_universo": tipo, "geo": cl.get("geo", "PT"),
-                    "ficticio": bool(cl.get("ficticio", False))},
+                    "ficticio": bool(cl.get("ficticio", False)), "tema": tema_cliente(cl)},
         "calendario": {"inicio": inicio, "semanas": n, "semana_atual": z,
                        "rotulo_semana_atual": rotulo_semana(inicio, z)},
         "plataformas": plats, "formatos": formatos, "territorios": territorios, "canais_offline": ag["canais_offline"],

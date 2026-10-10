@@ -12,7 +12,17 @@ function sigGo(s){
   if(s.serie&&s.serie.tipo==="procura"||s.bloco==="sazonalidade"||s.bloco==="procura")return"procura";
   if(s.serie&&s.serie.tipo==="quota_voz")return"mercado/voz";
   return"mercado/ativ"}
+function sigCardCli(s,i){
+  const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),pp=p&&p.cli&&(p.s==="aceite"||p.s==="ajustada");
+  if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
+  return`<article class="sg" data-src="${use(s.bloco)}">
+   <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span></div>
+   <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
+   <p class="rd">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</p>
+   ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(p.acao)}</span></div>`:""}
+  </article>`}
 function sigCard(s,i){
+  if(isCli())return sigCardCli(s,i);
   const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s);
   if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
   const lim=s.limiar!=null&&s.valor!=null?`<span class="lim">Valor ${nf(Math.abs(s.valor),Math.abs(s.valor)<10?1:0)}${s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%"} · limiar ${nf(Math.abs(s.limiar),Math.abs(s.limiar)<10?1:0)}</span>`:"";
@@ -21,7 +31,7 @@ function sigCard(s,i){
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${lim}
    ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
-   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:""}<button class="btn ${p?"ghost":""}" ${s.entidade&&s.categoria==="Lançamento"?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`}>${s.categoria==="Lançamento"?"Ver criativos":"Ver detalhe"}</button>${p?`<button class="btn ghost" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</button>`:""}</div>
+   <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:""}<button class="btn ${p?"ghost":""}" ${s.entidade&&s.categoria==="Lançamento"?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`}>${s.categoria==="Lançamento"?"Ver criativos":"Ver detalhe"}</button><button class="btn ghost" data-pubsg="${s.id}" aria-pressed="${D.pub.cartoes.includes(s.id)}"><svg class="ic"><use href="#i-send"/></svg>${D.pub.cartoes.includes(s.id)?"Publicado para o cliente":"Publicar para o cliente"}</button>${p?`<button class="btn ghost" data-res="${p.id}" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg>${p.res?"Aprofundamento pedido":"Pedir aprofundamento à Research"}</button>`:""}</div>
   </article>`}
 
 function mainChartHTML(){
@@ -69,10 +79,12 @@ document.addEventListener("click",e=>{const r=e.target.closest("tr[data-ent]");i
 document.addEventListener("click",e=>{const b=e.target.closest("[data-res]");if(b&&b.dataset.res){const p=D.pistas.find(x=>x.id===b.dataset.res);if(p){p.res=true;b.disabled=true;b.lastChild.textContent="Aprofundamento pedido";toast("Pedido de aprofundamento enviado à Research (simulação).")}}});
 
 function pageVisao(){
-  const sg=D.sinais.map(sigCard).join("");
+  const lista=isCli()?cartoesPub():D.sinais,sg=lista.map(sigCard).join("");
   const body=`${filterBar({platforms:true,brands:true})}
    ${kpisHTML()}
-   ${secHTML("O que mudou esta semana","O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
+   ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
    ${detailHTML()}`;
-  return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),leadText())+body}
+  return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),esc(leadText()))+body}
+
+document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão marcado para a vista do cliente. Só sai quando publicares em Relatórios.":"Cartão retirado da vista do cliente.");CUR.refresh()});

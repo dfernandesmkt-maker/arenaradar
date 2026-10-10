@@ -11,17 +11,21 @@ const PAGES={
   relatorios:{n:"Relatórios",i:"i-mail",f:pageRelatorios},
   acoes:{n:"Ações",i:"i-spark",f:pageAcoes}};
 const AGPAGES={torre:{n:"Torre de controlo",i:"i-grid",f:pageTorre},fontes:{n:"Fontes de dados",i:"i-plug",f:pageFontes}};
-let ROUTE={scope:"cliente",cid:null,page:"visao",sub:null,focus:null};
+let ROUTE={scope:"cliente",view:"equipa",cid:null,page:"visao",sub:null,focus:null};
+const PAGE_CLI_VAZIO={n:"Relatório",f:pageClienteVazio};
+function pageClienteVazio(){return pheadHTML(`${esc(D.cliente.nome)} · vista do cliente`,"Ainda não há relatório publicado","A equipa Arena ainda não publicou o relatório desta semana. Nada é mostrado ao cliente sem essa decisão.")+`<div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>Sem publicação</b><br>Prepara o que o cliente vê em Relatórios, «Publicar para o cliente». <button class="btn" style="margin-left:8px" data-go="${D.cliente.id}/relatorios/publicar?v=equipa">Preparar publicação</button></div></div>`}
 
 /* ---------- Menu único (o mesmo para todos os clientes) e seletor de âmbito ---------- */
 function buildNav(){
   const cli=ROUTE.scope==="cliente";
   const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" aria-current="${on}"><svg class="ic"><use href="#${p.i}"/></svg>${p.n}${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
+  if(VIEW==="cliente"&&cli){$("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+paginasCliente().map(k=>item(k,PAGES[k],ROUTE.page===k,`${D.cliente.id}/${k}`,false)).join("");return}
   $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.if||p.if()).map(([k,p])=>item(k,p,cli&&ROUTE.page===k,`${D.cliente.id}/${k}`,k==="acoes")).join("")+
    `<div class="grp">Agência</div>`+Object.entries(AGPAGES).map(([k,p])=>item(k,p,!cli&&ROUTE.page===k,`agencia/${k}`,false)).join("")}
 let MENU=null;
 function buildScope(){
   const cli=ROUTE.scope==="cliente",v=AG.verticais.find(x=>x.id===D.cliente.vertical);
+  if(cli&&VIEW==="cliente"){$("#scope").innerHTML=`<span class="sc cur" style="cursor:default">${esc(D.cliente.nome)}</span><span class="vtag">Vista do cliente</span>`;return}
   $("#scope").innerHTML=`<button class="sc ${cli?"":"cur"}" data-go="agencia/torre">Agência</button><span class="sep">/</span>`+
    (cli?`<button class="sc" data-menu="vert">${esc(D.cliente.vertical_nome)}<svg class="ic"><use href="#i-down"/></svg></button><span class="sep">/</span><button class="sc cur" data-menu="cli">${esc(D.cliente.nome)}<svg class="ic"><use href="#i-down"/></svg></button><span class="sep">/</span><span class="sc cur pg" style="cursor:default">${esc((PAGES[ROUTE.page]||{n:""}).n)}</span>`
        :`<span class="sc cur" style="cursor:default">${esc((AGPAGES[ROUTE.page]||{n:""}).n)}</span>`)}
@@ -39,15 +43,16 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
 
 /* ---------- Router ---------- */
 function parse(hash){
-  const h=(hash||"").replace(/^#\/?/,""),[path,focus]=h.split("#"),p=path.split("/").filter(Boolean);
-  if(p[0]==="agencia")return{scope:"agencia",cid:CID,page:AGPAGES[p[1]]?p[1]:"torre",sub:null,focus};
-  if(p[0]&&CLS[p[0]])return{scope:"cliente",cid:p[0],page:PAGES[p[1]]?p[1]:"visao",sub:p[2]||null,focus};
-  return{scope:"cliente",cid:CID||AG.clientes[0].id,page:"visao",sub:null,focus:null}}
-function href(r){return r.scope==="agencia"?"#/agencia/"+r.page:`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${r.focus?"#"+r.focus:""}`}
+  const h=(hash||"").replace(/^#\/?/,""),[pth,focus]=h.split("#"),[path,q]=pth.split("?"),p=path.split("/").filter(Boolean),view=/(^|&)v=cliente/.test(q||"")?"cliente":"equipa";
+  if(p[0]==="agencia")return{scope:"agencia",view:"equipa",cid:CID,page:AGPAGES[p[1]]?p[1]:"torre",sub:null,focus};
+  if(p[0]&&CLS[p[0]])return{scope:"cliente",view,cid:p[0],page:PAGES[p[1]]?p[1]:"visao",sub:p[2]||null,focus};
+  return{scope:"cliente",view:"equipa",cid:CID||AG.clientes[0].id,page:"visao",sub:null,focus:null}}
+function href(r){return r.scope==="agencia"?"#/agencia/"+r.page:`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${r.view==="cliente"?"?v=cliente":""}${r.focus?"#"+r.focus:""}`}
 function go(path){
   const first=path.split(/[\/#]/)[0];
   if(first!=="agencia"&&!CLS[first])path=CID+"/"+path;      // relativo ao cliente ativo
   const r=parse("#/"+path);
+  if(!/\?v=/.test(path))r.view=r.scope==="cliente"?VIEW:"equipa";      // a vista mantém-se ao navegar
   if(href(r)===location.hash&&!r.focus){render(r,false);return}
   try{history.pushState(null,"",href(r))}catch(e){}render(r,true)}
 addEventListener("popstate",()=>render(parse(location.hash),true));
@@ -57,17 +62,28 @@ document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.tar
 
 function render(r,scrollTop){
   stopRace();stopPlay();closeDrawer();closeMenu();$("#pop").classList.remove("on");CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;
-  ROUTE=r;if(r.cid){CID=r.cid}if(!D||D.cliente.id!==CID)setClient(CID);else if(!S)setClient(CID);
-  const def=r.scope==="agencia"?AGPAGES[r.page]:PAGES[r.page];
-  let pg=def;if(r.scope==="cliente"&&def.if&&!def.if()){ROUTE=r={...r,page:"visao"};pg=PAGES.visao}
+  if(r.cid){CID=r.cid}if(!D||D.cliente.id!==CID)setClient(CID);else if(!S)setClient(CID);
+  VIEW=r.view;document.documentElement.dataset.view=VIEW;
+  let pg;
+  if(r.scope==="agencia")pg=AGPAGES[r.page];
+  else if(VIEW==="cliente"){            // o cliente só vê o que a equipa publicou
+    const al=paginasCliente();
+    if(!al.length){r={...r,page:"visao",sub:null};pg=PAGE_CLI_VAZIO}
+    else{if(!al.includes(r.page))r={...r,page:al[0],sub:null};pg=PAGES[r.page]}}
+  else{pg=PAGES[r.page];if(pg.if&&!pg.if()){r={...r,page:"visao"};pg=PAGES.visao}}
+  ROUTE=r;
+  const th=VIEW+"|"+CID;if(th!==render.th){render.th=th;const tid=VIEW==="cliente"&&D.cliente.tema&&AG.temas.some(x=>x.id===D.cliente.tema)?D.cliente.tema:AG.temas[0].id;applyTheme(tid,false)}   // tema do cliente só na vista do cliente (Q09)
   const t=$("#page");t.classList.remove("on");
-  const html=pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
-  buildNav();buildScope();
-  document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n);
-  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;const h=pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));scrollTo({top:y,behavior:"auto"})};
+  const banner=VIEW==="cliente"&&r.scope==="cliente"?`<div class="vbanner no-print"><span><b>Pré-visualização da vista do cliente.</b> É assim que o cliente vê o que a equipa publicou. Nada sai da agência sem publicação.</span><button class="btn" data-go="${D.cliente.id}/${r.page==="vazio"?"visao":r.page}?v=equipa">Voltar à vista Equipa</button></div>`:"";
+  const html=banner+pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
+  buildNav();buildScope();$("#viewseg").hidden=r.scope==="agencia";$$("#viewseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===VIEW));
+  document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n+(VIEW==="cliente"?" (vista do cliente)":""));
+  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));scrollTo({top:y,behavior:"auto"})};
   AFTER.forEach(f=>f());AFTER.length=0;counters(t);syncCounts();
   if(scrollTop&&!r.focus)scrollTo({top:0,behavior:"auto"});
   if(location.hash!==href(r)){try{history.replaceState(null,"",href(r))}catch(e){}}}
+
+document.addEventListener("click",e=>{const b=e.target.closest("#viewseg [data-view]");if(!b)return;const pg=ROUTE.scope==="cliente"&&ROUTE.page!=="acoes"?ROUTE.page:"visao";go(`${CID}/${pg}?v=${b.dataset.view}`)});
 
 /* ---------- Temas por cliente (tokens) e modo escuro ---------- */
 function applyTheme(id,announce){const t=AG.temas.find(x=>x.id===id)||AG.temas[0],aa=ensureAA(t.cor),root=document.documentElement;
@@ -97,7 +113,7 @@ function answer(a){
   if(a.it){const it=a.it;return`<p><b>${esc(it.rotulo)}</b>: ${nf(it.valor,it.decimais||0)}${esc(it.formato||"")}. ${esc(it.detalhe||"")}</p>${sl([it.bloco])}<p><button class="btn" data-go="mercado/ctx">Abrir o contexto de mercado</button></p>`}
   return`<p>Nesta pré-visualização só respondo às perguntas sugeridas. Na versão real, a pergunta traduz-se numa consulta aos dados recolhidos, e a resposta traz sempre a origem de cada número.</p>`}
 const ask={el:$("#ask"),inp:$("#askin"),list:[]};
-function openAsk(pre){if(ROUTE.scope!=="cliente"){toast("Escolhe um cliente para perguntar ao Radar.");return}ask.list=asks();ask.el.classList.add("on");$("#ans").hidden=true;$("#asksug").hidden=false;ask.inp.value="";$("#asksug").innerHTML=ask.list.map(a=>`<button data-q="${a.id}"><svg class="ic" style="color:var(--text-2)"><use href="#i-search"/></svg>${esc(a.q)}</button>`).join("");setTimeout(()=>ask.inp.focus(),30);if(pre)runAsk(pre)}
+function openAsk(pre){if(VIEW==="cliente")return;if(ROUTE.scope!=="cliente"){toast("Escolhe um cliente para perguntar ao Radar.");return}ask.list=asks();ask.el.classList.add("on");$("#ans").hidden=true;$("#asksug").hidden=false;ask.inp.value="";$("#asksug").innerHTML=ask.list.map(a=>`<button data-q="${a.id}"><svg class="ic" style="color:var(--text-2)"><use href="#i-search"/></svg>${esc(a.q)}</button>`).join("");setTimeout(()=>ask.inp.focus(),30);if(pre)runAsk(pre)}
 function closeAsk(){ask.el.classList.remove("on")}
 function runAsk(id,text){const a=ask.list.find(x=>x.id===id),q=text||(a?a.q:id);$("#asksug").hidden=true;const box=$("#ans");box.hidden=false;
   const type=(t,i=0)=>{ask.inp.value=t.slice(0,i);if(i<t.length&&!RM)setTimeout(()=>type(t,i+1),14);else ask.inp.value=t};type(q);
