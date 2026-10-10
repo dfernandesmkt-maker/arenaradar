@@ -481,6 +481,11 @@ html[data-present] .fbar{position:static}
 #tour .btn[disabled]{opacity:.35}
 html[data-present] #toast{bottom:116px}
 
+:root[data-mode=dark]{color-scheme:dark}
+.top{top:env(safe-area-inset-top,0px)}
+.fbar{top:calc(62px + env(safe-area-inset-top,0px))}
+#tour{bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
 :root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--pos:#2a78d6}
 :root[data-mode=dark]{--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--pos:#3987e5}
@@ -742,6 +747,9 @@ html[data-present] #toast{bottom:116px}
 /* ============================================================
    Núcleo: utilitários, dicas, avisos. Sem nada específico de um cliente.
    ============================================================ */
+/* Variante publicada como página no claude.ai (build_preview.py --artefacto): o ambiente não abre o diálogo de
+   impressão nem permite descargas, e o tema segue o do visualizador. No ficheiro autónomo, ambos ficam como estão. */
+const EM_ARTEFACTO=false;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const nf=(n,d=0)=>new Intl.NumberFormat("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);
@@ -1431,7 +1439,7 @@ function pageRelatorios(sub){
   else body=`<div class="no-print" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
      ${isCli()?"":`<div class="seg" id="bseg"><button data-b="equipa" aria-pressed="${S.bmode==="equipa"}">Equipa</button><button data-b="cliente" aria-pressed="${S.bmode==="cliente"}">Cliente (pré-visualização)</button></div>
      <button class="chip" id="bquiet" aria-pressed="${!!S.bquiet}">Simular semana sem sinais</button>`}<span style="flex:1"></span>
-     <button class="btn" id="bprint"><svg class="ic"><use href="#i-print"/></svg>Exportar PDF</button></div>
+     ${EM_ARTEFACTO?"":`<button class="btn" id="bprint"><svg class="ic"><use href="#i-print"/></svg>Exportar PDF</button>`}</div>
     <div class="mailwrap"><article class="mail" id="mail">${briefingHTML()}</article></div>`;
   return pheadHTML(`Segunda-feira, ${mondayLabel()}, 9h00`,isCli()?"Relatório semanal":"Relatórios",isCli()?"O resumo da semana preparado pela equipa Arena Media.":"O briefing de segunda-feira e a publicação para o cliente. A versão interna mostra tudo; o cliente só vê o que a equipa publicar.",{sm:true})+tabs+body}
 document.addEventListener("click",e=>{let t;
@@ -1584,7 +1592,7 @@ function pageFontes(){
    <div class="sec"><header><div><h2 class="t-h2">Módulos</h2><p>Liga-se um módulo de cada vez. O que não estiver ligado aparece como «por recolher», nunca com números inventados.</p></div></header><div class="mods">${F.map(m=>`<article class="mod"><div class="ty"><span class="tag">${esc(m.tipo)}</span><span class="tag">${esc(m.como)}</span><span class="st ${m.estado}" style="margin-left:auto">${esc(m.estado_rotulo)}</span></div><h3>${esc(m.nome)}</h3><p>${esc(m.descricao)}</p>${m.campos.length?`<div class="flds">${m.campos.map(f=>`<span>${esc(f)}</span>`).join("")}</div>`:""}<dl><dt>Cobertura</dt><dd>${esc(m.cobertura)}</dd><dt>Regime</dt><dd>${esc(m.regime)}</dd><dt>Responsável</dt><dd>${esc(m.responsavel)}</dd><dt>Ligação</dt><dd><code>LIGAÇÃO[${esc(m.id)}]</code></dd></dl>${m.csv?`<div><button class="btn" data-imp="1"><svg class="ic"><use href="#i-plug"/></svg>Importar CSV desta fonte</button></div>`:""}</article>`).join("")}</div></div>
    <div class="sec" id="impsec"><header><div><h2 class="t-h2">Importar um ficheiro CSV</h2><p>Para trazer exportações da Meta Ad Library, do Google Ads Transparency Center ou de uma ferramenta licenciada. Cada linha é validada antes de entrar no Radar.</p></div></header>
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap"><label class="t-sm muted" for="impcli">Cliente de destino</label><select id="impcli" style="height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px">${AG.clientes.map(c=>`<option value="${c.id}" ${c.id===IMPCLI?"selected":""}>${esc(c.nome)}</option>`).join("")}</select></div>
-    <div class="imp"><div class="drop" id="drop"><svg class="ic" style="width:26px;height:26px"><use href="#i-plug"/></svg><span>Arrasta um ficheiro CSV para aqui</span><input type="file" id="impfile" accept=".csv,text/csv"><button class="btn pri" id="impbtn">Escolher ficheiro</button><button class="btn ghost" id="imptpl">Descarregar modelo</button><button class="chip" id="impsample">Experimentar com um exemplo</button></div><div id="impres"></div></div></div>`}
+    <div class="imp"><div class="drop" id="drop"><svg class="ic" style="width:26px;height:26px"><use href="#i-plug"/></svg><span>Arrasta um ficheiro CSV para aqui</span><input type="file" id="impfile" accept=".csv,text/csv"><button class="btn pri" id="impbtn">Escolher ficheiro</button>${EM_ARTEFACTO?"":`<button class="btn ghost" id="imptpl">Descarregar modelo</button>`}<button class="chip" id="impsample">Experimentar com um exemplo</button></div><div id="impres"></div></div></div>`}
 
 /* ============================================================
    Modo apresentação: roteiro guiado (config/roteiro.yaml) com notas por ecrã, letra maior e menos distrações.
@@ -1756,8 +1764,16 @@ ask.el.addEventListener("click",e=>{if(e.target===ask.el)closeAsk();const s=e.ta
 ask.inp.addEventListener("keydown",e=>{if(e.key==="Enter"){const v=ask.inp.value.trim();if(!v)return;const m=ask.list.find(a=>a.k.test(v));runAsk(m?m.id:"x",v)}});
 document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();ask.el.classList.contains("on")?closeAsk():openAsk()}if(e.key==="Escape")closeAsk()});
 
+/* ---------- Tema do visualizador (só na página publicada) ---------- */
+function seguirTemaDoVisualizador(){
+  const r=document.documentElement,mq=matchMedia("(prefers-color-scheme: dark)");
+  const aplicar=()=>{const t=r.dataset.theme,dark=t==="dark"||(t!=="light"&&mq.matches);r.dataset.mode=dark?"dark":"light";const u=$("#modebtn use");if(u)u.setAttribute("href",dark?"#i-sun":"#i-moon");redrawCharts()};
+  aplicar();mq.addEventListener&&mq.addEventListener("change",aplicar);
+  new MutationObserver(aplicar).observe(r,{attributes:true,attributeFilter:["data-theme"]})}
+
 /* ---------- Arranque ---------- */
 function start(){
+  if(EM_ARTEFACTO)seguirTemaDoVisualizador();
   buildThemes();applyTheme(AG.temas[0].id,false);
   const r=parse(location.hash);CID=r.cid||AG.clientes[0].id;setClient(CID);render(r,true)}
 const sp=$("#splash");let seen=false;try{seen=sessionStorage.getItem("radar-intro")==="1"}catch(e){}

@@ -1,6 +1,9 @@
 /* ============================================================
    Núcleo: utilitários, dicas, avisos. Sem nada específico de um cliente.
    ============================================================ */
+/* Variante publicada como página no claude.ai (build_preview.py --artefacto): o ambiente não abre o diálogo de
+   impressão nem permite descargas, e o tema segue o do visualizador. No ficheiro autónomo, ambos ficam como estão. */
+const EM_ARTEFACTO={{EM_ARTEFACTO}};
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const nf=(n,d=0)=>new Intl.NumberFormat("pt-PT",{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);

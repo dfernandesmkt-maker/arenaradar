@@ -125,8 +125,16 @@ ask.el.addEventListener("click",e=>{if(e.target===ask.el)closeAsk();const s=e.ta
 ask.inp.addEventListener("keydown",e=>{if(e.key==="Enter"){const v=ask.inp.value.trim();if(!v)return;const m=ask.list.find(a=>a.k.test(v));runAsk(m?m.id:"x",v)}});
 document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();ask.el.classList.contains("on")?closeAsk():openAsk()}if(e.key==="Escape")closeAsk()});
 
+/* ---------- Tema do visualizador (só na página publicada) ---------- */
+function seguirTemaDoVisualizador(){
+  const r=document.documentElement,mq=matchMedia("(prefers-color-scheme: dark)");
+  const aplicar=()=>{const t=r.dataset.theme,dark=t==="dark"||(t!=="light"&&mq.matches);r.dataset.mode=dark?"dark":"light";const u=$("#modebtn use");if(u)u.setAttribute("href",dark?"#i-sun":"#i-moon");redrawCharts()};
+  aplicar();mq.addEventListener&&mq.addEventListener("change",aplicar);
+  new MutationObserver(aplicar).observe(r,{attributes:true,attributeFilter:["data-theme"]})}
+
 /* ---------- Arranque ---------- */
 function start(){
+  if(EM_ARTEFACTO)seguirTemaDoVisualizador();
   buildThemes();applyTheme(AG.temas[0].id,false);
   const r=parse(location.hash);CID=r.cid||AG.clientes[0].id;setClient(CID);render(r,true)}
 const sp=$("#splash");let seen=false;try{seen=sessionStorage.getItem("radar-intro")==="1"}catch(e){}

@@ -47,7 +47,7 @@ function pageRelatorios(sub){
   else body=`<div class="no-print" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
      ${isCli()?"":`<div class="seg" id="bseg"><button data-b="equipa" aria-pressed="${S.bmode==="equipa"}">Equipa</button><button data-b="cliente" aria-pressed="${S.bmode==="cliente"}">Cliente (pré-visualização)</button></div>
      <button class="chip" id="bquiet" aria-pressed="${!!S.bquiet}">Simular semana sem sinais</button>`}<span style="flex:1"></span>
-     <button class="btn" id="bprint"><svg class="ic"><use href="#i-print"/></svg>Exportar PDF</button></div>
+     ${EM_ARTEFACTO?"":`<button class="btn" id="bprint"><svg class="ic"><use href="#i-print"/></svg>Exportar PDF</button>`}</div>
     <div class="mailwrap"><article class="mail" id="mail">${briefingHTML()}</article></div>`;
   return pheadHTML(`Segunda-feira, ${mondayLabel()}, 9h00`,isCli()?"Relatório semanal":"Relatórios",isCli()?"O resumo da semana preparado pela equipa Arena Media.":"O briefing de segunda-feira e a publicação para o cliente. A versão interna mostra tudo; o cliente só vê o que a equipa publicar.",{sm:true})+tabs+body}
 document.addEventListener("click",e=>{let t;

@@ -5,3 +5,5 @@ __pycache__/
 .DS_Store
 # Dados internos de clientes nunca vão para o repositório
 data/raw/internal/
+# Variante do protótipo para publicar no claude.ai (gerada)
+prototype/dist/

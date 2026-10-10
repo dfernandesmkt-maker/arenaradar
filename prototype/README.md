@@ -17,6 +17,8 @@ python3 prototype/build_preview.py   # gera arena-radar-v3-preview.html
 ```
 Abre `prototype/arena-radar-v3-preview.html` diretamente no navegador; não precisa de servidor nem de rede.
 
+**Variante para publicar como página no claude.ai:** `python3 prototype/build_preview.py --artefacto` gera `prototype/dist/arena-radar-artefacto.html` (não versionada). É a mesma aplicação, adaptada às regras do ambiente de publicação: segue o tema claro/escuro do visualizador e esconde «Exportar PDF» e «Descarregar modelo», que esse ambiente não permite.
+
 ## Como o código está organizado
 A interface **não tem clientes, marcas nem séries escritos no código**: lê os datasets de `data/processed/`.
 

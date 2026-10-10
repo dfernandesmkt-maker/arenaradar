@@ -471,3 +471,8 @@ html[data-present] .fbar{position:static}
 #tour .btn:not(.pri):not(.ghost){color:var(--forest)}
 #tour .btn[disabled]{opacity:.35}
 html[data-present] #toast{bottom:116px}
+
+:root[data-mode=dark]{color-scheme:dark}
+.top{top:env(safe-area-inset-top,0px)}
+.fbar{top:calc(62px + env(safe-area-inset-top,0px))}
+#tour{bottom:calc(18px + env(safe-area-inset-bottom,0px))}
