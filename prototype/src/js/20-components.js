@@ -120,7 +120,16 @@ const numOf=t=>{t=String(t).replace(/\s+/g," ").trim();if(!t||/^(—|por recolhe
 function sortTable(tb,c,dir){const body=tb.tBodies[0],th=tb.tHead.rows[0].cells[c],isNum=th&&th.dataset.sort==="num";
   const key=r=>{const x=r.cells[c]?r.cells[c].textContent:"";return isNum?numOf(x):x.trim().toLowerCase()};
   [...body.rows].sort((a,b)=>{const x=key(a),y=key(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return-1;return dir*(isNum?x-y:String(x).localeCompare(String(y),"pt"))}).forEach(r=>body.appendChild(r))}
-function applySorts(root=document){(root.matches&&root.matches("table.sortable")?[root]:$$("table.sortable",root)).forEach(tb=>{const s=SORTS[(D?D.cliente.id:"")+"|"+tb.dataset.tid];$$("th[data-sort]",tb).forEach((h,i)=>{h.setAttribute("tabindex","0");h.setAttribute("role","columnheader");h.removeAttribute("aria-sort")});if(!s)return;const th=tb.tHead.rows[0].cells[s.c];if(th)th.setAttribute("aria-sort",s.d>0?"ascending":"descending");sortTable(tb,s.c,s.d)})}
+function applySorts(root=document){applySorts0(root);applyLimit(root)}
+function applySorts0(root=document){(root.matches&&root.matches("table.sortable")?[root]:$$("table.sortable",root)).forEach(tb=>{const s=SORTS[(D?D.cliente.id:"")+"|"+tb.dataset.tid];$$("th[data-sort]",tb).forEach((h,i)=>{h.setAttribute("tabindex","0");h.setAttribute("role","columnheader");h.removeAttribute("aria-sort")});if(!s)return;const th=tb.tHead.rows[0].cells[s.c];if(th)th.setAttribute("aria-sort",s.d>0?"ascending":"descending");sortTable(tb,s.c,s.d)})}
+/* ---------- Listas longas (escala): mostrar as primeiras N linhas e «Mostrar todas»; a ordem de cada tabela mantém-se ---------- */
+const LIMALL=new Set();
+function applyLimit(root=document){const L=root.matches&&root.matches("table[data-lim]")?[root]:$$("table[data-lim]",root);
+  L.forEach(tb=>{const n=+tb.dataset.lim,k=(D?D.cliente.id:"")+"|"+tb.dataset.tid,all=LIMALL.has(k),rows=[...tb.tBodies[0].rows],w=tb.closest(".lw"),b=w&&$("[data-tmore]",w);
+    rows.forEach((r,i)=>{r.hidden=!all&&i>=n});
+    if(b){b.hidden=rows.length<=n;b.textContent=all?"Mostrar menos":`Mostrar todas (${rows.length})`;b.setAttribute("aria-expanded",String(all))}})}
+const limWrap=html=>`<div class="lw">${html}<p class="lwb no-print"><button class="btn ghost sm" type="button" data-tmore hidden></button></p></div>`;
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tmore]");if(!b)return;const w=b.closest(".lw"),tb=$("table[data-lim]",w),k=(D?D.cliente.id:"")+"|"+tb.dataset.tid;LIMALL.has(k)?LIMALL.delete(k):LIMALL.add(k);applyLimit(w)});
 function clickSort(h){const tb=h.closest("table"),c=h.cellIndex,k=(D?D.cliente.id:"")+"|"+tb.dataset.tid,s=SORTS[k];SORTS[k]=s&&s.c===c?{c,d:-s.d}:{c,d:h.dataset.sort==="num"?-1:1};applySorts(tb)}
 document.addEventListener("click",e=>{const h=e.target.closest("table.sortable th[data-sort]");if(h)clickSort(h)});
 document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("table.sortable th[data-sort]")){e.preventDefault();clickSort(e.target)}});

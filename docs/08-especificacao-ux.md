@@ -212,3 +212,24 @@ Ações › Pistas de ação lê-se de cima para baixo:
 - variações em **tabelas** são texto com seta (verde, vermelho ou neutro); as pílulas de variação ficam nos KPIs;
 - o estado do sinal no cartão é ponto e texto, sem fundo (o topo amarelo do cartão já marca o sinal);
 - a pista no cartão é uma caixa neutra; a cor forte da pista fica na página Ações.
+
+## 13. Escala (D45)
+
+O protótipo mostra 3 sinais e 4 marcas, mas a ferramenta tem de aguentar o uso real. O teste de carga (`python3 scripts/gerar_carga.py`, dados fictícios fora do repositório) usa 30 clientes em 6 verticais, o Lumio com 17 concorrentes e 12 sinais e pistas. Regras que daí saíram:
+
+| Onde | Regra |
+|---|---|
+| Tabelas longas (fila da Torre, marcas em comparação, mapa de calor) | Mostram as 10, 8 e 10 primeiras linhas; «Mostrar todas (N)» abre o resto. A ordenação aplica-se a todas as linhas e a lista visível acompanha a ordem. «Copiar tabela» copia tudo |
+| Fila de decisões (Torre) | Filtro por vertical (com contagens) e 10 linhas de início |
+| Visão geral › O que mudou | 6 cartões de sinal, ordenados por materialidade, função e força; os restantes em «Ver os outros N sinais» |
+| Gráfico principal | No máximo 5 marcas, com cores distintas: a do sinal, a do cliente e as de mais anúncios. As outras ficam na tabela por baixo e a nota diz quantas são |
+| Quota de voz (corrida) | 10 linhas; o cliente aparece sempre, mesmo fora do top 10; «Mostrar todas (N)» |
+| Ações | 5 pistas por grupo («Por decidir», «Já decididas»); as outras em «Ver as outras N». Uma ligação para uma pista escondida abre o grupo |
+| Publicar para o cliente | 6 cartões e 6 pistas visíveis; o resto em «Ver os outros N» |
+| Conjunto competitivo | Lista com altura máxima e deslocação própria |
+| Marca sem anúncios no período | Estado vazio em vez de eixos vazios |
+| Telemóvel | A fila da Torre mostra cliente e pista (o sinal vs limiar e a função passam para uma linha por baixo); as tabelas de clientes mostram cliente, sinais e pistas; a barra inferior cabe com 6 itens |
+
+**Limite conhecido:** as cores categóricas de marca são 5 (D35). Com mais de 5 marcas as cores repetem-se nas listas e nos pontos; por isso os gráficos limitam-se a 5 marcas. Alargar a paleta (validada para daltonismo) é um ponto em aberto para a revisão com Brand.
+
+**Desempenho:** com 30 clientes (11,6 MB de dados embebidos) cada página abre em cerca de 50 ms. Na produção os dados não vão embebidos no HTML.

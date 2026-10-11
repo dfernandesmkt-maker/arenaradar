@@ -114,6 +114,7 @@ Especificação em `docs/08-especificacao-ux.md`. Por fases:
 - **RB-97** ✅ *(design, D42)* **Ações como fila de decisão**: resumo no topo, «Por decidir» e «Já decididas», percurso numerado sinal → leitura → ação, uma ação principal por pista.
 - **RB-98** ✅ *(design, D43)* **Gráfico principal da Visão geral** por marca, com a marca do sinal em destaque; plataformas em Mercado.
 - **RB-99** ✅ *(design, D44)* **Modo silencioso**: variações em tabelas como texto com seta, estado do sinal sem fundo, pista em caixa neutra. Corrige também o botão discreto (`.btn.ghost`) que herdava o estilo de um chip antigo.
+- **RB-100** ✅ *(design, D45)* **Teste de carga e escala**: gerador de dados sintéticos (`scripts/gerar_carga.py`); listas com «Mostrar todas», filtro da fila por vertical na Torre, 6 sinais visíveis na Visão geral, gráfico com até 5 marcas, estado vazio da ficha de marca, tabelas da Torre compactas em telemóvel, barra inferior sem cortes com 6 itens.
 
 ## Concorrência e fontes (out. 2026)
 - **RB-60** Ligar a Meta Ad Library (`collect_meta_ads.py`) ao módulo Concorrência: substituir os anúncios simulados pelos recolhidos, com `origem=real`, fonte e data. Depende de Q10.

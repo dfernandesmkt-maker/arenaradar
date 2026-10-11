@@ -47,3 +47,7 @@ Rotas: `#/<cliente>/<página>[/<separador>][?v=cliente&rasc=1&w=…&c=…&p=…&
 - **Leitura e trabalho:** «Porquê?» nos sinais e «?» nos KPIs explicam regra, números e janela; a ficha de marca (Mercado › marca) compara marcas; Ações › Alertas avisa só do que é material; «Copiar imagem» e «Ao briefing» levam os gráficos para onde a agência trabalha; definições › «A minha função» muda o que aparece primeiro.
 - **Temas e assuntos** usam a paleta `--t1…--t5` (validada com `validate_palette.js`), nunca as cores das marcas (D35).
 - Limitações conhecidas: a «Pergunta ao Radar» responde a perguntas sugeridas; as decisões sobre pistas e a publicação ficam só neste navegador (localStorage, D32; RB-22 para partilhar entre a equipa); as importações CSV vivem só na sessão (RB-63); a entrega real ao cliente não está construída.
+
+## Teste de carga
+
+`python3 scripts/gerar_carga.py [pasta]` gera, fora do repositório, uma cópia com 30 clientes fictícios em 6 verticais, 17 concorrentes no Lumio e 12 sinais e pistas. Abre `<pasta>/prototype/arena-radar-v3-preview.html` e percorre as páginas em ecrã grande e pequeno (ver `docs/08`, secção «Escala»).

@@ -40,7 +40,7 @@ function tsChart(host,o,anim){
      segs.forEach(p=>{if(p.length===1){s+=`<circle cx="${p[0][0]}" cy="${p[0][1]}" r="2.6" style="fill:${z.c}"/>`;return}
       const d=smooth(p);
       if(o.fill)s+=`<path d="${d} L${p[p.length-1][0].toFixed(1)},${y(0)} L${p[0][0].toFixed(1)},${y(0)}Z" style="fill:${z.c};opacity:.13"/>`;
-      s+=`<path d="${d}" fill="none" style="stroke:${z.c};stroke-width:${z.w||(mini?2:2.4)};stroke-linecap:round;stroke-linejoin:round${o.dim&&o.dim!==z.id?";opacity:.18":""}"/>`})}});
+      s+=`<path d="${d}" fill="none" style="stroke:${z.c};stroke-width:${z.w||(mini?2:2.4)};stroke-linecap:round;stroke-linejoin:round${o.dim&&o.dim!==z.id?";opacity:.28":""}"/>`})}});
   s+=`</g>`;
   if(o.blip&&!bars){const z0=S[0],li=z0.d.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(li!=null)s+=`<circle class="blip" cx="${x(li).toFixed(1)}" cy="${y(top[0][li]).toFixed(1)}" r="4.5"/>`}
   if(o.end&&!mini&&W>=640&&S.length<=6){const ys=S.map((z,si)=>({z,y:stk?(y(top[si][n-1])+y(base[si][n-1]))/2:y(top[si][n-1])})).sort((a,b)=>a.y-b.y);for(let i=1;i<ys.length;i++)if(ys[i].y-ys[i-1].y<14)ys[i].y=ys[i-1].y+14;

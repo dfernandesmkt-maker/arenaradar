@@ -121,3 +121,29 @@ table .dchip{--pbg:transparent;--pbd:transparent;height:auto;padding:0;font-size
 .sg .tag.sig{--pbg:transparent;--pbd:transparent;padding:0}
 /* a pista no cartão é um apontador, não um botão: caixa neutra, só o ícone leva cor */
 .sg .pk2,.mv .pk2{background:var(--line-2)}
+
+/* ============ Escala (D45): listas longas ============ */
+tr[hidden]{display:none!important}
+.lwb{margin:8px 0 0;text-align:center}
+.mais{margin-top:14px}
+.mais>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;height:40px;border:1px dashed var(--line);border-radius:var(--rad-m);color:var(--link);font-size:13.5px;font-weight:600}
+.mais>summary::-webkit-details-marker{display:none}
+.mais>summary::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.mais[open]>summary::before{transform:rotate(225deg) translate(-2px,0)}
+.mais[open]>summary{margin-bottom:14px}
+.mais>summary:hover{background:var(--line-2)}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.fchips button{height:30px;padding:0 12px;border-radius:var(--rad-pill);border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500;color:var(--text-2)}
+.fchips button:hover{color:var(--text);border-color:color-mix(in srgb,var(--text) 30%,var(--line))}
+.fchips button[aria-pressed=true]{background:var(--brand-soft);border-color:var(--brand);color:var(--text);font-weight:600}
+.setgrid .setlist{max-height:440px;overflow:auto;padding-right:4px}
+.alb b{color:var(--text)}
+
+/* Torre em ecrã pequeno: menos colunas, o essencial por linha */
+.fsub{display:none;font-size:12px;color:var(--text-2);margin-top:2px}
+@media (max-width:680px){
+  table.fx th:nth-child(n+4),table.fx td:nth-child(n+4),table.fx col:nth-child(n+4){display:none}
+  table.fx col:nth-child(1){width:52%!important}table.fx col:nth-child(2){width:20%!important}table.fx col:nth-child(3){width:28%!important}
+  table[data-tid=fila] th:nth-child(n+3),table[data-tid=fila] td:nth-child(n+3){display:none}
+  .fsub{display:block}
+}

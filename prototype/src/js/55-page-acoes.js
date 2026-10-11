@@ -59,7 +59,7 @@ function aPistas(){
   const nova=`<button class="btn sm" data-novapista><svg class="ic"><use href="#i-pen"/></svg>Nova pista</button>`;
   const rb=mine?`<div class="rolebar">${filt?`A mostrar as pistas atribuídas a <b>${mine}</b> (${lista.length} de ${D.pistas.length}).`:`A mostrar todas as pistas.`} <button class="lnk" data-minhas="${filt?"0":"1"}">${filt?"Ver todas":"Só as minhas"}</button></div>`:"";
   const por=lista.filter(p=>p.s==="sugerida"),fei=lista.filter(p=>p.s!=="sugerida");
-  const grp=(t,n,l,cls="")=>l.length?`<div class="pgrp ${cls}"><h2 class="t-h3">${t}</h2><span class="cnt2">${n}</span></div>${l.map(pistaHTML).join("")}`:"";
+  const PMAX=5,grp=(t,n,l,cls="")=>l.length?`<div class="pgrp ${cls}"><h2 class="t-h3">${t}</h2><span class="cnt2">${n}</span></div>${l.slice(0,PMAX).map(pistaHTML).join("")}${l.length>PMAX?`<details class="mais"><summary>Ver as outras ${l.length-PMAX} ${cls==="done"?"decididas":"por decidir"}</summary>${l.slice(PMAX).map(pistaHTML).join("")}</details>`:""}`:"";
   const vazio=!lista.length?emptyHTML("Nenhuma pista atribuída a "+mine,"Muda a atribuição de uma pista ou escolhe «Ver todas».")
     :!por.length?`<div class="empty" style="margin:14px 0"><svg class="ic"><use href="#i-check"/></svg><div><b>Tudo decidido</b><br>Não há pistas por decidir nesta lista.</div></div>`:"";
   return`${resumo}<div class="dqhead"><p class="t-sm muted">Cada pista liga o sinal à leitura e a uma ação de meios possível. É uma ferramenta interna: levar uma pista ao cliente é opcional e decisão da equipa.</p>${nova}</div>${rb}<div id="pistas">${vazio}${grp("Por decidir",por.length,por)}${grp("Já decididas",fei.length,fei,"done")}</div>`}
@@ -74,7 +74,7 @@ function aImpacto(){
 function pageAcoes(sub,focus){
   const t=ATABS.find(x=>x[0]===sub)?sub:"pistas";S.tab.acoes=t;SEAL_HIDE=t==="impacto";
   const body=`<div class="tabs sub" role="tablist" aria-label="Ações">${ATABS.map(x=>{const n=x[0]==="pistas"?pistasPend(D):x[0]==="alertas"&&t!=="alertas"?alertasNovos().length:0;return`<button role="tab" aria-selected="${x[0]===t}" data-go="acoes/${x[0]}">${x[1]}${n?` <span class="cnt" ${x[0]==="alertas"?'id="alcnt"':""} style="display:inline-grid;margin-left:4px;vertical-align:middle;min-width:20px;height:20px;border-radius:99px;background:var(--brand-ink);color:#fff;font-size:11px;font-weight:600;place-items:center;padding:0 6px">${n}</span>`:""}</button>`}).join("")}</div>${t==="pistas"?aPistas():t==="alertas"?aAlertas():aImpacto()}`;
-  if(focus)later(()=>setTimeout(()=>{const el=document.getElementById(focus);if(el){el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});el.classList.add("just")}},120));
+  if(focus)later(()=>setTimeout(()=>{const el=document.getElementById(focus);if(el){const dt=el.closest("details");if(dt)dt.open=true;el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});el.classList.add("just")}},120));
   return pheadHTML("A plataforma sugere. A equipa decide.","Ações",`Pistas de ação, alertas e impacto de ${esc(D.cliente.nome)}.`,{sm:true})+body}
 document.addEventListener("click",e=>{const b=e.target.closest("#pistas [data-a]");if(!b)return;const el=b.closest(".pista"),p=D.pistas.find(x=>x.id===el.dataset.id),a=b.dataset.a;
   if(a==="apagar"){D.pistas=D.pistas.filter(x=>x!==p);saveState();toast("Pista apagada.");CUR.refresh();return}

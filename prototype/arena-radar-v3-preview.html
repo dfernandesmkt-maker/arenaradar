@@ -321,7 +321,7 @@ textarea.edit{width:100%;min-height:78px;border-radius:var(--rad-s);border:1px s
   .side{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;z-index:30;flex-direction:row;padding:6px 6px calc(6px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid var(--line)}
   .brandrow,.legend,.grp{display:none}
   .side nav{flex-direction:row;overflow-x:auto;gap:2px;scrollbar-width:none}
-  .nv{flex-direction:column;gap:3px;font-size:10.5px;padding:7px 10px;min-width:64px;align-items:center;text-align:center}
+  .nv{flex-direction:column;gap:3px;font-size:10.5px;padding:7px 4px;min-width:0;flex:1 1 0;align-items:center;text-align:center}
   .nv .cnt{position:absolute;margin:0;transform:translate(14px,-10px);min-width:17px;height:17px;font-size:10px}
   .nv{position:relative}
   .top{padding:10px 16px}
@@ -1001,6 +1001,32 @@ table .dchip{--pbg:transparent;--pbd:transparent;height:auto;padding:0;font-size
 /* a pista no cartão é um apontador, não um botão: caixa neutra, só o ícone leva cor */
 .sg .pk2,.mv .pk2{background:var(--line-2)}
 
+/* ============ Escala (D45): listas longas ============ */
+tr[hidden]{display:none!important}
+.lwb{margin:8px 0 0;text-align:center}
+.mais{margin-top:14px}
+.mais>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;height:40px;border:1px dashed var(--line);border-radius:var(--rad-m);color:var(--link);font-size:13.5px;font-weight:600}
+.mais>summary::-webkit-details-marker{display:none}
+.mais>summary::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.mais[open]>summary::before{transform:rotate(225deg) translate(-2px,0)}
+.mais[open]>summary{margin-bottom:14px}
+.mais>summary:hover{background:var(--line-2)}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.fchips button{height:30px;padding:0 12px;border-radius:var(--rad-pill);border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500;color:var(--text-2)}
+.fchips button:hover{color:var(--text);border-color:color-mix(in srgb,var(--text) 30%,var(--line))}
+.fchips button[aria-pressed=true]{background:var(--brand-soft);border-color:var(--brand);color:var(--text);font-weight:600}
+.setgrid .setlist{max-height:440px;overflow:auto;padding-right:4px}
+.alb b{color:var(--text)}
+
+/* Torre em ecrã pequeno: menos colunas, o essencial por linha */
+.fsub{display:none;font-size:12px;color:var(--text-2);margin-top:2px}
+@media (max-width:680px){
+  table.fx th:nth-child(n+4),table.fx td:nth-child(n+4),table.fx col:nth-child(n+4){display:none}
+  table.fx col:nth-child(1){width:52%!important}table.fx col:nth-child(2){width:20%!important}table.fx col:nth-child(3){width:28%!important}
+  table[data-tid=fila] th:nth-child(n+3),table[data-tid=fila] td:nth-child(n+3){display:none}
+  .fsub{display:block}
+}
+
 </style>
 </head>
 <body>
@@ -1397,7 +1423,16 @@ const numOf=t=>{t=String(t).replace(/\s+/g," ").trim();if(!t||/^(—|por recolhe
 function sortTable(tb,c,dir){const body=tb.tBodies[0],th=tb.tHead.rows[0].cells[c],isNum=th&&th.dataset.sort==="num";
   const key=r=>{const x=r.cells[c]?r.cells[c].textContent:"";return isNum?numOf(x):x.trim().toLowerCase()};
   [...body.rows].sort((a,b)=>{const x=key(a),y=key(b);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return-1;return dir*(isNum?x-y:String(x).localeCompare(String(y),"pt"))}).forEach(r=>body.appendChild(r))}
-function applySorts(root=document){(root.matches&&root.matches("table.sortable")?[root]:$$("table.sortable",root)).forEach(tb=>{const s=SORTS[(D?D.cliente.id:"")+"|"+tb.dataset.tid];$$("th[data-sort]",tb).forEach((h,i)=>{h.setAttribute("tabindex","0");h.setAttribute("role","columnheader");h.removeAttribute("aria-sort")});if(!s)return;const th=tb.tHead.rows[0].cells[s.c];if(th)th.setAttribute("aria-sort",s.d>0?"ascending":"descending");sortTable(tb,s.c,s.d)})}
+function applySorts(root=document){applySorts0(root);applyLimit(root)}
+function applySorts0(root=document){(root.matches&&root.matches("table.sortable")?[root]:$$("table.sortable",root)).forEach(tb=>{const s=SORTS[(D?D.cliente.id:"")+"|"+tb.dataset.tid];$$("th[data-sort]",tb).forEach((h,i)=>{h.setAttribute("tabindex","0");h.setAttribute("role","columnheader");h.removeAttribute("aria-sort")});if(!s)return;const th=tb.tHead.rows[0].cells[s.c];if(th)th.setAttribute("aria-sort",s.d>0?"ascending":"descending");sortTable(tb,s.c,s.d)})}
+/* ---------- Listas longas (escala): mostrar as primeiras N linhas e «Mostrar todas»; a ordem de cada tabela mantém-se ---------- */
+const LIMALL=new Set();
+function applyLimit(root=document){const L=root.matches&&root.matches("table[data-lim]")?[root]:$$("table[data-lim]",root);
+  L.forEach(tb=>{const n=+tb.dataset.lim,k=(D?D.cliente.id:"")+"|"+tb.dataset.tid,all=LIMALL.has(k),rows=[...tb.tBodies[0].rows],w=tb.closest(".lw"),b=w&&$("[data-tmore]",w);
+    rows.forEach((r,i)=>{r.hidden=!all&&i>=n});
+    if(b){b.hidden=rows.length<=n;b.textContent=all?"Mostrar menos":`Mostrar todas (${rows.length})`;b.setAttribute("aria-expanded",String(all))}})}
+const limWrap=html=>`<div class="lw">${html}<p class="lwb no-print"><button class="btn ghost sm" type="button" data-tmore hidden></button></p></div>`;
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tmore]");if(!b)return;const w=b.closest(".lw"),tb=$("table[data-lim]",w),k=(D?D.cliente.id:"")+"|"+tb.dataset.tid;LIMALL.has(k)?LIMALL.delete(k):LIMALL.add(k);applyLimit(w)});
 function clickSort(h){const tb=h.closest("table"),c=h.cellIndex,k=(D?D.cliente.id:"")+"|"+tb.dataset.tid,s=SORTS[k];SORTS[k]=s&&s.c===c?{c,d:-s.d}:{c,d:h.dataset.sort==="num"?-1:1};applySorts(tb)}
 document.addEventListener("click",e=>{const h=e.target.closest("table.sortable th[data-sort]");if(h)clickSort(h)});
 document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("table.sortable th[data-sort]")){e.preventDefault();clickSort(e.target)}});
@@ -1451,7 +1486,7 @@ function tsChart(host,o,anim){
      segs.forEach(p=>{if(p.length===1){s+=`<circle cx="${p[0][0]}" cy="${p[0][1]}" r="2.6" style="fill:${z.c}"/>`;return}
       const d=smooth(p);
       if(o.fill)s+=`<path d="${d} L${p[p.length-1][0].toFixed(1)},${y(0)} L${p[0][0].toFixed(1)},${y(0)}Z" style="fill:${z.c};opacity:.13"/>`;
-      s+=`<path d="${d}" fill="none" style="stroke:${z.c};stroke-width:${z.w||(mini?2:2.4)};stroke-linecap:round;stroke-linejoin:round${o.dim&&o.dim!==z.id?";opacity:.18":""}"/>`})}});
+      s+=`<path d="${d}" fill="none" style="stroke:${z.c};stroke-width:${z.w||(mini?2:2.4)};stroke-linecap:round;stroke-linejoin:round${o.dim&&o.dim!==z.id?";opacity:.28":""}"/>`})}});
   s+=`</g>`;
   if(o.blip&&!bars){const z0=S[0],li=z0.d.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(li!=null)s+=`<circle class="blip" cx="${x(li).toFixed(1)}" cy="${y(top[0][li]).toFixed(1)}" r="4.5"/>`}
   if(o.end&&!mini&&W>=640&&S.length<=6){const ys=S.map((z,si)=>({z,y:stk?(y(top[si][n-1])+y(base[si][n-1]))/2:y(top[si][n-1])})).sort((a,b)=>a.y-b.y);for(let i=1;i<ys.length;i++)if(ys[i].y-ys[i-1].y<14)ys[i].y=ys[i-1].y+14;
@@ -1611,11 +1646,15 @@ function mainChartHTML(){
   if(hasAds()){
     // O gráfico principal responde ao título: as marcas do conjunto, com a do sinal em destaque. O detalhe por plataforma está em Mercado.
     const bs=incl(),xl=i=>wLab(W.a0+i),sg0=isCli()?cartoesPub()[0]:(S.bquiet?null:sinaisMat()[0]),fe=sg0&&sg0.entidade?bs.find(e=>e.id===sg0.entidade):null;
-    const ser=bs.map(e=>({id:e.id,n:e.nome,c:col(e),w:fe&&e.id===fe.id?3.4:2,d:range(W.a0,W.z).map(w=>act(e.id,w))}));
+    const serAll=bs.map(e=>({id:e.id,n:e.nome,e,c:col(e),w:fe&&e.id===fe.id?3.4:2,d:range(W.a0,W.z).map(w=>act(e.id,w))}));
+    // com muitas marcas as linhas confundem-se (e as cores repetem-se): mostram-se até 5, com cores distintas: a do sinal, a do cliente e as de mais anúncios; o resto está na tabela
+    const cur=e=>act(e.id,W.z),pri=[fe,...bs.filter(e=>e.cliente),...[...bs].sort((a,b)=>cur(b)-cur(a))].filter(Boolean),vis=[],cores=new Set();
+    for(const e of pri){if(vis.includes(e)||cores.has(e.cor%5))continue;vis.push(e);cores.add(e.cor%5);if(vis.length>=5)break}
+    const ser=serAll.filter(z=>vis.includes(z.e)),resto=serAll.length-ser.length;
     const cp={};ADS.filter(a=>a.camp&&bs.some(e=>e.id===a.b)&&PL.includes(a.p)).forEach(a=>{const k=a.b+"|"+a.camp,c=cp[k]||(cp[k]={b:a.b,n:a.camp,st:a.st,k:0});c.st=Math.min(c.st,a.st);c.k++});
     const ev=Object.values(cp).filter(c=>c.st>W.a0&&c.st<=W.z&&c.k>=3).sort((x,y)=>y.k-x.k).slice(0,4).sort((x,y)=>x.st-y.st).filter((c,j,r)=>j===0||c.st-r[j-1].st>=4).slice(0,3).map(c=>({i:c.st-W.a0,t:`${ebyid(c.b).nome} lança «${c.n}»`}));
     later(()=>tsChart($("#mc"),{series:ser,type:"line",end:true,events:ev,dim:fe?fe.id:null,xl,fmt:nf,aria:"Anúncios ativos por marca"},true));
-    return cardHTML("Anúncios ativos por marca",fe?`Em destaque: <b>${esc(fe.nome)}</b>. ${esc(sg0.leitura)} <a href="#" data-go="mercado" style="color:var(--link);font-weight:600">Ver por plataforma em Mercado</a>.`:`Anúncios ativos de cada marca do conjunto, por semana. <a href="#" data-go="mercado" style="color:var(--link);font-weight:600">Ver por plataforma em Mercado</a>.`,`${legendHTML(ser,true)}<div class="cv" id="mc"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}
+    return cardHTML("Anúncios ativos por marca",fe?`Em destaque: <b>${esc(fe.nome)}</b>. ${esc(sg0.leitura)}${resto?` Mostram-se ${ser.length} marcas; as outras ${resto} estão na tabela.`:""} <a href="#" data-go="mercado" style="color:var(--link);font-weight:600">Ver por plataforma em Mercado</a>.`:`Anúncios ativos de cada marca do conjunto, por semana. <a href="#" data-go="mercado" style="color:var(--link);font-weight:600">Ver por plataforma em Mercado</a>.`,`${legendHTML(ser,true)}<div class="cv" id="mc"></div>${tableHTML({series:serAll,xl,fmt:nf})}`,"anuncios")}
   if(D.procura){
     const pr=D.procura.principais||D.procura.series.map(s=>s.id),ser=D.procura.series.filter(s=>pr.includes(s.id)),a0=W.a0,xl=i=>wLab(a0+i);
     const S2=ser.map(s=>({id:s.id,n:s.nome,c:procC(s,D.procura.series.indexOf(s)),d:s.valores.slice(a0,Z+1)})),ev=(D.eventos||[]).map(e=>({i:e.semana-a0,t:e.titulo}));
@@ -1631,7 +1670,7 @@ function detailHTML(){
     const rows=[...bs].sort((a,b)=>press(b.id,W.z)-press(a.id,W.z)).map(e=>{const a1=act(e.id,W.z),a2=W.canP?act(e.id,W.z-W.w):null,nw=sumR(neu,e.id,W.a0,W.z),i=bs.indexOf(e);
       return`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${dot(e)}${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td class="n">${nf(a1)}</td><td class="n">${a2!=null&&a2>=3?dchip(pctd(a1,a2)):`<span class="muted">—</span>`}</td><td class="n">${nf(sv[e.id],1)}%</td><td class="n">${svp?dchip(sv[e.id]-svp[e.id],"p.p."):`<span class="muted">—</span>`}</td><td class="n">${nf(nw)}</td><td class="n">${eur(sp[i])}</td></tr>`}).join("");
     use("investimento");
-    return secHTML("Marcas em comparação","Clica numa marca para ver o detalhe.",`<p class="tbtn" style="margin:-4px 0 8px;text-align:right"><button class="btn ghost sm" type="button" data-copytbl>Copiar tabela</button></p><div class="panel tblwrap"><table class="sortable" data-tid="marcas"><thead><tr><th data-sort="txt">Marca</th><th class="n" data-sort="num">Anúncios ativos</th><th class="n" data-sort="num">Variação${W.canP?`<small class="thw">vs há ${W.w} sem.</small>`:""}</th><th class="n" data-sort="num">Quota de voz</th><th class="n" data-sort="num">Variação${W.canP?`<small class="thw">vs há ${W.w} sem.</small>`:""}</th><th class="n" data-sort="num">Novos no período</th><th class="n" data-sort="num">Investimento est.</th></tr></thead><tbody>${rows}</tbody></table></div>`,"anuncios")}
+    return secHTML("Marcas em comparação","Clica numa marca para ver o detalhe.",`<p class="tbtn" style="margin:-4px 0 8px;text-align:right"><button class="btn ghost sm" type="button" data-copytbl>Copiar tabela</button></p>${limWrap(`<div class="panel tblwrap"><table class="sortable" data-tid="marcas" data-lim="8"><thead><tr><th data-sort="txt">Marca</th><th class="n" data-sort="num">Anúncios ativos</th><th class="n" data-sort="num">Variação${W.canP?`<small class="thw">vs há ${W.w} sem.</small>`:""}</th><th class="n" data-sort="num">Quota de voz</th><th class="n" data-sort="num">Variação${W.canP?`<small class="thw">vs há ${W.w} sem.</small>`:""}</th><th class="n" data-sort="num">Novos no período</th><th class="n" data-sort="num">Investimento est.</th></tr></thead><tbody>${rows}</tbody></table></div>`)}`,"anuncios")}
   use("voz");const vz=Object.fromEntries((D.voz||[]).map(v=>[v.entidade,v])),cel=v=>v==null?`<span class="ghost">Por recolher</span>`:nf(v);
   return secHTML("Quem comunica sobre o tema","Entidades do universo e o que já foi recolhido sobre cada uma.",`<div class="panel tblwrap"><table class="sortable" data-tid="entidades"><thead><tr><th data-sort="txt">Entidade</th><th data-sort="txt">Papel</th><th data-sort="txt">Prioridade</th><th class="n" data-sort="num">Anúncios Meta</th><th class="n" data-sort="num">Notícias</th></tr></thead><tbody>${D.entidades.map(e=>`<tr class="go" data-ent="${e.id}"><td style="font-weight:600">${esc(e.nome)}${e.cliente?' <span class="tag">cliente</span>':""}</td><td>${esc(e.papel)}</td><td>${esc(e.prioridade&&e.prioridade!=="cliente"?e.prioridade:"—")}</td><td class="n">${cel((vz[e.id]||{}).anuncios_meta)}</td><td class="n">${cel((vz[e.id]||{}).noticias)}</td></tr>`).join("")}</tbody></table></div>${BLK("voz").origem==="pendente"?`<p class="t-sm muted" style="margin-top:10px">Estes campos preenchem-se com dados reais (Meta Ad Library, notícias). O Radar nunca inventa números sobre entidades de terceiros.</p>`:""}`,"voz")}
 
@@ -1662,12 +1701,13 @@ function sinceHTML(){
   const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:"";
   return`<details class="since"><summary><span class="sl">Desde a semana passada</span>${parts.join("")}<svg class="ic"><use href="#i-down"/></svg></summary>
    <div class="sbody">${nov.length?`<h4>Novos</h4>${li(nov,s=>`<li>${esc(s.titulo)}</li>`)}`:""}${mant.length?`<h4>Mantêm-se acima do limiar</h4>${li(mant,s=>`<li>${esc(s.titulo)}${s.valor_anterior!=null&&s.valor!=null?` <span class="muted">(semana passada: ${sgn(s.valor_anterior,Math.abs(s.valor_anterior)<10?1:0)}${sigUnit(s)})</span>`:""}</li>`)}`:""}${res.length?`<h4>Deixaram de estar acima do limiar</h4>${li(res,s=>`<li>${esc(s.titulo)}</li>`)}`:""}</div></details>`}
+const SGMAX=6;      // cartões de sinal visíveis de início; os restantes ficam em «Ver os outros»
 function pageVisao(){
   const mp=s=>{const p=s.pista_id&&D.pistas.find(x=>x.id===s.pista_id);return p&&ROLE_PARA[PREFS.role]===p.para?1:0};
-  const lista=isCli()?cartoesPub():S.bquiet?[]:[...D.sinais].sort((a,b)=>mp(b)-mp(a)),sg=lista.map(sigCard).join("");
+  const fr=s=>s.valor!=null&&s.limiar?Math.abs(s.valor)/Math.abs(s.limiar):0,lista=isCli()?cartoesPub():S.bquiet?[]:[...D.sinais].sort((a,b)=>(!!b.material-!!a.material)||mp(b)-mp(a)||fr(b)-fr(a)),sgA=lista.map(sigCard),sg=sgA.slice(0,SGMAX).join(""),rest=sgA.slice(SGMAX);
   const body=`${filterBar({platforms:true,brands:true})}
    ${kpisHTML()}
-   ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`${sinceHTML()}<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
+   ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`${sinceHTML()}<div class="sgs">${sg}</div>${rest.length?`<details class="mais"><summary>Ver os outros ${rest.length} ${rest.length===1?"sinal":"sinais"}</summary><div class="sgs" style="margin-top:14px">${rest.join("")}</div></details>`:""}`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
    ${detailHTML()}`;
   return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,hlnum(esc(headline())),esc(leadText()),{hero:true})+body}
@@ -1694,23 +1734,25 @@ const mtabs=()=>isTema()?MTABS.tema:MTABS.concorrencia;
 const adsFrom=()=>ADS.length?Math.min(...ADS.map(c=>c.st)):Math.max(0,Z-25);   // primeira semana com anúncios
 
 /* ---------- Quota de voz animada (corrida) ---------- */
-const RH=44;let eint=null;
+const RH=44,RLIM=10;let eint=null,RACEALL=false;   // RLIM: linhas visíveis da corrida; o cliente aparece sempre
+const raceVis=inc=>{if(RACEALL||inc.length<=RLIM)return inc;const top=inc.slice(0,RLIM-1),m=inc.find(e=>e.cliente);return!m||top.includes(m)?inc.slice(0,RLIM):[...top,m]};
 function stopRace(){if(eint){clearInterval(eint);eint=null}const b=$("#eplay");if(b){$("span",b).textContent="Reproduzir";$("use",b).setAttribute("href","#i-play")}}
 function buildRace(){const host=$("#race");if(!host)return;const E=isCli()?incl():D.entidades;   // o cliente só vê as marcas que a equipa aceitou
-  host.style.height=E.length*RH+"px";
+  host.style.height=Math.min(E.length,RACEALL?E.length:RLIM)*RH+"px";
   host.innerHTML=E.map(e=>`<div class="rrow ${e.cliente?"me":""}" data-id="${e.id}" ${isCli()?"":`data-ent="${e.id}" role="button" tabindex="0"`}><span class="rk"></span><span class="nm">${esc(e.nome)}${e.cliente?"<em>cliente</em>":""}</span><div class="bar"><i></i></div><span class="val num"></span><span class="dl num"></span></div>`).join("");
   void host.offsetWidth;updateRace();
   $("#ewk").addEventListener("input",ev=>{stopRace();S.ew=+ev.target.value;updateRace()});
   $("#eplay").addEventListener("click",()=>{if(eint){stopRace();return}let i=S.ew>=Z?adsFrom():S.ew;S.ew=i;updateRace();$("#eplay span").textContent="Pausar";$("#eplay use").setAttribute("href","#i-pause");eint=setInterval(()=>{i++;if(i>Z){stopRace();return}S.ew=i;updateRace()},RM?40:380)})}
 function updateRace(){if(!$("#race"))return;const i=S.ew,now=sov(i),prev=sov(Math.max(0,i-8)),inc=incl().sort((a,b)=>now[b.id]-now[a.id]),off=isCli()?[]:D.entidades.filter(e=>!e.incluida),max=Math.max(...inc.map(e=>now[e.id]),1);
-  inc.forEach((e,k)=>{const r=$(`.rrow[data-id="${e.id}"]`);r.classList.remove("off");r.style.transform=`translateY(${k*RH}px)`;$(".rk",r).textContent=k+1;$(".bar i",r).style.width=(now[e.id]/max*100)+"%";$(".val",r).textContent=nf(now[e.id],1)+"%";$(".dl",r).textContent=i<adsFrom()+8?"":sgn(now[e.id]-prev[e.id],1)+" p.p."});
+  const vis=raceVis(inc);$("#race").style.height=(isCli()?inc.length:vis.length)*RH+"px";const mb=$("[data-raceall]");if(mb){mb.hidden=isCli()||inc.length<=RLIM;mb.textContent=RACEALL?"Mostrar menos":`Mostrar todas (${inc.length})`}
+  inc.forEach((e,k)=>{const r=$(`.rrow[data-id="${e.id}"]`),v=isCli()?k:vis.indexOf(e);r.classList.toggle("off",v<0);r.style.transform=`translateY(${(v<0?vis.length:v)*RH}px)`;$(".rk",r).textContent=k+1;$(".bar i",r).style.width=(now[e.id]/max*100)+"%";$(".val",r).textContent=nf(now[e.id],1)+"%";$(".dl",r).textContent=i<adsFrom()+8?"":sgn(now[e.id]-prev[e.id],1)+" p.p."});
   off.forEach((e,k)=>{const r=$(`.rrow[data-id="${e.id}"]`);r.classList.add("off");r.style.transform=`translateY(${(inc.length+k)*RH}px)`});
   $("#elab").textContent=wLabFull(i);$("#ewk").value=i;
   const m=me(),dm=now[m.id]-prev[m.id],mv=inc.filter(e=>!e.cliente).map(e=>({e,dl:now[e.id]-prev[e.id]})).sort((a,b)=>Math.abs(b.dl)-Math.abs(a.dl))[0];
   $("#einsight").innerHTML=i<adsFrom()+8||!mv?`Escolhe uma semana mais à frente para ver a evolução.`:`<b>${esc(mv.e.nome)}</b> ${mv.dl>0?"ganhou":"perdeu"} <b>${nf(Math.abs(mv.dl),1)} p.p.</b> de quota de voz nas 8 semanas até ${wLab(i)}. <b>${esc(m.nome)}</b> ${dm>=0?"ganhou":"perdeu"} ${nf(Math.abs(dm),1)} p.p. e está em ${inc.indexOf(m)+1}.º lugar no conjunto.`}
-function buildHeat(){const h=$("#heat");if(!h)return;const W=win(),bs=D.entidades.filter(e=>e.incluida||(e.sugerida&&!isCli())),OFF=D.canais_offline;
-  const avg=(b,p)=>mean(range(W.a0,W.z).map(w=>AD[b][p][w])),tot=Object.fromEntries(PL.map(p=>[p,incl().reduce((s,e)=>s+avg(e.id,p),0)||1]));
-  h.innerHTML=`<thead><tr><th></th>${PL.map(p=>`<th style="${S.pl.has(p)?"":"opacity:.4"}">${p}</th>`).join("")}<th class="offh" data-tip="Monitorização offline: ${OFF.join(", ")}">${OFF.join(" · ")}</th></tr></thead><tbody>${bs.map(e=>`<tr><td class="rn">${dot(e)}${esc(e.nome)}${e.sugerida?` <span class="t-xs">(sugerida)</span>`:""}</td>${PL.map(p=>{const v=e.incluida?avg(e.id,p)/tot[p]*100:0;return`<td class="c" style="${S.pl.has(p)?"":"opacity:.35;"}background:color-mix(in srgb,var(--brand) ${Math.round(5+v*.85)}%,transparent)" data-tip="<b>${esc(e.nome)}</b> tem ${nf(v)}% dos anúncios ativos em ${p} (média de ${W.w} semanas)${e.incluida?"":" — fora do conjunto"}">${e.incluida?nf(v)+"%":"—"}</td>`}).join("")}<td class="c off" data-tip="Monitorização offline (${OFF.join(", ")}): módulo por ligar. Ver Fontes de dados.">por ligar</td></tr>`).join("")}</tbody>`}
+function buildHeat(){const h=$("#heat");if(!h)return;const W=win(),OFF=D.canais_offline;
+  const avg=(b,p)=>mean(range(W.a0,W.z).map(w=>AD[b][p][w])),pres=e=>PL.reduce((s,p)=>s+avg(e.id,p),0),bs=D.entidades.filter(e=>e.incluida||(e.sugerida&&!isCli())).sort((a,b)=>(!!b.cliente-!!a.cliente)||(!!b.incluida-!!a.incluida)||pres(b)-pres(a)),tot=Object.fromEntries(PL.map(p=>[p,incl().reduce((s,e)=>s+avg(e.id,p),0)||1]));
+  h.innerHTML=`<thead><tr><th></th>${PL.map(p=>`<th style="${S.pl.has(p)?"":"opacity:.4"}">${p}</th>`).join("")}<th class="offh" data-tip="Monitorização offline: ${OFF.join(", ")}">${OFF.join(" · ")}</th></tr></thead><tbody>${bs.map(e=>`<tr><td class="rn">${dot(e)}${esc(e.nome)}${e.sugerida?` <span class="t-xs">(sugerida)</span>`:""}</td>${PL.map(p=>{const v=e.incluida?avg(e.id,p)/tot[p]*100:0;return`<td class="c" style="${S.pl.has(p)?"":"opacity:.35;"}background:color-mix(in srgb,var(--brand) ${Math.round(5+v*.85)}%,transparent)" data-tip="<b>${esc(e.nome)}</b> tem ${nf(v)}% dos anúncios ativos em ${p} (média de ${W.w} semanas)${e.incluida?"":" — fora do conjunto"}">${e.incluida?nf(v)+"%":"—"}</td>`}).join("")}<td class="c off" data-tip="Monitorização offline (${OFF.join(", ")}): módulo por ligar. Ver Fontes de dados.">por ligar</td></tr>`).join("")}</tbody>`;applyLimit(h.closest(".lw"))}
 
 /* ---------- Concorrência ---------- */
 function mVoz(){
@@ -1718,10 +1760,10 @@ function mVoz(){
   later(()=>{buildRace();buildHeat()});
   const m=me();
   return secHTML("Quota de voz","Peso de cada marca na pressão publicitária (anúncios ativos ponderados pelo alcance típico de cada plataforma). Mexe na semana e o ranking refaz-se.",
-   `<div class="setgrid"><div><div class="rhead" aria-hidden="true"><span></span><span>Marca</span><span></span><span class="num">Quota</span><span class="num dlh">vs há 8 sem.</span></div><div class="race" id="race"></div><div class="slider no-print"><button class="btn" id="eplay" aria-label="Reproduzir"><svg class="ic"><use href="#i-play"/></svg><span>Reproduzir</span></button><input type="range" id="ewk" min="${adsFrom()}" max="${Z}" value="${S.ew}" aria-label="Semana"><output id="elab"></output></div><div class="insight" id="einsight"></div></div>
+   `<div class="setgrid"><div><div class="rhead" aria-hidden="true"><span></span><span>Marca</span><span></span><span class="num">Quota</span><span class="num dlh">vs há 8 sem.</span></div><div class="race" id="race"></div><p class="lwb no-print"><button class="btn ghost sm" type="button" data-raceall hidden></button></p><div class="slider no-print"><button class="btn" id="eplay" aria-label="Reproduzir"><svg class="ic"><use href="#i-play"/></svg><span>Reproduzir</span></button><input type="range" id="ewk" min="${adsFrom()}" max="${Z}" value="${S.ew}" aria-label="Semana"><output id="elab"></output></div><div class="insight" id="einsight"></div></div>
    <div><h2 class="t-h2" style="margin-bottom:4px">Conjunto competitivo</h2><p class="t-sm muted" style="margin-bottom:10px">${isCli()?"As marcas que a equipa Arena acompanha.":"A equipa escolhe quem entra. O Radar só sugere. Herdado da vertical, ajustável por cliente."}</p><div class="setlist">${D.entidades.filter(e=>!isCli()||e.incluida).map(e=>isCli()?`<div class="setitem"><span class="nm">${esc(e.nome)}${e.cliente?"<em>cliente</em>":""}</span></div>`:e.cliente?`<div class="setitem"><span class="nm">${esc(e.nome)}<em>cliente</em></span></div>`:e.sugerida?`<div class="setitem"><span class="nm">${esc(e.nome)}<em>sugerida pelo Radar</em><br><span class="t-xs" style="font-weight:500">Aparece em ${e.sobreposicao}% das mesmas pesquisas</span></span><button class="btn" data-add="${e.id}" style="margin-left:auto">Aceitar</button></div>`:`<div class="setitem"><span class="nm">${esc(e.nome)}</span><button class="tg" role="switch" aria-checked="${e.incluida}" aria-label="Incluir ${esc(e.nome)}" data-tg="${e.id}"></button></div>`).join("")}</div></div></div>`,"anuncios")+
-   secHTML("Presença por plataforma",`Quota dos anúncios ativos de cada plataforma que pertence a cada marca, em média no período. Cada coluna soma 100%.`,`<div class="tblwrap"><table class="hm2" id="heat"></table></div><div class="heatleg"><span>0%</span><i></i><span>100% dos anúncios da plataforma</span></div>`,"anuncios")}
-document.addEventListener("click",e=>{const t=e.target.closest("[data-tg]");if(t){const b=ebyid(t.dataset.tg);b.incluida=!b.incluida;CUR.refresh()}});
+   secHTML("Presença por plataforma",`Quota dos anúncios ativos de cada plataforma que pertence a cada marca, em média no período. Cada coluna soma 100%.`,`${limWrap(`<div class="tblwrap"><table class="hm2" id="heat" data-tid="heat" data-lim="10"></table></div>`)}<div class="heatleg"><span>0%</span><i></i><span>100% dos anúncios da plataforma</span></div>`,"anuncios")}
+document.addEventListener("click",e=>{if(e.target.closest("[data-raceall]")){RACEALL=!RACEALL;stopRace();updateRace();return}const t=e.target.closest("[data-tg]");if(t){const b=ebyid(t.dataset.tg);b.incluida=!b.incluida;CUR.refresh()}});
 
 function mAtiv(){
   if(!hasAds())return emptyHTML("Sem anúncios ligados","Liga a Meta Ad Library ou importa um CSV em Fontes de dados.");
@@ -1904,6 +1946,7 @@ document.addEventListener("click",e=>{
    A versão para o cliente sai assinada pela Arena Media, sem autoria individual (D03).
    Exportação em PDF por impressão do navegador.
    ============================================================ */
+const pubMais=(arr,f,n=6)=>arr.slice(0,n).map(f).join("")+(arr.length>n?`<details class="mais"><summary>Ver os outros ${arr.length-n}</summary>${arr.slice(n).map(f).join("")}</details>`:"");   // listas longas: 6 visíveis
 const mondayLabel=()=>{const d=new Date(wDateMs(Z+1));return d.getUTCDate()+" "+MES[d.getUTCMonth()]+" "+d.getUTCFullYear()};
 function briefingHTML(){
   const cli=isCli()||S.bmode==="cliente",q=!!S.bquiet&&!isCli(),mat=D.sinais.filter(s=>s.material),obs=D.sinais.filter(s=>!s.material);
@@ -1955,8 +1998,8 @@ function pPublicar(){
   return`<div class="pubgrid"><div class="pubmain">
    <div class="pubbox" id="pubhead">${pubHeadHTML()}</div>
    ${secHTML("Páginas visíveis ao cliente","A Visão geral é sempre incluída. Liga ou desliga as restantes.",`<div class="chips">${pgs.map(p=>`<button class="tgl" data-pubpg="${p}" aria-pressed="${pu.paginas.includes(p)}" ${p==="visao"?"disabled":""}>${PGN[p]}</button>`).join("")}</div>`)}
-   ${secHTML("Cartões «O que mudou»","Escolhe os pontos que o cliente vê. Os limiares e as hipóteses internas não aparecem na vista do cliente.",D.sinais.length?`<div class="panel publ">${D.sinais.map(s=>`<label class="pubrow"><input type="checkbox" data-pubsgc="${s.id}" ${pu.cartoes.includes(s.id)?"checked":""}><span><b>${esc(s.titulo)}</b><br><span class="t-sm muted">${esc(s.categoria)} · ${s.material?"acima do limiar":"em observação"}</span></span></label>`).join("")}</div>`:emptyHTML("Sem cartões","Ainda não há sinais para destacar."),null,`<div class="pubtools"><button class="btn sm" id="pubsug" data-tip="Escolhe os cartões acima do limiar. Podes ajustar a seguir.">Usar seleção sugerida</button><button class="btn sm ghost" id="pubclr">Limpar</button></div>`)}
-   ${secHTML("Pistas de ação","Só podes levar ao cliente pistas que a equipa aceitou ou ajustou.",pk.length?`<div class="panel publ">${pk.map(p=>`<label class="pubrow ${pubOk(p)?"":"off"}"><input type="checkbox" data-pubpkc="${p.id}" ${p.cli&&pubOk(p)?"checked":""} ${pubOk(p)?"":"disabled"}><span><b>${esc(p.titulo)}</b><br><span class="t-sm muted">${pubOk(p)?esc(p.acao):`Por decidir em Ações: aceita ou ajusta primeiro. <a href="#" data-go="${D.cliente.id}/acoes/pistas#${p.id}" style="color:var(--link);font-weight:600">Abrir a pista</a>`}</span></span></label>`).join("")}</div>`:emptyHTML("Sem pistas","Não há pistas para esta semana."))}
+   ${secHTML("Cartões «O que mudou»","Escolhe os pontos que o cliente vê. Os limiares e as hipóteses internas não aparecem na vista do cliente.",D.sinais.length?`<div class="panel publ">${pubMais(D.sinais,s=>`<label class="pubrow"><input type="checkbox" data-pubsgc="${s.id}" ${pu.cartoes.includes(s.id)?"checked":""}><span><b>${esc(s.titulo)}</b><br><span class="t-sm muted">${esc(s.categoria)} · ${s.material?"acima do limiar":"em observação"}</span></span></label>`)}</div>`:emptyHTML("Sem cartões","Ainda não há sinais para destacar."),null,`<div class="pubtools"><button class="btn sm" id="pubsug" data-tip="Escolhe os cartões acima do limiar. Podes ajustar a seguir.">Usar seleção sugerida</button><button class="btn sm ghost" id="pubclr">Limpar</button></div>`)}
+   ${secHTML("Pistas de ação","Só podes levar ao cliente pistas que a equipa aceitou ou ajustou.",pk.length?`<div class="panel publ">${pubMais(pk,p=>`<label class="pubrow ${pubOk(p)?"":"off"}"><input type="checkbox" data-pubpkc="${p.id}" ${p.cli&&pubOk(p)?"checked":""} ${pubOk(p)?"":"disabled"}><span><b>${esc(p.titulo)}</b><br><span class="t-sm muted">${pubOk(p)?esc(p.acao):`Por decidir em Ações: aceita ou ajusta primeiro. <a href="#" data-go="${D.cliente.id}/acoes/pistas#${p.id}" style="color:var(--link);font-weight:600">Abrir a pista</a>`}</span></span></label>`)}</div>`:emptyHTML("Sem pistas","Não há pistas para esta semana."))}
    ${secHTML("Nota da equipa","Opcional. Aparece no topo da vista do cliente e no relatório.",`<textarea class="edit" id="pubnota" placeholder="Ex.: Segue o ponto de situação desta semana. Falamos na reunião de acompanhamento." aria-label="Nota da equipa">${esc(pu.nota)}</textarea><p class="t-xs" style="margin-top:6px">Rascunho guardado neste navegador.</p>`)}
    ${secHTML("Histórico de publicações","Quem publicou ou retirou, e quando.",pubHistHTML())}
    <p class="t-sm muted" style="margin-top:22px;max-width:64ch">Esta é uma pré-visualização: a forma de entrega ao cliente (acesso, convite) decide-se com IT e Compliance.</p>
@@ -2052,7 +2095,7 @@ function aPistas(){
   const nova=`<button class="btn sm" data-novapista><svg class="ic"><use href="#i-pen"/></svg>Nova pista</button>`;
   const rb=mine?`<div class="rolebar">${filt?`A mostrar as pistas atribuídas a <b>${mine}</b> (${lista.length} de ${D.pistas.length}).`:`A mostrar todas as pistas.`} <button class="lnk" data-minhas="${filt?"0":"1"}">${filt?"Ver todas":"Só as minhas"}</button></div>`:"";
   const por=lista.filter(p=>p.s==="sugerida"),fei=lista.filter(p=>p.s!=="sugerida");
-  const grp=(t,n,l,cls="")=>l.length?`<div class="pgrp ${cls}"><h2 class="t-h3">${t}</h2><span class="cnt2">${n}</span></div>${l.map(pistaHTML).join("")}`:"";
+  const PMAX=5,grp=(t,n,l,cls="")=>l.length?`<div class="pgrp ${cls}"><h2 class="t-h3">${t}</h2><span class="cnt2">${n}</span></div>${l.slice(0,PMAX).map(pistaHTML).join("")}${l.length>PMAX?`<details class="mais"><summary>Ver as outras ${l.length-PMAX} ${cls==="done"?"decididas":"por decidir"}</summary>${l.slice(PMAX).map(pistaHTML).join("")}</details>`:""}`:"";
   const vazio=!lista.length?emptyHTML("Nenhuma pista atribuída a "+mine,"Muda a atribuição de uma pista ou escolhe «Ver todas».")
     :!por.length?`<div class="empty" style="margin:14px 0"><svg class="ic"><use href="#i-check"/></svg><div><b>Tudo decidido</b><br>Não há pistas por decidir nesta lista.</div></div>`:"";
   return`${resumo}<div class="dqhead"><p class="t-sm muted">Cada pista liga o sinal à leitura e a uma ação de meios possível. É uma ferramenta interna: levar uma pista ao cliente é opcional e decisão da equipa.</p>${nova}</div>${rb}<div id="pistas">${vazio}${grp("Por decidir",por.length,por)}${grp("Já decididas",fei.length,fei,"done")}</div>`}
@@ -2067,7 +2110,7 @@ function aImpacto(){
 function pageAcoes(sub,focus){
   const t=ATABS.find(x=>x[0]===sub)?sub:"pistas";S.tab.acoes=t;SEAL_HIDE=t==="impacto";
   const body=`<div class="tabs sub" role="tablist" aria-label="Ações">${ATABS.map(x=>{const n=x[0]==="pistas"?pistasPend(D):x[0]==="alertas"&&t!=="alertas"?alertasNovos().length:0;return`<button role="tab" aria-selected="${x[0]===t}" data-go="acoes/${x[0]}">${x[1]}${n?` <span class="cnt" ${x[0]==="alertas"?'id="alcnt"':""} style="display:inline-grid;margin-left:4px;vertical-align:middle;min-width:20px;height:20px;border-radius:99px;background:var(--brand-ink);color:#fff;font-size:11px;font-weight:600;place-items:center;padding:0 6px">${n}</span>`:""}</button>`}).join("")}</div>${t==="pistas"?aPistas():t==="alertas"?aAlertas():aImpacto()}`;
-  if(focus)later(()=>setTimeout(()=>{const el=document.getElementById(focus);if(el){el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});el.classList.add("just")}},120));
+  if(focus)later(()=>setTimeout(()=>{const el=document.getElementById(focus);if(el){const dt=el.closest("details");if(dt)dt.open=true;el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});el.classList.add("just")}},120));
   return pheadHTML("A plataforma sugere. A equipa decide.","Ações",`Pistas de ação, alertas e impacto de ${esc(D.cliente.nome)}.`,{sm:true})+body}
 document.addEventListener("click",e=>{const b=e.target.closest("#pistas [data-a]");if(!b)return;const el=b.closest(".pista"),p=D.pistas.find(x=>x.id===el.dataset.id),a=b.dataset.a;
   if(a==="apagar"){D.pistas=D.pistas.filter(x=>x!==p);saveState();toast("Pista apagada.");CUR.refresh();return}
@@ -2110,6 +2153,7 @@ function agSeal(){
   const rows=cs.map(c=>{const r=c.origens.includes("real"),d=c.origens.includes("demo");const so=r&&d?"misto":r?"real":"demo";return`<div class="bl"><b>${esc(c.nome)}</b><span class="seal" data-o="${so}">${so==="misto"?"Misto":so==="real"?"Real":"Demonstração"}</span><span class="m">${c.ficticio?"Cliente fictício de demonstração.":"Cliente real: contexto com fonte e data; séries ainda simuladas onde a fonte não está ligada."}</span></div>`}).join("");
   return{o,t,pop:`<h3>Origem dos dados desta página</h3><p class="s">A Torre agrega todos os clientes. Cada cliente mostra o seu próprio selo nas suas páginas.</p>${rows}`}}
 const pubSeal=d=>d.pub.pubd?(pubPend(d)?`<span class="seal" data-o="estimado">Alterações por publicar</span>`:`<span class="seal" data-o="real">Publicada a ${fmtShort(d.pub.pubd.quando)}</span>`):`<span class="muted t-sm">Por publicar</span>`;
+let FILA_V="";      // filtro da fila de decisões por vertical (Torre)
 function pageTorre(){
   SEAL_OV=agSeal();
   const cs=AG.clientes,live=cs.map(c=>CLS[c.id]),sg=cs.reduce((s,c)=>s+c.sinais_material,0),pend=live.reduce((s,d)=>s+pistasPend(d),0);
@@ -2123,11 +2167,14 @@ function pageTorre(){
      <div class="tblwrap"><table class="sortable fx" data-tid="cli-${v.id}"><colgroup><col style="width:30%"><col style="width:11%"><col style="width:17%"><col style="width:24%"><col style="width:18%"></colgroup><thead><tr><th data-sort="txt">Cliente</th><th class="n" data-sort="num">Sinais</th><th class="n" data-sort="num">Pistas por decidir</th><th>Vista do cliente</th><th>Dados</th></tr></thead><tbody>${cl.map(rowFor).join("")}</tbody></table></div></div>`}).join("");
   const ratio=({c,p})=>{const s=CLS[c.id].sinais.find(x=>x.id===p.sinal_id);return s&&s.valor!=null&&s.limiar?Math.abs(s.valor)/Math.abs(s.limiar):null};
   const meu=x=>ROLE_PARA[PREFS.role]===x.p.para,fila=cs.flatMap(c=>CLS[c.id].pistas.filter(p=>p.s==="sugerida").map(p=>({c,p}))).sort((a,b)=>meu(b)-meu(a)||(ratio(b)??-1)-(ratio(a)??-1)),
-   filaHTML=fila.length?`<div class="panel tblwrap"><table class="sortable" data-tid="fila"><thead><tr><th data-sort="txt">Cliente</th><th data-sort="txt">Pista</th><th class="n" data-sort="num" data-tip="Quantas vezes o sinal ultrapassa o limiar. É só uma sugestão de ordem.">Sinal vs limiar</th><th data-sort="txt">Atribuída a</th><th></th></tr></thead><tbody>${fila.map(x=>{const{c,p}=x,r=ratio(x);return`<tr class="go" data-go="${c.id}/acoes/pistas#${p.id}"><td style="font-weight:600">${esc(c.nome)}</td><td>${esc(p.titulo)}</td><td class="n">${r==null?'<span class="muted">—</span>':nf(r,1)+"×"}</td><td>${esc(p.para)}${meu(x)?' <span class="tag hi">Para ti</span>':""}</td><td class="n"><span class="muted t-sm">Decidir</span></td></tr>`}).join("")}</tbody></table></div>`:emptyHTML("Tudo decidido","Não há pistas à espera da equipa.");
+   fv=AG.verticais.map(v=>({id:v.id,n:v.nome,k:fila.filter(x=>x.c.vertical===v.id).length})).filter(v=>v.k),filaF=FILA_V&&fv.some(v=>v.id===FILA_V)?fila.filter(x=>x.c.vertical===FILA_V):fila,
+   chips=fv.length>1?`<div class="fchips" role="group" aria-label="Filtrar a fila por vertical"><button type="button" data-filav="" aria-pressed="${!FILA_V}">Todas (${fila.length})</button>${fv.map(v=>`<button type="button" data-filav="${v.id}" aria-pressed="${FILA_V===v.id}">${esc(v.n)} (${v.k})</button>`).join("")}</div>`:"",
+   filaHTML=fila.length?chips+limWrap(`<div class="panel tblwrap"><table class="sortable" data-tid="fila" data-lim="10"><thead><tr><th data-sort="txt">Cliente</th><th data-sort="txt">Pista</th><th class="n" data-sort="num" data-tip="Quantas vezes o sinal ultrapassa o limiar. É só uma sugestão de ordem.">Sinal vs limiar</th><th data-sort="txt">Atribuída a</th><th></th></tr></thead><tbody>${filaF.map(x=>{const{c,p}=x,r=ratio(x);return`<tr class="go" data-go="${c.id}/acoes/pistas#${p.id}"><td style="font-weight:600">${esc(c.nome)}</td><td>${esc(p.titulo)}<span class="fsub">${r==null?"":nf(r,1)+"× o limiar · "}${esc(p.para)}</span></td><td class="n">${r==null?'<span class="muted">—</span>':nf(r,1)+"×"}</td><td>${esc(p.para)}${meu(x)?' <span class="tag hi">Para ti</span>':""}</td><td class="n"><span class="muted t-sm">Decidir</span></td></tr>`}).join("")}</tbody></table></div>`):emptyHTML("Tudo decidido","Não há pistas à espera da equipa.");
   const body=`<div class="kpis k5">${kp.map(k=>kpiHTML({l:k[0],v:`<span ${typeof k[1]==="number"?`data-count="${k[1]}"`:""}>${k[1]}</span>`,sub:`<span class="muted">${k[2]}</span>`})).join("")}</div>
    ${secHTML("Fila de decisões","Pistas à espera da equipa, em todos os clientes, por ordem sugerida: primeiro as da tua função, depois as de sinal mais forte. A plataforma sugere; a equipa decide.",filaHTML)}
    ${secHTML("Clientes por vertical","Cada vertical traz o seu conjunto de concorrentes por defeito (config/verticals/); o cliente herda e ajusta. «Concorrência» compara marcas; «Tema» acompanha a conversa pública quando a disputa é por atenção e não por quota.",`<div class="vblocks">${porV}</div>`)}`;
   return pheadHTML(`Semana de ${AG.rotulo_semana_atual} · ${esc(AG.agencia.nome)}`,"Torre de controlo","O que mudou nos mercados dos nossos clientes, por vertical, e o que a equipa ainda tem por decidir.",{hero:true})+body}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-filav]");if(!b)return;FILA_V=b.dataset.filav;CUR.refresh()});
 
 /* ============================================================
    Página «Fontes de dados»: biblioteca de módulos (config/fontes.yaml) e importador CSV com validação de proveniência.
@@ -2196,7 +2243,7 @@ function pageFontes(){
    `<div class="kpis k5">${kp.map(k=>kpiHTML({l:k[0],v:`<span>${k[1]}</span>`,sub:`<span class="muted">${k[2]}</span>`})).join("")}</div>
    <div class="sec"><header><div><h2 class="t-h2">Módulos</h2><p>Liga-se um módulo de cada vez. O que não estiver ligado aparece como «por recolher», nunca com números inventados.</p></div><button class="tgl" id="fdet" aria-pressed="${!!PREFS.fdet}" data-tip="Mostra os campos, a cobertura e o identificador de ligação de cada módulo, para o IT.">Detalhe técnico</button></header><div class="mods ${PREFS.fdet?"":"simple"}">${F.map(m=>`<article class="mod"><div class="ty"><span class="tag">${esc(m.tipo)}</span><span class="tag">${esc(m.como)}</span><span class="st ${m.estado}" style="margin-left:auto">${esc(m.estado_rotulo)}</span></div><h3>${esc(m.nome)}</h3><p>${esc(m.descricao)}</p>${m.campos.length?`<div class="flds tech">${m.campos.map(f=>`<span>${esc(f)}</span>`).join("")}</div>`:""}<dl><dt>Regime</dt><dd>${esc(m.regime)}</dd><dt>Responsável</dt><dd>${esc(m.responsavel)}</dd></dl><dl class="tech"><dt>Cobertura</dt><dd>${esc(m.cobertura)}</dd><dt>Ligação</dt><dd><code>LIGAÇÃO[${esc(m.id)}]</code></dd></dl>${m.csv?`<div><button class="btn" data-imp="1"><svg class="ic"><use href="#i-plug"/></svg>Importar CSV desta fonte</button></div>`:""}</article>`).join("")}</div></div>
    <div class="sec" id="impsec"><header><div><h2 class="t-h2">Importar um ficheiro CSV</h2><p>Para trazer exportações da Meta Ad Library, do Google Ads Transparency Center ou de uma ferramenta licenciada. Cada linha é validada antes de entrar no Radar.</p></div></header>
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap"><label class="t-sm muted" for="impcli">Cliente de destino</label><select id="impcli" style="height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px">${AG.clientes.map(c=>`<option value="${c.id}" ${c.id===IMPCLI?"selected":""}>${esc(c.nome)}</option>`).join("")}</select></div>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap"><label class="t-sm muted" for="impcli">Cliente de destino</label><select id="impcli" style="max-width:100%;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px">${AG.clientes.map(c=>`<option value="${c.id}" ${c.id===IMPCLI?"selected":""}>${esc(c.nome)}</option>`).join("")}</select></div>
     <div class="imp"><div class="drop" id="drop"><svg class="ic" style="width:26px;height:26px"><use href="#i-plug"/></svg><span>Arrasta um ficheiro CSV para aqui</span><input type="file" id="impfile" accept=".csv,text/csv"><button class="btn pri" id="impbtn">Escolher ficheiro</button>${EM_ARTEFACTO?"":`<button class="btn ghost" id="imptpl">Descarregar modelo</button>`}<button class="chip" id="impsample">Experimentar com um exemplo</button></div><div id="impres"></div></div></div>`}
 document.addEventListener("click",e=>{if(e.target.closest("#fdet")){PREFS.fdet=!PREFS.fdet;savePrefs();CUR.refresh()}});
 
@@ -2229,7 +2276,8 @@ function pageMarca(sub){
   const pls=PL.filter(p=>S.pl.has(p)),ser=pls.map(p=>({id:p,n:p,c:rampOf(p),d:range(W.a0,W.z).map(w=>AD[e.id][p][w])}));
   const cp={};ADS.filter(a=>a.b===e.id&&a.camp&&S.pl.has(a.p)).forEach(a=>{const c=cp[a.camp]||(cp[a.camp]={n:a.camp,st:a.st,k:0});c.st=Math.min(c.st,a.st);c.k++});
   const ev=Object.values(cp).filter(c=>c.st>W.a0&&c.st<=W.z).sort((x,y)=>y.k-x.k).slice(0,4).sort((x,y)=>x.st-y.st).filter((c,j,r)=>j===0||c.st-r[j-1].st>=3).slice(0,3).map(c=>({i:c.st-W.a0,t:`Lança «${c.n}»`}));
-  later(()=>{tsChart($("#mk1"),{series:ser,type:"area",stack:true,end:true,events:ev,xl,fmt:nf,aria:"Anúncios ativos de "+e.nome+" por plataforma"},true);
+  const sem=!ser.some(z=>z.d.some(v=>v>0));   // marca sem anúncios no período: estado vazio em vez de eixos vazios
+  later(()=>{if(!sem)tsChart($("#mk1"),{series:ser,type:"area",stack:true,end:true,events:ev,xl,fmt:nf,aria:"Anúncios ativos de "+e.nome+" por plataforma"},true);
    if(o)tsChart($("#mk2"),{series:[{id:e.id,n:e.nome,c:col(e),d:range(W.a0,W.z).map(w=>act(e.id,w))},{id:o.id,n:o.nome,c:col(o),d:range(W.a0,W.z).map(w=>act(o.id,w))}],type:"line",end:true,xl,fmt:nf,aria:`Anúncios ativos: ${e.nome} e ${o.nome}`},true);
    requestAnimationFrame(()=>$$(".single i[data-w]").forEach(i=>i.style.width=i.dataset.w+"%"))});
   // formatos e mensagens
@@ -2257,7 +2305,7 @@ function pageMarca(sub){
    <div class="cmpbar"><label for="cmpb" class="t-sm muted">Comparar com</label><select id="cmpb"><option value="">Nenhuma marca</option>${incl().filter(x=>x.id!==e.id).map(x=>`<option value="${x.id}" ${S.cmpb===x.id?"selected":""}>${esc(x.nome)}</option>`).join("")}</select><span style="flex:1"></span><button class="btn sm" data-brief-marca="${e.id}" data-txt="${esc(lead)}"><svg class="ic"><use href="#i-mail"/></svg>Adicionar ao briefing</button></div>
    <div class="kpis k5 five">${marcaKpis(e,m,W).map(kpiHTML).join("")}</div>
    ${ff}
-   <div class="sec" style="margin-top:28px">${cardHTML("Anúncios ativos por plataforma",`Só os anúncios de ${esc(e.nome)}. ${ev.length?"As linhas verticais marcam o arranque das campanhas.":""}`,`${legendHTML(ser)}<div class="cv" id="mk1"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}</div>
+   <div class="sec" style="margin-top:28px">${sem?secHTML("Anúncios ativos por plataforma","",emptyHTML("Sem anúncios neste período",`${esc(e.nome)} não teve anúncios ativos nas plataformas e semanas escolhidas. Alarga o período ou as plataformas.`),"anuncios"):cardHTML("Anúncios ativos por plataforma",`Só os anúncios de ${esc(e.nome)}. ${ev.length?"As linhas verticais marcam o arranque das campanhas.":""}`,`${legendHTML(ser)}<div class="cv" id="mk1"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}</div>
    ${secHTML("Campanhas",`Quando ${esc(e.nome)} esteve no ar, em que plataformas e com que mensagem.`,camps.length?`<div class="card">${ganttHTML(campRows([e],W),W,{groups:false})}</div>`:emptyHTML("Sem campanhas neste período","Alarga o período ou as plataformas."),"anuncios")}
    <div class="grid2 sec">${cardHTML("Formatos",`O que ${esc(e.nome)} põe no ar, no período.`,m.L.length?`${legendHTML(FM.map((f,i)=>({n:f,c:RAMP[i%4]})))}<div class="sbar" style="height:30px">${fmx.map((v,i)=>v<=0?"":`<span style="flex:${v} 1 0;background:${RAMP[i%4]};${i===0?"color:#0F2623":""};line-height:30px" data-tip="<b>${esc(FM[i])}</b>: ${nf(v)}% dos criativos">${v>=9?nf(v)+"%":""}</span>`).join("")}</div><p class="t-xs" style="margin-top:8px">${m.L.length} criativos observados.</p>`:emptyHTML("Sem criativos","Nenhum criativo no período."),"anuncios")}
     ${cardHTML("Mensagens",`Territórios e palavras que ${esc(e.nome)} mais usa.`,m.L.length?`<div class="hb">${TH.map((x,i)=>thx[i]>0?`<div class="row"><span class="nm" style="font-weight:500">${esc(x)}</span><div class="single"><i data-w="${thx[i]}" style="background:var(--brand)"></i></div><span class="num2">${nf(thx[i])}%</span></div>`:"").join("")}</div>${terms.length?`<p class="t-xs" style="margin-top:12px">Palavras mais repetidas: ${terms.map(([w,n])=>`<b>${esc(w)}</b> (${n})`).join(", ")}.</p>`:""}`:emptyHTML("Sem criativos","Nenhum criativo no período."),"anuncios")}</div>
