@@ -2,7 +2,7 @@
    Página «Procura e notícias»: interesse de pesquisa, sazonalidade e conversa na imprensa.
    LIGAÇÃO[google-trends] LIGAÇÃO[news-rss]: os blocos «procura» e «noticias» vêm do dataset do cliente.
    ============================================================ */
-const procC=(s,i)=>isTema()?topC(i):CAT[s.cor%5];   // marcas: cor da marca; temas: família de temas
+const procC=(s,i)=>isTema()?topC(i):CAT[Math.min(s.cor,COR_N)];   // marcas: cor da marca; temas: família de temas
 function procSeries(){const W=win();return D.procura.series.map((s,i)=>({id:s.id,n:s.nome,c:procC(s,i),all:s.valores,d:s.valores.slice(W.a0,Z+1)}))}
 function onSet(){const o=S.chart.on||(S.chart.on=Object.fromEntries(D.procura.series.map(s=>[s.id,true])));return o}
 let _pc=null;

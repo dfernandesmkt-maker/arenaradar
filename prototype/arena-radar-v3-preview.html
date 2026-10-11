@@ -701,10 +701,10 @@ tbody tr.go:hover td:last-child::after{transform:translateX(3px);opacity:1}
 .grid2>*{min-width:0}
 
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
-:root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
+:root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--c6:#7152b5;--c7:#5f7400;--c8:#008b9e;--c9:#8b9a97;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
   /* Temas e assuntos (notícias, procura por tema): família própria, para a cor nunca sugerir uma marca. Validada: CVD, visão normal e contraste. */
   --t1:#6250d6;--t2:#008300;--t3:#0b9bb0;--t4:#e34948;--t5:#8b9a97}
-:root[data-mode=dark]{--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--neg-ink:#ff8f8f;--pos:#3987e5;
+:root[data-mode=dark]{--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#8261c9;--c7:#677d00;--c8:#00889b;--c9:#7d918d;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--neg-ink:#ff8f8f;--pos:#3987e5;
   --t1:#9085e9;--t2:#1f9d3a;--t3:#1a96a8;--t4:#e66767;--t5:#7d918d}
 
 .fbar{position:sticky;top:62px;z-index:15;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap;padding:10px 0;margin:0 0 6px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -1176,7 +1176,8 @@ function ensureAA(hex){const c=h2r(hex),w=[255,255,255],before=cr(c,w);let k=0,c
    ============================================================ */
 const RAW=JSON.parse($("#radar-data").textContent);
 const AG=RAW.agencia, CLS=RAW.clientes;
-const CAT=["var(--brand-ink)","var(--c2)","var(--c3)","var(--c4)","var(--c5)"];
+const CAT=["var(--brand-ink)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)"];   // 8 cores de marca validadas (docs/08) + cinzento neutro para a 9.ª marca em diante (nunca se repetem cores)
+const COR_N=8;                 // índice do cinzento neutro: marcas além das 8 primeiras
 const TOP=["var(--t1)","var(--t2)","var(--t3)","var(--t4)","var(--t5)"];   // temas e assuntos (nunca as cores das marcas)
 const topC=i=>TOP[Math.min(i,TOP.length-1)];
 const DAY=864e5;
@@ -1240,7 +1241,7 @@ const periodos=()=>isTema()?[8,12,26,NW]:[4,8,12,26];
 const ebyid=id=>D.entidades.find(e=>e.id===id);
 const incl=()=>D.entidades.filter(e=>e.incluida);
 const me=()=>D.entidades.find(e=>e.cliente);
-const col=e=>e?CAT[e.cor%5]:"#6b7a77";
+const col=e=>e?CAT[Math.min(e.cor,COR_N)]:"#6b7a77";
 const hasAds=()=>!!(D&&D.anuncios&&D.anuncios.itens.length);
 const isCli=()=>VIEW==="cliente";
 const pubView=()=>!isCli()?pubRasc():(ROUTE&&ROUTE.rasc?pubRasc():D.pub.pubd);      // o que a vista mostra: publicado (cliente) ou rascunho (pré-visualização)
@@ -1514,7 +1515,7 @@ function tsChart(host,o,anim){
 /* ---------- Criativos: miniaturas ilustrativas (a versão ligada mostra o criativo original) ---------- */
 function wrapTxt(t,n){const w=t.split(" "),L=[];let l="";w.forEach(x=>{if((l+" "+x).trim().length>n){L.push(l);l=x}else l=(l+" "+x).trim()});L.push(l);return L}
 function thumb(c,big){
- const e=ebyid(c.b)||{nome:c.bn||c.b,cor:-1,cliente:false},cc=e.cor<0?"#6b7a77":col(e),ink=e.cliente||e.cor<0?"#fff":"#0F2623",id="tg"+String(c.id).replace(/\W/g,"")+(big?"b":""),fmt=FM[c.fm],bn=esc(e.nome);
+ const e=ebyid(c.b)||{nome:c.bn||c.b,cor:-1,cliente:false},cc=e.cor<0?"#6b7a77":col(e),ink=e.cliente||e.cor<0||(e.cor>=5&&e.cor<COR_N)?"#fff":"#0F2623",id="tg"+String(c.id).replace(/\W/g,"")+(big?"b":""),fmt=FM[c.fm],bn=esc(e.nome);
  if(fmt==="Texto"){const L=wrapTxt(c.h,30).slice(0,2);
   return`<svg viewBox="0 0 320 200" role="img" aria-label="Anúncio de pesquisa ilustrativo de ${bn}"><rect width="320" height="200" fill="#fff"/><rect x="0" y="0" width="320" height="6" style="fill:${cc}"/><text x="18" y="40" font-size="11" font-weight="600" fill="#586764" font-family="Inter,sans-serif">Anúncio · ${esc(slug(e.nome))}.pt</text><text x="18" y="76" font-size="17" font-weight="600" style="fill:var(--brand-ink)" font-family="Inter,sans-serif">${esc(L[0])}</text>${L[1]?`<text x="18" y="98" font-size="17" font-weight="600" style="fill:var(--brand-ink)" font-family="Inter,sans-serif">${esc(L[1])}</text>`:""}<text x="18" y="134" font-size="12.5" fill="#586764" font-family="Inter,sans-serif">${esc(TH[c.th]||"Anúncio")}. ${esc(c.cta||"")}</text><rect x="18" y="154" width="86" height="22" rx="11" fill="#EDF0EF"/><text x="31" y="169" font-size="11" font-weight="600" fill="#0F2623" font-family="Inter,sans-serif">Pesquisa</text></svg>`}
  const big4=wrapTxt(c.h,19).length>3,L=wrapTxt(c.h,big4?25:19).slice(0,3),fs=big4?17:22,lh=big4?22:26,cta=c.cta||"Saber mais";
@@ -1646,10 +1647,11 @@ function mainChartHTML(){
   if(hasAds()){
     // O gráfico principal responde ao título: as marcas do conjunto, com a do sinal em destaque. O detalhe por plataforma está em Mercado.
     const bs=incl(),xl=i=>wLab(W.a0+i),sg0=isCli()?cartoesPub()[0]:(S.bquiet?null:sinaisMat()[0]),fe=sg0&&sg0.entidade?bs.find(e=>e.id===sg0.entidade):null;
-    const serAll=bs.map(e=>({id:e.id,n:e.nome,e,c:col(e),w:fe&&e.id===fe.id?3.4:2,d:range(W.a0,W.z).map(w=>act(e.id,w))}));
-    // com muitas marcas as linhas confundem-se (e as cores repetem-se): mostram-se até 5, com cores distintas: a do sinal, a do cliente e as de mais anúncios; o resto está na tabela
+    const serAll=bs.map(e=>({id:e.id,n:e.nome,e,c:fe&&e.id===fe.id&&e.cor>=COR_N?"var(--text)":col(e),w:fe&&e.id===fe.id?3.4:2,d:range(W.a0,W.z).map(w=>act(e.id,w))}));
+    // com muitas marcas as linhas confundem-se: mostram-se até 6, com cores distintas (a 9.ª marca em diante é cinzenta e não entra): a do sinal, a do cliente e as de mais anúncios; o resto está na tabela
     const cur=e=>act(e.id,W.z),pri=[fe,...bs.filter(e=>e.cliente),...[...bs].sort((a,b)=>cur(b)-cur(a))].filter(Boolean),vis=[],cores=new Set();
-    for(const e of pri){if(vis.includes(e)||cores.has(e.cor%5))continue;vis.push(e);cores.add(e.cor%5);if(vis.length>=5)break}
+    const tem=e=>range(W.a0,W.z).some(w=>act(e.id,w)>0);    // sem anúncios no período = linha plana sem informação
+    for(const e of pri){const foco=fe&&e===fe;if(vis.includes(e))continue;if(!foco&&(cores.has(e.cor)||e.cor>=COR_N||!tem(e)))continue;vis.push(e);if(e.cor<COR_N)cores.add(e.cor);if(vis.length>=MAXLIN)break}
     const ser=serAll.filter(z=>vis.includes(z.e)),resto=serAll.length-ser.length;
     const cp={};ADS.filter(a=>a.camp&&bs.some(e=>e.id===a.b)&&PL.includes(a.p)).forEach(a=>{const k=a.b+"|"+a.camp,c=cp[k]||(cp[k]={b:a.b,n:a.camp,st:a.st,k:0});c.st=Math.min(c.st,a.st);c.k++});
     const ev=Object.values(cp).filter(c=>c.st>W.a0&&c.st<=W.z&&c.k>=3).sort((x,y)=>y.k-x.k).slice(0,4).sort((x,y)=>x.st-y.st).filter((c,j,r)=>j===0||c.st-r[j-1].st>=4).slice(0,3).map(c=>({i:c.st-W.a0,t:`${ebyid(c.b).nome} lança «${c.n}»`}));
@@ -1701,6 +1703,7 @@ function sinceHTML(){
   const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:"";
   return`<details class="since"><summary><span class="sl">Desde a semana passada</span>${parts.join("")}<svg class="ic"><use href="#i-down"/></svg></summary>
    <div class="sbody">${nov.length?`<h4>Novos</h4>${li(nov,s=>`<li>${esc(s.titulo)}</li>`)}`:""}${mant.length?`<h4>Mantêm-se acima do limiar</h4>${li(mant,s=>`<li>${esc(s.titulo)}${s.valor_anterior!=null&&s.valor!=null?` <span class="muted">(semana passada: ${sgn(s.valor_anterior,Math.abs(s.valor_anterior)<10?1:0)}${sigUnit(s)})</span>`:""}</li>`)}`:""}${res.length?`<h4>Deixaram de estar acima do limiar</h4>${li(res,s=>`<li>${esc(s.titulo)}</li>`)}`:""}</div></details>`}
+const MAXLIN=6;      // linhas visíveis no gráfico principal
 const SGMAX=6;      // cartões de sinal visíveis de início; os restantes ficam em «Ver os outros»
 function pageVisao(){
   const mp=s=>{const p=s.pista_id&&D.pistas.find(x=>x.id===s.pista_id);return p&&ROLE_PARA[PREFS.role]===p.para?1:0};
@@ -1851,7 +1854,7 @@ function pageMercado(sub){
    Página «Procura e notícias»: interesse de pesquisa, sazonalidade e conversa na imprensa.
    LIGAÇÃO[google-trends] LIGAÇÃO[news-rss]: os blocos «procura» e «noticias» vêm do dataset do cliente.
    ============================================================ */
-const procC=(s,i)=>isTema()?topC(i):CAT[s.cor%5];   // marcas: cor da marca; temas: família de temas
+const procC=(s,i)=>isTema()?topC(i):CAT[Math.min(s.cor,COR_N)];   // marcas: cor da marca; temas: família de temas
 function procSeries(){const W=win();return D.procura.series.map((s,i)=>({id:s.id,n:s.nome,c:procC(s,i),all:s.valores,d:s.valores.slice(W.a0,Z+1)}))}
 function onSet(){const o=S.chart.on||(S.chart.on=Object.fromEntries(D.procura.series.map(s=>[s.id,true])));return o}
 let _pc=null;

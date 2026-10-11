@@ -184,6 +184,26 @@ def _exigir(d: dict, chaves: list[str], onde: str) -> None:
         raise SystemExit(f"Configuração incompleta: falta {', '.join(falta)} em {onde}. Ver config/clients/_template.yaml.")
 
 
+def _cores_por_relevancia(ents: list[dict], anuncios: list[dict]) -> None:
+    """Com mais de 7 concorrentes, as 7 cores de marca vão para os que têm mais anúncios (volume de dias em exibição);
+    as restantes marcas ficam com o cinzento neutro (índice 8). Com 7 ou menos, mantém-se a ordem da configuração
+    (a cor segue a entidade e não muda enquanto o conjunto não muda)."""
+    conc = [e for e in ents if not e["cliente"]]
+    if len(conc) <= 7:
+        return
+    vol: dict[str, int] = defaultdict(int)
+    for a in anuncios:
+        try:
+            ini = date.fromisoformat(str(a["data_inicio"])[:10])
+            fim = date.fromisoformat(str(a["data_fim"])[:10])
+            vol[a["marca"]] += max(1, (fim - ini).days + 1)
+        except (KeyError, ValueError):
+            vol[a.get("marca", "")] += 1
+    ordem = sorted(conc, key=lambda e: (not e["incluida"], -vol.get(e["id"], 0), e["nome"]))
+    for k, e in enumerate(ordem, start=1):
+        e["cor"] = min(k, 8)
+
+
 def build_client(cid: str, ag: dict, fontes: dict) -> dict:
     cfg = load_yaml(ROOT / "config" / "clients" / f"{cid}.yaml")
     cl = cfg.get("cliente") or {}
@@ -230,7 +250,7 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
                          "ficticia": bool(s.get("ficticia", False)), "incluida": acc, "sugerida": not acc,
                          "sobreposicao": s.get("sobreposicao"), "fator": s.get("fator", 1.0)})
     for i, e in enumerate(ents):
-        e["cor"] = 0 if e["cliente"] else (((i - 1) % 4) + 1 if tipo == "concorrencia" else i % 5)
+        e["cor"] = 0 if e["cliente"] else (min(i, 8) if tipo == "concorrencia" else i % 5)   # 8 cores de marca; 8 = cinzento neutro (9.ª marca em diante)
     ids = {e["id"] for e in ents}
 
     # --- anúncios (concorrência) e quota de voz
@@ -250,6 +270,7 @@ def build_client(cid: str, ag: dict, fontes: dict) -> dict:
                                         "Anúncios simulados a partir das campanhas em config/clients/%s.yaml; marcas fictícias" % cid,
                                         None, ref)
         if anuncios is not None:
+            _cores_por_relevancia(ents, anuncios)
             ad_aggr = signals.matriz_anuncios(anuncios, [e["id"] for e in ents], pn, inicio, n)
             blocos["investimento"] = _bloco(
                 "demo" if blocos["anuncios"]["origem"] == "demo" else "estimado", "Investimento estimado", None,

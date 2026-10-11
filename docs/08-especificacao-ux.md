@@ -93,7 +93,7 @@ Regras:
 
 Os componentes já existem em parte no preview (KPIs, cartões, gráficos SVG, gaveta, etiquetas); a fase C extrai-os e uniformiza-os.
 
-**Cor.** A cor segue a entidade (D35): cada marca tem a sua cor, fixa; temas e assuntos (notícias, procura por tema) usam uma paleta própria (`--t1` a `--t5`); plataformas e formatos usam a rampa azul. Nenhuma cor muda de significado dentro da mesma página. Qualquer paleta nova passa por `validate_palette.js` (daltonismo, visão normal e contraste) em claro e em escuro.
+**Cor.** A cor segue a entidade (D35): cada marca tem a sua cor, fixa (8 cores de marca, ver abaixo); temas e assuntos (notícias, procura por tema) usam uma paleta própria (`--t1` a `--t5`); plataformas e formatos usam a rampa azul. Nenhuma cor muda de significado dentro da mesma página. Qualquer paleta nova passa por `validate_palette.js` (daltonismo, visão normal e contraste) em claro e em escuro.
 
 **Números com janela.** Cada variação diz contra o quê («vs há 12 sem.», «em 4 sem.», «vs média 8 sem.»); os sinais têm janela própria e não seguem o filtro de período. Clicar no «?» de um KPI ou em «Porquê?» abre a explicação completa.
 
@@ -222,7 +222,7 @@ O protótipo mostra 3 sinais e 4 marcas, mas a ferramenta tem de aguentar o uso 
 | Tabelas longas (fila da Torre, marcas em comparação, mapa de calor) | Mostram as 10, 8 e 10 primeiras linhas; «Mostrar todas (N)» abre o resto. A ordenação aplica-se a todas as linhas e a lista visível acompanha a ordem. «Copiar tabela» copia tudo |
 | Fila de decisões (Torre) | Filtro por vertical (com contagens) e 10 linhas de início |
 | Visão geral › O que mudou | 6 cartões de sinal, ordenados por materialidade, função e força; os restantes em «Ver os outros N sinais» |
-| Gráfico principal | No máximo 5 marcas, com cores distintas: a do sinal, a do cliente e as de mais anúncios. As outras ficam na tabela por baixo e a nota diz quantas são |
+| Gráfico principal | No máximo 6 marcas, com cores distintas: a do sinal (sempre), a do cliente e as de mais anúncios. As outras ficam na tabela por baixo e a nota diz quantas são |
 | Quota de voz (corrida) | 10 linhas; o cliente aparece sempre, mesmo fora do top 10; «Mostrar todas (N)» |
 | Ações | 5 pistas por grupo («Por decidir», «Já decididas»); as outras em «Ver as outras N». Uma ligação para uma pista escondida abre o grupo |
 | Publicar para o cliente | 6 cartões e 6 pistas visíveis; o resto em «Ver os outros N» |
@@ -230,6 +230,26 @@ O protótipo mostra 3 sinais e 4 marcas, mas a ferramenta tem de aguentar o uso 
 | Marca sem anúncios no período | Estado vazio em vez de eixos vazios |
 | Telemóvel | A fila da Torre mostra cliente e pista (o sinal vs limiar e a função passam para uma linha por baixo); as tabelas de clientes mostram cliente, sinais e pistas; a barra inferior cabe com 6 itens |
 
-**Limite conhecido:** as cores categóricas de marca são 5 (D35). Com mais de 5 marcas as cores repetem-se nas listas e nos pontos; por isso os gráficos limitam-se a 5 marcas. Alargar a paleta (validada para daltonismo) é um ponto em aberto para a revisão com Brand.
+**Limite conhecido:** a paleta de marcas tem 8 cores (D46); a 9.ª marca em diante é cinzenta nas listas e nos pontos e não entra nos gráficos de linhas, exceto se for a marca do sinal (a tinta). Com mais de 7 concorrentes, as cores vão para os de maior volume de anúncios na altura da recolha. Rever a paleta com a Brand (Q08).
 
 **Desempenho:** com 30 clientes (11,6 MB de dados embebidos) cada página abre em cerca de 50 ms. Na produção os dados não vão embebidos no HTML.
+
+## 14. Paleta de marcas (D46)
+
+Ordem fixa, uma cor por entidade (nunca por posição no ranking), com o primeiro lugar sempre do cliente. Validada com `validate_palette.js` (`--mode light --surface #FFFFFF` e `--mode dark --surface #112C28`): banda de luminosidade, croma, separação para daltonismo (adjacentes, protanopia e deuteranopia), visão normal e contraste.
+
+| # | Marca | Claro | Escuro |
+|---|---|---|---|
+| 1 | Cliente (azul do tema) | `#2a76ce` | `#2a76ce` |
+| 2 | Laranja | `#eb6834` | `#d95926` |
+| 3 | Verde | `#1baf7a` | `#199e70` |
+| 4 | Âmbar | `#eda100` | `#c98500` |
+| 5 | Rosa | `#e87ba4` | `#d55181` |
+| 6 | Roxo | `#7152b5` | `#8261c9` |
+| 7 | Oliva | `#5f7400` | `#677d00` |
+| 8 | Azul-petróleo | `#008b9e` | `#00889b` |
+| 9+ | Cinzento neutro | `#8b9a97` | `#7d918d` |
+
+Resultado: nos dois modos, banda de luminosidade e croma passam; pior par adjacente 9,1 ΔE (claro) e 8,4 ΔE (escuro) em daltonismo, 17,3 e 16,9 ΔE em visão normal. **Contraste:** em claro, verde, âmbar e rosa ficam abaixo de 3:1 (já era assim); o alívio obrigatório é a legenda visível, a identificação direta e a vista em tabela, que todos os gráficos têm. Em escuro todas passam.
+
+Quem usa a paleta: pontos de marca, linhas dos gráficos, miniaturas dos criativos (texto branco sobre as cores 6 a 8). Os temas e assuntos têm a paleta própria `--t1` a `--t5` (D35), e as variações positiva e negativa têm cores de estado próprias; nenhuma delas é uma cor de marca.

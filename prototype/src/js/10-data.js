@@ -8,7 +8,8 @@
    ============================================================ */
 const RAW=JSON.parse($("#radar-data").textContent);
 const AG=RAW.agencia, CLS=RAW.clientes;
-const CAT=["var(--brand-ink)","var(--c2)","var(--c3)","var(--c4)","var(--c5)"];
+const CAT=["var(--brand-ink)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)"];   // 8 cores de marca validadas (docs/08) + cinzento neutro para a 9.ª marca em diante (nunca se repetem cores)
+const COR_N=8;                 // índice do cinzento neutro: marcas além das 8 primeiras
 const TOP=["var(--t1)","var(--t2)","var(--t3)","var(--t4)","var(--t5)"];   // temas e assuntos (nunca as cores das marcas)
 const topC=i=>TOP[Math.min(i,TOP.length-1)];
 const DAY=864e5;
@@ -72,7 +73,7 @@ const periodos=()=>isTema()?[8,12,26,NW]:[4,8,12,26];
 const ebyid=id=>D.entidades.find(e=>e.id===id);
 const incl=()=>D.entidades.filter(e=>e.incluida);
 const me=()=>D.entidades.find(e=>e.cliente);
-const col=e=>e?CAT[e.cor%5]:"#6b7a77";
+const col=e=>e?CAT[Math.min(e.cor,COR_N)]:"#6b7a77";
 const hasAds=()=>!!(D&&D.anuncios&&D.anuncios.itens.length);
 const isCli=()=>VIEW==="cliente";
 const pubView=()=>!isCli()?pubRasc():(ROUTE&&ROUTE.rasc?pubRasc():D.pub.pubd);      // o que a vista mostra: publicado (cliente) ou rascunho (pré-visualização)

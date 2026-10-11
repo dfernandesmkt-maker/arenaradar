@@ -54,10 +54,11 @@ function mainChartHTML(){
   if(hasAds()){
     // O gráfico principal responde ao título: as marcas do conjunto, com a do sinal em destaque. O detalhe por plataforma está em Mercado.
     const bs=incl(),xl=i=>wLab(W.a0+i),sg0=isCli()?cartoesPub()[0]:(S.bquiet?null:sinaisMat()[0]),fe=sg0&&sg0.entidade?bs.find(e=>e.id===sg0.entidade):null;
-    const serAll=bs.map(e=>({id:e.id,n:e.nome,e,c:col(e),w:fe&&e.id===fe.id?3.4:2,d:range(W.a0,W.z).map(w=>act(e.id,w))}));
-    // com muitas marcas as linhas confundem-se (e as cores repetem-se): mostram-se até 5, com cores distintas: a do sinal, a do cliente e as de mais anúncios; o resto está na tabela
+    const serAll=bs.map(e=>({id:e.id,n:e.nome,e,c:fe&&e.id===fe.id&&e.cor>=COR_N?"var(--text)":col(e),w:fe&&e.id===fe.id?3.4:2,d:range(W.a0,W.z).map(w=>act(e.id,w))}));
+    // com muitas marcas as linhas confundem-se: mostram-se até 6, com cores distintas (a 9.ª marca em diante é cinzenta e não entra): a do sinal, a do cliente e as de mais anúncios; o resto está na tabela
     const cur=e=>act(e.id,W.z),pri=[fe,...bs.filter(e=>e.cliente),...[...bs].sort((a,b)=>cur(b)-cur(a))].filter(Boolean),vis=[],cores=new Set();
-    for(const e of pri){if(vis.includes(e)||cores.has(e.cor%5))continue;vis.push(e);cores.add(e.cor%5);if(vis.length>=5)break}
+    const tem=e=>range(W.a0,W.z).some(w=>act(e.id,w)>0);    // sem anúncios no período = linha plana sem informação
+    for(const e of pri){const foco=fe&&e===fe;if(vis.includes(e))continue;if(!foco&&(cores.has(e.cor)||e.cor>=COR_N||!tem(e)))continue;vis.push(e);if(e.cor<COR_N)cores.add(e.cor);if(vis.length>=MAXLIN)break}
     const ser=serAll.filter(z=>vis.includes(z.e)),resto=serAll.length-ser.length;
     const cp={};ADS.filter(a=>a.camp&&bs.some(e=>e.id===a.b)&&PL.includes(a.p)).forEach(a=>{const k=a.b+"|"+a.camp,c=cp[k]||(cp[k]={b:a.b,n:a.camp,st:a.st,k:0});c.st=Math.min(c.st,a.st);c.k++});
     const ev=Object.values(cp).filter(c=>c.st>W.a0&&c.st<=W.z&&c.k>=3).sort((x,y)=>y.k-x.k).slice(0,4).sort((x,y)=>x.st-y.st).filter((c,j,r)=>j===0||c.st-r[j-1].st>=4).slice(0,3).map(c=>({i:c.st-W.a0,t:`${ebyid(c.b).nome} lança «${c.n}»`}));
@@ -109,6 +110,7 @@ function sinceHTML(){
   const li=(arr,f)=>arr.length?`<ul>${arr.map(f).join("")}</ul>`:"";
   return`<details class="since"><summary><span class="sl">Desde a semana passada</span>${parts.join("")}<svg class="ic"><use href="#i-down"/></svg></summary>
    <div class="sbody">${nov.length?`<h4>Novos</h4>${li(nov,s=>`<li>${esc(s.titulo)}</li>`)}`:""}${mant.length?`<h4>Mantêm-se acima do limiar</h4>${li(mant,s=>`<li>${esc(s.titulo)}${s.valor_anterior!=null&&s.valor!=null?` <span class="muted">(semana passada: ${sgn(s.valor_anterior,Math.abs(s.valor_anterior)<10?1:0)}${sigUnit(s)})</span>`:""}</li>`)}`:""}${res.length?`<h4>Deixaram de estar acima do limiar</h4>${li(res,s=>`<li>${esc(s.titulo)}</li>`)}`:""}</div></details>`}
+const MAXLIN=6;      // linhas visíveis no gráfico principal
 const SGMAX=6;      // cartões de sinal visíveis de início; os restantes ficam em «Ver os outros»
 function pageVisao(){
   const mp=s=>{const p=s.pista_id&&D.pistas.find(x=>x.id===s.pista_id);return p&&ROLE_PARA[PREFS.role]===p.para?1:0};
