@@ -4,144 +4,139 @@
 ---
 
 ## 1. Em síntese
-- O Arena Radar é um produto interno que deteta o que muda no mercado de um cliente, interpreta o que isso significa e aponta à equipa as ações de meios possíveis. A plataforma sugere; a equipa decide.
-- Conceito e experiência estão fechados: existe um protótipo navegável de alta fidelidade, multi-cliente, com vista Equipa e vista Cliente. Dados reais, motor de leitura e entrega automática ainda não existem.
-- Proposta: um piloto de 6 semanas com um cliente real a escolher, sem desenvolvimento técnico pesado, para provar valor antes de pedir investimento.
+- O Arena Radar é uma ferramenta interna que segue **tudo o que os concorrentes de um cliente fazem** (campanhas, promoções, preços, lançamentos, testes de criativos, pesquisa paga, imprensa) e põe a equipa de conta **à frente** desses movimentos: ver primeiro, perceber o padrão, responder depressa. A plataforma sugere; a equipa decide.
+- Existe um **protótipo navegável de alta fidelidade** com dois clientes fictícios (combustíveis e retalho alimentar). Mostra o produto completo com dados simulados. **Ainda não foi testado com dados reais.**
+- Proposta: um **teste de dados reais de 2 semanas** (só fontes públicas) e, se passar, um **piloto de 6 semanas** com uma equipa de conta. Sem desenvolvimento técnico pesado nem licenças novas antes de provar valor.
 
 ## 2. O problema que resolve
-- Os clientes esperam que a agência antecipe movimentos do mercado, não que os relate depois.
-- A monitorização contínua não cabe na capacidade das equipas de conta. Hoje é feita de forma pontual e manual.
-- Os dados de concorrência estão a tornar-se comuns (Meta Ad Library, Google Ads Transparency, Marktest AdCheck). O diferencial deixou de ser ter os dados e passou a ser saber o que fazer com eles.
+- Os clientes esperam que a agência antecipe os movimentos da concorrência, não que os relate no fim do mês.
+- Seguir a concorrência de forma contínua não cabe no tempo das equipas de conta. Hoje é feito de forma pontual e manual.
+- Os dados tornaram-se públicos (Meta Ad Library, Google Ads Transparency, TikTok Commercial Content Library, preços publicados). O diferencial deixou de ser ter os dados e passou a ser **ver a tempo e saber o que fazer**.
 
-## 3. A resposta
-> O Radar não vende vigilância. Vende o "e então?".
+## 3. A resposta: um radar de movimentos
+> O Radar não vende vigilância. Vende tempo: saber antes, com prova, e já com uma resposta combinada.
 
-| Camada | Pergunta | Quem faz |
+O objeto central é o **movimento**: algo que um concorrente fez e que se pode provar. Cada movimento traz a prova (criativos, série de preço, dados de pesquisa), **porque é importante** (pontos explicados), **o que a marca costuma fazer a seguir** (pelo seu histórico) e se há **resposta combinada** com o cliente.
+
+| Área | Pergunta | O que mostra |
 |---|---|---|
-| Observar | O que mudou? | Máquina, de forma contínua |
-| Ler | O que significa para o cliente? | Máquina propõe, equipa valida |
-| Pistas de ação | O que podemos fazer? | Máquina sugere, equipa decide o que leva ao cliente |
+| **Agora** | O que mexeu esta semana? | O movimento mais importante no topo, o resumo da semana pronto a rever e o fio de movimentos com prova |
+| **Concorrentes** | Como age cada marca? | Ficha viva: ritmo, linha temporal, biblioteca de criativos, como comunica (classificação automática) |
+| **Comparar** | Quem pesa mais e onde? | Quota de voz, investimento estimado, mapa de mensagens com território livre, preço, pesquisa paga |
+| **Antecipar** | O que vem aí? | As próximas 12 semanas pelo histórico de cada marca, sinais precoces, o **plano do cliente** e os choques com a concorrência |
+| **Respostas** | Estamos prontos? | O que está combinado com o cliente para cada tipo de movimento; a equipa decide ativar |
+| **Torre** (agência) | Como estão todos os clientes? | Um cartão por cliente com o que importa e o que vem a seguir |
 
-Três modos de entrega: alertas apenas para eventos materiais, briefing semanal à segunda-feira e pedidos pontuais. A máquina deteta; a equipa só entra no momento de decidir.
+**Antecipação acionável, não adivinhação.** As previsões vêm de padrões visíveis (a mesma campanha na mesma altura do ano, o ritmo das promoções, testes de criativos que antecedem campanhas) e mostram sempre o método e a confiança.
 
-## 3.0 Reorientação (outubro 2026): radar de movimentos (v4)
-O projeto foi repensado (D50). O Radar passa a ser um **radar de movimentos da concorrência**: tudo o que os concorrentes fazem, num só fio, com prova, e com o que isso costuma anunciar a seguir. Protótipo novo (`prototype/arena-radar-v4.html`) com **2 clientes fictícios**, Vetra (combustíveis) e Mercana (retalho alimentar):
-- **Agora:** o que mexeu esta semana, com um resumo pronto a rever (por IA na versão ligada; o email para o cliente só se copia depois de revisto), com os criativos, a série de preço ou do leilão como prova, a importância explicada e o que costuma seguir-se.
-- **Concorrentes:** ficha viva de cada marca, com ritmo, linha temporal, biblioteca de criativos e mensagens.
-- **Comparar:** quota de voz, investimento estimado, mapa de mensagens com espaço livre, preço, leilão de pesquisa do cliente.
-- **Antecipar:** as próximas 12 semanas, calculadas a partir do histórico de cada marca, com sinais precoces e o que preparar.
-- **Respostas:** o que está combinado com o cliente para cada tipo de movimento; a equipa decide ativar.
+**IA com supervisão.** O resumo de segunda-feira (em 30 segundos, decisões para a equipa, rascunho de email para o cliente) e a classificação dos criativos podem ser feitos por IA. O texto fica sempre «por rever» até alguém da equipa o rever; o email só se copia depois disso; nada é enviado ao cliente automaticamente. Ao modelo só seguem dados públicos sobre concorrentes. Na demonstração, este trabalho é feito por regras; o uso de IA real depende de IT e Compliance (Q13).
 
-Detalhe em `docs/11-v4-radar-de-movimentos.md`. A secção seguinte descreve a v3, que fica como referência.
+## 4. O que a demonstração mostra
+Protótipo em HTML único (`prototype/arena-radar-v4.html`), sem servidor, com o botão **«Demonstração»**: um percurso de 7 passos para reuniões.
+1. **O que mexeu:** a Kaldo baixou 8 cêntimos por litro ao fim de semana (cliente fictício Vetra).
+2. **A prova e o porquê:** criativos, série de preço, pontos de importância, o que a Kaldo costuma fazer a seguir.
+3. **O resumo de segunda-feira:** escrito, por rever, com as decisões que cabem à equipa.
+4. **O que vem aí:** a Zefira começou a testar criativos com pouco alcance; no histórico, isso antecede a campanha de inverno.
+5. **Choque com o nosso plano:** a campanha de preço da Vetra cai na semana da Black Friday da Kaldo, no mesmo território. Ainda há tempo para mudar.
+6. **Respostas combinadas:** o que fazer está acordado de antemão; a equipa ativa.
+7. **Torre:** os dois clientes lado a lado.
 
-## 3.1 O que o protótipo v3 mostrava
-Protótipo em HTML único, que abre no browser sem servidor, com quatro **clientes fictícios** (Lumio, Vael, Kob e Verdia) em quatro verticais.
-- **Torre de controlo** (Agência › Vertical › Cliente): sinais acima do limiar, fila de decisões e estado de publicação por cliente.
-- **Um padrão de página para todos os clientes:** filtros → KPIs → o que mudou → gráfico principal → detalhe. Mercado, Procura e notícias, Criativos, Relatórios e Ações.
-- **Duas vistas dos mesmos dados.** Equipa vê sinais, limiares e pistas de ação. Cliente vê só o que a equipa publicou; sem publicação não vê nada.
-- **Pistas de ação com decisão da equipa** (aceitar, ajustar, descartar, atribuir a Performance, Brand ou Account) e módulo Impacto.
-- **Selo de dados em cada página** (Demonstração, Real, Estimado ou Misto) e verificação automática da regra de ouro dos dados (`scripts/check_dataset.py`, também no GitHub).
-- **Agnóstico ao cliente:** clientes, marcas e séries vêm de `config/`, não do código. Acrescentar um cliente é acrescentar um ficheiro (`docs/10-como-acrescentar-um-cliente.md`). Foi provado com clientes novos sem alterar código.
-- **Pontos de ligação** marcados no código (`LIGAÇÃO[...]`, `docs/09-pontos-de-ligacao.md`) onde entram a Meta Ad Library, o Google, o TikTok e a Marktest.
-- **Confiança nos números:** «Porquê?» em cada sinal (regra, números, janela, limiar, origem) e «Como se calcula» em cada KPI; cada número diz a sua janela.
-- **Publicação com rascunho e publicado** (D34): o cliente só vê o que foi publicado, com pré-visualização ao lado e histórico de quem publicou e quando.
-- **Ficha de marca** com comparação entre marcas; **alertas** só para eventos materiais; vista por função (Performance, Brand, Account, Direção).
-- **Levar o Radar para onde a agência trabalha:** gráficos copiados como imagem com a origem dos dados, destaques acrescentados ao briefing semanal.
-- **Identidade Arena** (D38 a D40): cabeçalho Guerrilla Forest com motivo de radar, amarelo reservado ao sinal, sistema único de estados e uma vista do cliente com aspeto de relatório (cabeçalho, separadores, rodapé assinado pela Arena).
-- **Ações como fila de decisão** (por decidir primeiro, percurso sinal → leitura → ação) e um gráfico principal que responde ao título da página (D42 a D44).
-- Paleta de comandos (Ctrl K), modo apresentação, modo escuro e acessibilidade (teclado, leitores de ecrã, alvos tácteis).
+Todos os dados são de demonstração (clientes e marcas fictícios, D33 e D51), com selo de origem em cada página. Os métodos de cálculo (importância, previsões, choques) são os que a versão ligada usará com dados reais.
 
-## 4. Percurso até aqui
+## 5. Percurso até aqui
 | Quando | Marco |
 |---|---|
 | Abril 2026 | Conceito inicial, documento estratégico, wireframes e primeiro protótipo. Piloto pensado para a PRIO. |
 | Maio 2026 | Radar identificado como ponto em aberto no plano de conta PRIO 2026. |
-| Junho 2026 | Reposicionamento: de "plataforma preditiva" para "antecipação acionável". Produto agnóstico ao cliente. Protótipo v2 ao nível de SaaS e módulo Impacto. |
+| Junho 2026 | Reposicionamento: de "plataforma preditiva" para "antecipação acionável". Produto agnóstico ao cliente. Protótipo v2. |
 | Setembro 2026 | Retoma para ponto de situação. Versão de demonstração com clientes fictícios. |
-| Outubro 2026 | Revisão de UX e de estrutura. Protótipo v3 multi-cliente, orientado por configuração, com Torre de controlo, vistas Equipa e Cliente, publicação pela equipa e verificação automática dos dados. Retirado o cliente real de exemplo (D33). |
+| Outubro 2026 | Protótipo v3: multi-cliente, orientado por configuração, vistas Equipa e Cliente, verificação automática da regra de ouro dos dados. Retirado o cliente real de exemplo (D33). |
+| Outubro 2026 | **Reorientação para radar de movimentos (v4, D50):** o movimento da concorrência como objeto central, previsões pelo histórico, respostas combinadas, resumo por IA sempre revisto (D54), plano do cliente e choques, roteiro de demonstração. Dois clientes fictícios (D51). |
 
-Detalhe e registo de decisões em `01-historico-e-decisoes.md`.
+O que a v3 tinha e não entrou na v4 (vista do cliente e publicação, Impacto, Pergunta ao Radar, alertas, vista por função) fica estacionado (D52) e volta quando o radar provar valor. Detalhe em `01-historico-e-decisoes.md` e no registo de decisões do dossier.
 
-## 5. Estado por componente
+## 6. Estado por componente
 | Componente | Estado | Nota |
 |---|---|---|
-| Conceito e proposta de valor | ✅ Fechado | Três camadas, três modos de entrega |
-| Experiência (protótipo) | ✅ Alta fidelidade | v3 multi-cliente, vistas Equipa e Cliente, só com clientes fictícios |
-| Arquitetura de dados e configuração | ✅ Feita no protótipo | `config/` → `build_dataset.py` → JSON; regra de ouro verificada automaticamente |
-| Recolha de dados | 🟡 Iniciada | Scripts para notícias, Google Trends e Meta Ad Library, ainda sem dados reais (falta token da Meta e acesso de rede nos ambientes de teste) |
-| Persistência e partilha entre a equipa | ⚪ Por construir | Decisões, rascunho, publicações e preferências ficam só no browser de cada pessoa (RB-22). Ponto de ligação `persistencia-equipa` |
-| Entrega ao cliente e alertas por e-mail e Teams | ⚪ Por construir | Pré-visualização e cálculo dos alertas feitos; pontos de ligação `entrega-cliente` e `alertas-entrega`, com IT e Compliance |
-| Motor de leitura e pistas de ação | ⚪ Por construir | Hoje simulado no protótipo |
-| Entrega automática (briefing) | ⚪ Por construir | Formato desenhado, sem automatização |
-| Validação com cliente | ⚪ Não iniciada | Proposta: piloto com um cliente real. O uso de nomes de clientes em demonstrações está por responder (Q04) |
-| Modelo de valor | 🟡 Desenhado | Módulo Impacto pronto a medir, sem histórico real |
-| Stack de produção | ⚪ Por decidir | Depende do IT (Microsoft vs. outro) |
+| Conceito e estrutura | ✅ Redefinido (D50) | Radar de movimentos; especificação em `docs/11-v4-radar-de-movimentos.md` |
+| Protótipo | ✅ Alta fidelidade | 2 clientes fictícios, roteiro de demonstração, telemóvel, contraste AA nos dois temas |
+| Deteção de movimentos, importância, previsões, choques | 🟡 Feitos com dados simulados | Métodos prontos; **por provar com dados reais** (teste de 2 semanas) |
+| Resumo da semana e classificação de criativos | 🟡 Por regras | Ligação a IA feita e testada com respostas simuladas; uso real depende da Q13 |
+| Recolha de dados reais | ⚪ Por fazer | Pontos de entrada marcados no código (`docs/09-pontos-de-ligacao.md`); depende dos termos de uso (Q10) e do acesso à Meta Ad Library |
+| Dados do cliente (pesquisa paga, plano de meios) | ⚪ Por ligar | Com autorização do cliente (Q12); nunca saem do ambiente da agência |
+| Partilha entre a equipa (decisões, revisões) | ⚪ Por construir | Hoje ficam no browser de cada pessoa (RB-116) |
+| Saída para o cliente | 🟡 Rascunho de email | Copiável depois de revisto, assinado pela Arena; slide da semana por fazer (RB-117) |
+| Validação com a equipa | ⚪ Não iniciada | Antes da reunião: mostrar a 1 ou 2 colegas de conta |
+| Stack de produção | ⚪ Por decidir | Com o IT (Microsoft ou outro); dados em JSON simples para migrar sem retrabalho |
 
-## 6. Como escolher o cliente do piloto
-O protótipo mostra o potencial com **clientes fictícios**. O cliente real do piloto é uma decisão da direção. Critérios propostos:
-- **Contexto de mudança no mercado**, que torne a leitura útil logo nas primeiras semanas.
-- **Universo legível:** poucas entidades a vigiar, com dados públicos disponíveis (Meta Ad Library, pesquisa, notícias).
-- **Ligação a um ativo que já gerimos** (por exemplo, um assistente virtual do cliente), para o Radar apontar quando e onde ativar.
-- **Acordo do cliente** para o uso do nome em demonstrações e, mais tarde, de dados internos (Q04 e Q05).
+## 7. Proposta
+### Passo 1 — Teste de dados reais (2 semanas)
+- 1 vertical, cerca de 6 marcas reais, **só fontes públicas** (Meta Ad Library, Google Ads Transparency, TikTok, notícias, preços publicados).
+- Mede o que interessa: que parte dos movimentos o Radar vê, com quanto atraso, com que qualidade e quanto trabalho manual sobra.
+- Sai uma decisão simples: avançar para o piloto, ajustar ou parar.
+- Depende de Compliance validar os termos de uso das fontes (Q10). Os dados reais ficam fora do protótipo de demonstração.
 
-Nota: em alguns clientes a "concorrência" é sobretudo disputa de atenção e clareza de mensagem, não quota de mercado. O Radar tem dois tipos de universo, «concorrência» e «tema», para os dois casos (ver `docs/02-produto.md` e `docs/10-como-acrescentar-um-cliente.md`).
-
-## 7. Cenários
-| Cenário | O que implica | Investimento | Risco |
-|---|---|---|---|
-| **A. Piloto com um cliente real** (recomendado) | 6 semanas de briefing semanal com dados públicos e leitura da equipa | Tempo do David (estimativa: 3 a 4 h/semana) | Baixo |
-| B. MVP funcional | Recolha automatizada, motor de leitura, stack decidido com IT | Tempo, IT, possíveis licenças | Médio: investir antes de provar valor |
-| C. Arquivar | Fica como ativo de pitch | Nenhum | Perder a janela e o trabalho feito |
-
-**Recomendação: A.** Prova o valor com um cliente real antes de pedir investimento. O módulo Impacto só convence com histórico real de pistas de ação e decisões.
-
-### Desenho do piloto
-- Semanas 1 a 3, **modo sombra**: o briefing é produzido e avaliado internamente, sem sair da agência.
-- Semanas 4 a 6, **com o cliente**: a equipa escolhe as pistas que leva ao cliente, com o acordo prévio do contacto do cliente.
-- Ponto de decisão na semana 7, com os critérios abaixo.
+### Passo 2 — Piloto (6 semanas), se o teste passar
+- Uma equipa de conta e um cliente, a escolher pela direção.
+- Semanas 1 a 3, **modo sombra**: o Radar corre; a equipa compara com o que já sabia e regista o que viu primeiro.
+- Semanas 4 a 6, **em uso**: resumo de segunda-feira revisto pela equipa e respostas combinadas com o cliente.
+- Ponto de decisão na semana 7.
 
 ### Critérios de sucesso (proposta, a validar)
 | Critério | Meta proposta |
 |---|---|
-| Briefings entregues a tempo | 6 em 6 |
-| Tempo de produção por briefing | ≤ 3 h na semana 6 |
-| Sinais considerados relevantes pela equipa | ≥ 50% |
-| Pistas de ação aceites pela equipa | ≥ 1 por semana |
-| Ações levadas ao cliente | ≥ 2 |
-| Ações adotadas pelo cliente | ≥ 1 |
+| Movimentos considerados relevantes pela equipa | ≥ 50% |
+| Vezes em que a equipa soube ou agiu mais cedo do que sem o Radar | ≥ 1 (registado) |
+| Tempo para rever o resumo de segunda-feira | ≤ 1 h por semana na semana 6 |
+| Previsões registadas e verificadas (acertos e falhas) | Todas, para calibrar a confiança |
+| Respostas combinadas com o cliente | ≥ 3 |
+| Dados sem origem na interface | 0 |
 
-## 7.1 Próximos passos do produto (antes e durante o piloto)
-1. Persistência partilhada pela equipa (decisões, rascunho e publicações), hoje só no browser (RB-22); entrega ao cliente e alertas por e-mail e Teams, com IT.
-2. Ligar dados reais: Meta Ad Library (depende de token e de Q10), Google Trends e notícias.
-3. Motor de leitura: passar as regras de sinal do protótipo para o pipeline de produção.
-4. Capturas de ecrã e deck para a direção (RB-10).
-5. Decisão de stack com o IT; documentação técnica já em `docs/dossier/02-tecnico/`.
+### Como escolher o cliente do piloto
+- **Mercado com concorrência ativa e visível** (campanhas e promoções frequentes, muito digital), para haver movimentos logo nas primeiras semanas.
+- **Universo legível:** 4 a 6 concorrentes com presença nas bibliotecas de anúncios.
+- **Equipa disponível** para o modo sombra e para combinar respostas com o cliente.
+- **Acordo do cliente** para usar dados das suas contas (pesquisa paga) e, mais tarde, o nome em demonstrações (Q04, Q12).
+
+### Cenários
+| Cenário | O que implica | Investimento | Risco |
+|---|---|---|---|
+| **A. Teste + piloto** (recomendado) | 2 semanas de teste com fontes públicas; 6 semanas de piloto se passar | Tempo do David (estimativa: 3 a 4 h por semana) e de uma equipa de conta no piloto | Baixo |
+| B. Construir já a versão ligada | Recolha automática, base partilhada, stack decidido com o IT | Tempo, IT, possíveis licenças | Médio: investir antes de provar valor com dados reais |
+| C. Arquivar | Fica como ativo de pitch | Nenhum | Perder a janela e o trabalho feito |
+
+**Recomendação: A.** O protótipo mostra o que o produto faz; só os dados reais mostram se o faz bem.
 
 ## 8. O que pedimos à direção
-1. Aprovação do piloto de 6 semanas, com o cliente a escolher, com o tempo alocado.
-2. Autorização para usar internamente dados do cliente (por exemplo, utilização de um assistente virtual), se o cliente concordar.
-3. Acesso à Marktest AdCheck para o universo do piloto, se ainda não estiver disponível.
-4. Um contacto no IT para a decisão de stack, a preparar em paralelo para o cenário B.
+1. **Aprovar o teste de dados reais de 2 semanas** com fontes públicas, com Compliance a validar os termos de uso (Q10).
+2. **Aprovar o piloto de 6 semanas** se o teste passar, e escolher a equipa e o cliente.
+3. **Encaminhar para IT e Compliance** as perguntas que decidem a versão ligada: uso de IA (Q13), dados de pesquisa paga das contas dos clientes (Q12), processo de aprovação de ferramentas (Q01) e ambiente aprovado (Q02).
+4. **Acesso à Marktest** (ou outra fonte licenciada de investimento) para o vertical do teste, se já existir no grupo (Q11).
 
 ## 9. Riscos e mitigação
 | Risco | Mitigação |
 |---|---|
-| Fadiga de alertas | Limiares de materialidade por cliente; "sem sinais materiais" é um resultado válido |
-| Dados incompletos ou instáveis (fontes não oficiais) | Etiqueta de origem em cada dado; fontes manuais como alternativa |
-| Pista errada chegar ao cliente | A plataforma não fala com o cliente; a equipa decide sempre o que é partilhado |
-| Dados de cliente fora do perímetro | Dados internos nunca saem do ambiente da agência nem vão para repositórios |
-| Dependência de uma pessoa | Documentação completa e configuração por cliente replicável |
+| As fontes públicas não chegam para ver os movimentos que importam | É exatamente o que o teste de 2 semanas mede, antes de qualquer investimento |
+| Previsões erradas | Cada previsão mostra o método, a janela e a confiança; no piloto, registam-se acertos e falhas para calibrar |
+| Texto da IA errado ou inventado | Fica sempre «por rever»; o email só se copia depois de revisto; ao modelo só seguem factos do Radar |
+| Algo chegar ao cliente sem decisão | A plataforma não fala com o cliente; o que sai é assinado pela Arena, por decisão da equipa |
+| Dados do cliente fora do perímetro | Plano de meios e dados de pesquisa paga ficam no ambiente da agência; nunca em repositórios nem enviados a modelos de IA |
+| Fadiga de informação | Importância explicada e três níveis (importante, a acompanhar, informativo); «semana calma» é um resultado válido |
+| Dependência de uma pessoa | Documentação completa (dossier), configuração por cliente num ficheiro |
 
 ---
 
-## Anexo — Guião do deck (8 slides)
+## Anexo — Guião do deck (9 slides)
+Deck: `deliverables/arena-radar-direcao.pptx` (gerado por `scripts/deck/gerar_deck.js`, com capturas do protótipo).
+
 | # | Título | Mensagem | Visual |
 |---|---|---|---|
-| 1 | Arena Radar | Do "o que aconteceu" ao "e então?" | Capa, logo, sweep do radar |
-| 2 | O problema | Os dados tornaram-se comuns; a leitura não | 3 factos, sem texto corrido |
-| 3 | A resposta | Observar, Ler, Pistas de ação. A plataforma sugere, a equipa decide | Diagrama das três camadas + três modos |
-| 4 | Onde estamos | Conceito e experiência fechados; dados e motor por construir | Tabela de estado com semáforo |
-| 5 | Demo: cliente fictício | Como seria uma segunda-feira com o Radar | Captura do briefing v3 + 1 pista de ação exemplo |
-| 6 | Cenários | Três caminhos, um recomendado | A / B / C lado a lado |
-| 7 | O piloto | 6 semanas, sombra depois cliente, critérios claros | Cronograma + tabela de critérios |
-| 8 | O pedido | Quatro decisões concretas | Lista numerada |
+| 1 | Arena Radar | Ver primeiro. Perceber o padrão. Responder depressa. | Capa Guerrilla Forest, logo |
+| 2 | O problema | Os dados tornaram-se públicos; ver a tempo e saber o que fazer, não | 3 factos curtos |
+| 3 | A resposta | O movimento como objeto central: prova, porquê, o que vem a seguir, resposta combinada | Diagrama do movimento + 5 áreas |
+| 4 | Agora | Segunda-feira: o que mexeu, com prova | Captura de Agora |
+| 5 | Antecipar | O que vem aí e o choque com o nosso plano | Captura de Antecipar |
+| 6 | A equipa decide | Resumo por rever, respostas combinadas, nada sai sozinho | Captura do resumo + princípios |
+| 7 | Onde estamos | Protótipo completo; dados reais por provar | Tabela de estado com semáforo |
+| 8 | A proposta | Teste de 2 semanas, piloto de 6, critérios claros | Cronograma + critérios |
+| 9 | O pedido | Quatro decisões concretas | Lista numerada |
