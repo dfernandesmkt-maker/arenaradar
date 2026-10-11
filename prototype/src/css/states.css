@@ -76,3 +76,40 @@
 .nv{position:relative}
 .nv[aria-current=page]::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
 @media (max-width:900px){.nv[aria-current=page]::before{left:20%;right:20%;top:auto;bottom:-6px;width:auto;height:3px;border-radius:3px}}
+
+/* ============ Vista do cliente como relatório (D40) ============ */
+#vbar:empty{display:none}
+#vbar .vbanner{margin:0;border-radius:0;border-width:0 0 1px;padding:9px 32px}
+.ctabs[hidden]{display:none}
+.ctabs{background:var(--surface);border-bottom:1px solid var(--line)}
+.ct-in{max-width:1080px;margin:0 auto;padding:22px 32px 0;display:grid;gap:16px}
+.ct-id{display:flex;align-items:center;gap:14px;min-width:0}
+.ct-id .logo-tile{width:44px;height:44px}.ct-id .logo-tile img{width:40px;height:40px}
+.ct-id b{display:block;font-size:19px;font-weight:650;letter-spacing:-.02em;line-height:1.2}
+.ct-id span:not(.logo-tile){display:block;font-size:13px;color:var(--text-2);margin-top:2px}
+.ct-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin:0 -10px}
+.ct-tabs::-webkit-scrollbar{display:none}
+.ct{flex:none;height:44px;padding:0 14px;font-size:14.5px;font-weight:500;color:var(--text-2);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s}
+.ct:hover{color:var(--text)}
+.ct[aria-current=page]{color:var(--text);font-weight:600;border-bottom-color:var(--accent)}
+html[data-view=cliente] .app{grid-template-columns:minmax(0,1fr)}
+html[data-view=cliente] .side{display:none}
+html[data-view=cliente] main{max-width:1080px;margin:0 auto;padding:36px 32px 96px}
+html[data-view=cliente]:not([data-present]) :is(#page,.ctabs){zoom:1.04}
+html[data-view=cliente] .kpi .big{white-space:nowrap}
+html[data-view=cliente] .kpi .kv .sp{width:64px}
+.cfoot{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--text-2)}
+.cfoot b{color:var(--text);font-weight:650}
+@media (max-width:900px){
+  html[data-view=cliente] .side{display:flex}
+  .ct-tabs{display:none}
+  .ct-in{padding:14px 16px;gap:0}
+  .ct-id .logo-tile{width:36px;height:36px}.ct-id .logo-tile img{width:32px;height:32px}
+  .ct-id b{font-size:16px}
+  #vbar .vbanner{padding:9px 16px}
+  html[data-view=cliente] main{padding:20px 16px 110px}
+  html[data-view=cliente]:not([data-present]) :is(#page,.ctabs){zoom:1}
+}
+@media print{.ct-tabs{display:none!important}.ctabs{border:0}html[data-view=cliente]:not([data-present]) :is(#page,.ctabs){zoom:1}}
+.vtag{white-space:nowrap}
+@media (max-width:680px){.vtag{display:none}}

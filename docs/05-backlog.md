@@ -108,6 +108,9 @@ Especificação em `docs/08-especificacao-ux.md`. Por fases:
 - **RB-91** ✅ **Copiar gráfico como imagem** com título, legenda e origem dos dados (D37); «Ao briefing» em gráficos, respostas, criativos e fichas; briefing organizado por sinal (sinal, leitura, pista).
 - **RB-92** ✅ Acabamento: Torre com clientes por vertical e fila por sinal vs limiar; **Agência › Piloto**; Impacto com percurso sinal, decisão, resultado; pistas criadas pela equipa; tabelas ordenáveis; filtros na ligação e **vistas guardadas**; Fontes em dois níveis (resumo e detalhe técnico); heatmap com coluna offline única.
 - **RB-93** *(por fazer)* Medir o **resultado observado** de cada pista aceite (hoje «A medir») e o tempo até decidir, assim que houver histórico real. Depende do piloto e de RB-22.
+- **RB-94** ✅ *(design, D38)* Tokens de espaço, raio e elevação; **sistema único de pílulas** (etiquetas, selos, estados, variações) em `states.css`; ligações com contraste AA nos dois temas; tipografia mínima de 12,5 px.
+- **RB-95** ✅ *(design, D39)* Identidade Arena: cabeçalho **Guerrilla Forest** com motivo de radar na Visão geral e na Torre, **amarelo reservado ao sinal** (número-herói, cartões de sinais materiais, marcador nos gráficos, indicador do menu).
+- **RB-96** ✅ *(design, D40)* **Vista do cliente como relatório**: sem menu lateral, cabeçalho com logo e data de publicação, separadores no topo, coluna de leitura, rodapé assinado pela Arena, faixa de pré-visualização fora da página.
 
 ## Concorrência e fontes (out. 2026)
 - **RB-60** Ligar a Meta Ad Library (`collect_meta_ads.py`) ao módulo Concorrência: substituir os anúncios simulados pelos recolhidos, com `origem=real`, fonte e data. Depende de Q10.

@@ -4,7 +4,7 @@
 |---|---|
 | `arena-radar-v3-preview.html` | O protótipo (ficheiro único, autocontido, abre no navegador sem servidor). **Gerado: não editar à mão.** |
 | `src/index.template.html` | Esqueleto da página. |
-| `src/css/` | Estilos: `app.css` (tokens, estrutura, componentes) e `charts.css` (gráficos, tabelas, galeria). |
+| `src/css/` | Estilos: `app.css` (tokens, estrutura, componentes), `charts.css` (gráficos, tabelas, galeria) e `states.css` (sistema único de pílulas, identidade Arena e vista do cliente como relatório). |
 | `src/js/00-core.js` … `90-app.js` | Código, por camadas (ver abaixo). |
 | `build_preview.py` | Junta `src/` e os datasets num só HTML; embebe a fonte Inter e o logo oficial. |
 | `fonts/` | Inter variável (latin, woff2) e licença OFL. |

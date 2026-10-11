@@ -950,6 +950,43 @@ th .thw{display:block;font-size:10.5px;font-weight:500;color:var(--text-2);opaci
 .nv[aria-current=page]::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
 @media (max-width:900px){.nv[aria-current=page]::before{left:20%;right:20%;top:auto;bottom:-6px;width:auto;height:3px;border-radius:3px}}
 
+/* ============ Vista do cliente como relatório (D40) ============ */
+#vbar:empty{display:none}
+#vbar .vbanner{margin:0;border-radius:0;border-width:0 0 1px;padding:9px 32px}
+.ctabs[hidden]{display:none}
+.ctabs{background:var(--surface);border-bottom:1px solid var(--line)}
+.ct-in{max-width:1080px;margin:0 auto;padding:22px 32px 0;display:grid;gap:16px}
+.ct-id{display:flex;align-items:center;gap:14px;min-width:0}
+.ct-id .logo-tile{width:44px;height:44px}.ct-id .logo-tile img{width:40px;height:40px}
+.ct-id b{display:block;font-size:19px;font-weight:650;letter-spacing:-.02em;line-height:1.2}
+.ct-id span:not(.logo-tile){display:block;font-size:13px;color:var(--text-2);margin-top:2px}
+.ct-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin:0 -10px}
+.ct-tabs::-webkit-scrollbar{display:none}
+.ct{flex:none;height:44px;padding:0 14px;font-size:14.5px;font-weight:500;color:var(--text-2);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s}
+.ct:hover{color:var(--text)}
+.ct[aria-current=page]{color:var(--text);font-weight:600;border-bottom-color:var(--accent)}
+html[data-view=cliente] .app{grid-template-columns:minmax(0,1fr)}
+html[data-view=cliente] .side{display:none}
+html[data-view=cliente] main{max-width:1080px;margin:0 auto;padding:36px 32px 96px}
+html[data-view=cliente]:not([data-present]) :is(#page,.ctabs){zoom:1.04}
+html[data-view=cliente] .kpi .big{white-space:nowrap}
+html[data-view=cliente] .kpi .kv .sp{width:64px}
+.cfoot{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--text-2)}
+.cfoot b{color:var(--text);font-weight:650}
+@media (max-width:900px){
+  html[data-view=cliente] .side{display:flex}
+  .ct-tabs{display:none}
+  .ct-in{padding:14px 16px;gap:0}
+  .ct-id .logo-tile{width:36px;height:36px}.ct-id .logo-tile img{width:32px;height:32px}
+  .ct-id b{font-size:16px}
+  #vbar .vbanner{padding:9px 16px}
+  html[data-view=cliente] main{padding:20px 16px 110px}
+  html[data-view=cliente]:not([data-present]) :is(#page,.ctabs){zoom:1}
+}
+@media print{.ct-tabs{display:none!important}.ctabs{border:0}html[data-view=cliente]:not([data-present]) :is(#page,.ctabs){zoom:1}}
+.vtag{white-space:nowrap}
+@media (max-width:680px){.vtag{display:none}}
+
 </style>
 </head>
 <body>
@@ -1022,6 +1059,8 @@ th .thw{display:block;font-size:10.5px;font-weight:500;color:var(--text-2);opaci
         <button class="iconbtn" id="setbtn" aria-label="Definições" aria-haspopup="dialog" aria-expanded="false"><svg class="ic"><use href="#i-sliders"/></svg></button>
       </div>
     </header>
+    <div id="vbar" class="no-print"></div>
+    <nav class="ctabs" id="ctabs" aria-label="Relatório do cliente" hidden></nav>
     <main id="page" aria-label="Conteúdo"></main>
     <div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
   </div>
@@ -2457,10 +2496,21 @@ function viewBanner(r){
   return`<div class="vbanner no-print"><span><b>Pré-visualização da vista do cliente.</b> É assim que o cliente vê o que a equipa publicou${pb?" (a "+fmtDT(pb.quando)+")":""}.${pend?" Há alterações por publicar.":""}</span><span class="vbacts">${pend?`<button class="btn" data-go="${id}/${pg}?v=cliente&rasc=1">Ver rascunho</button>`:""}${back}</span></div>`}
 document.addEventListener("click",e=>{if(!e.target.closest("#bnpub"))return;const nv=!D.pub.pubd;pubPublicar(D);toast(nv?"Publicado para a vista do cliente (pré-visualização). Nada sai da agência: a entrega é uma decisão com IT e Compliance.":"Alterações publicadas. O cliente passa a ver a nova versão.");go(`${D.cliente.id}/${ROUTE.page==="vazio"?"visao":ROUTE.page}?v=cliente`)});
 
+/* ---------- Vista do cliente como relatório (D40): cabeçalho com separadores, coluna estreita e rodapé assinado pela Arena ---------- */
+function clienteCabecalho(){
+  const logo=(document.querySelector(".brandrow img")||{}).src||"",pb=D.pub.pubd,rasc=ROUTE.rasc;
+  const tabs=paginasCliente().map(k=>`<button class="ct" data-go="${D.cliente.id}/${k}" ${ROUTE.page===k?'aria-current="page"':""}>${PAGES[k].n}</button>`).join("");
+  return`<div class="ct-in"><div class="ct-id"><span class="logo-tile"><img alt="Arena Media" src="${logo}"></span><div><b>${esc(D.cliente.nome)}</b><span>Relatório de mercado e concorrência · Arena Media Portugal${pb&&!rasc?" · publicado a "+fmtDT(pb.quando):""}</span></div></div><div class="ct-tabs">${tabs}</div></div>`}
+function clienteRodape(r){
+  if(!(VIEW==="cliente"&&r.scope==="cliente"))return"";
+  const pb=D.pub.pubd;
+  return`<footer class="cfoot"><b>Arena Media Portugal</b><span>Relatório preparado pela equipa Arena${pb&&!r.rasc?", publicado a "+fmtDT(pb.quando):""}. A origem de cada dado está indicada no selo de cada página.</span></footer>`}
+
 /* ---------- Menu único (o mesmo para todos os clientes) e seletor de âmbito ---------- */
 function buildNav(){
   const cli=ROUTE.scope==="cliente";
   const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" ${on?'aria-current="page"':""}><svg class="ic"><use href="#${p.i}"/></svg><span class="lg">${p.n}</span><span class="sh">${p.s||p.n}</span>${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
+  const ct=$("#ctabs");ct.hidden=!(VIEW==="cliente"&&cli);ct.innerHTML=ct.hidden?"":clienteCabecalho();
   if(VIEW==="cliente"&&cli){$("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+paginasCliente().map(k=>item(k,PAGES[k],ROUTE.page===k,`${D.cliente.id}/${k}`,false)).join("");return}
   $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.hide&&(!p.if||p.if())).map(([k,p])=>item(k,p,cli&&(ROUTE.page===k||(k==="mercado"&&ROUTE.page==="marca")),`${D.cliente.id}/${k}`,k==="acoes")).join("")+
    `<div class="grp">Agência</div>`+Object.entries(AGPAGES).map(([k,p])=>item(k,p,!cli&&ROUTE.page===k,`agencia/${k}`,false)).join("")}
@@ -2531,10 +2581,11 @@ function render(r,scrollTop){
   const th=VIEW+"|"+CID;if(th!==render.th){render.th=th;const tid=VIEW==="cliente"&&D.cliente.tema&&AG.temas.some(x=>x.id===D.cliente.tema)?D.cliente.tema:AG.temas[0].id;applyTheme(tid,false)}   // tema do cliente só na vista do cliente (Q09)
   const t=$("#page");t.classList.remove("on");
   const banner=viewBanner(r);
-  const html=banner+pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
+  $("#vbar").innerHTML=banner;
+  const html=pg.f(r.sub,r.focus)+clienteRodape(r);t.innerHTML=html;t.classList.add("on");
   buildNav();buildScope();$("#viewseg").hidden=r.scope==="agencia";$$("#viewseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===VIEW));
   document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n+(VIEW==="cliente"?" (vista do cliente)":""));
-  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));applySorts($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync();syncUrl()};
+  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;$("#vbar").innerHTML=banner||"";const h=pg.f(r.sub,r.focus)+clienteRodape(r);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));applySorts($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync();syncUrl()};
   AFTER.forEach(f=>f());AFTER.length=0;counters(t);syncCounts();applySorts(t);
   if(scrollTop&&!r.focus)scrollTo({top:0,behavior:"auto"});
   const h1=$("h1",t);if(h1&&scrollTop){h1.tabIndex=-1;if(render.n++)h1.focus({preventScroll:true})}

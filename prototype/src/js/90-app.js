@@ -22,10 +22,21 @@ function viewBanner(r){
   return`<div class="vbanner no-print"><span><b>Pré-visualização da vista do cliente.</b> É assim que o cliente vê o que a equipa publicou${pb?" (a "+fmtDT(pb.quando)+")":""}.${pend?" Há alterações por publicar.":""}</span><span class="vbacts">${pend?`<button class="btn" data-go="${id}/${pg}?v=cliente&rasc=1">Ver rascunho</button>`:""}${back}</span></div>`}
 document.addEventListener("click",e=>{if(!e.target.closest("#bnpub"))return;const nv=!D.pub.pubd;pubPublicar(D);toast(nv?"Publicado para a vista do cliente (pré-visualização). Nada sai da agência: a entrega é uma decisão com IT e Compliance.":"Alterações publicadas. O cliente passa a ver a nova versão.");go(`${D.cliente.id}/${ROUTE.page==="vazio"?"visao":ROUTE.page}?v=cliente`)});
 
+/* ---------- Vista do cliente como relatório (D40): cabeçalho com separadores, coluna estreita e rodapé assinado pela Arena ---------- */
+function clienteCabecalho(){
+  const logo=(document.querySelector(".brandrow img")||{}).src||"",pb=D.pub.pubd,rasc=ROUTE.rasc;
+  const tabs=paginasCliente().map(k=>`<button class="ct" data-go="${D.cliente.id}/${k}" ${ROUTE.page===k?'aria-current="page"':""}>${PAGES[k].n}</button>`).join("");
+  return`<div class="ct-in"><div class="ct-id"><span class="logo-tile"><img alt="Arena Media" src="${logo}"></span><div><b>${esc(D.cliente.nome)}</b><span>Relatório de mercado e concorrência · Arena Media Portugal${pb&&!rasc?" · publicado a "+fmtDT(pb.quando):""}</span></div></div><div class="ct-tabs">${tabs}</div></div>`}
+function clienteRodape(r){
+  if(!(VIEW==="cliente"&&r.scope==="cliente"))return"";
+  const pb=D.pub.pubd;
+  return`<footer class="cfoot"><b>Arena Media Portugal</b><span>Relatório preparado pela equipa Arena${pb&&!r.rasc?", publicado a "+fmtDT(pb.quando):""}. A origem de cada dado está indicada no selo de cada página.</span></footer>`}
+
 /* ---------- Menu único (o mesmo para todos os clientes) e seletor de âmbito ---------- */
 function buildNav(){
   const cli=ROUTE.scope==="cliente";
   const item=(id,p,on,href,cnt)=>`<button class="nv" data-go="${href}" ${on?'aria-current="page"':""}><svg class="ic"><use href="#${p.i}"/></svg><span class="lg">${p.n}</span><span class="sh">${p.s||p.n}</span>${cnt?`<span class="cnt" id="navcnt" ${pistasPend(D)?"":"hidden"}>${pistasPend(D)}</span>`:""}</button>`;
+  const ct=$("#ctabs");ct.hidden=!(VIEW==="cliente"&&cli);ct.innerHTML=ct.hidden?"":clienteCabecalho();
   if(VIEW==="cliente"&&cli){$("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+paginasCliente().map(k=>item(k,PAGES[k],ROUTE.page===k,`${D.cliente.id}/${k}`,false)).join("");return}
   $("#nav").innerHTML=`<div class="grp">${esc(D.cliente.nome)}</div>`+Object.entries(PAGES).filter(([k,p])=>!p.hide&&(!p.if||p.if())).map(([k,p])=>item(k,p,cli&&(ROUTE.page===k||(k==="mercado"&&ROUTE.page==="marca")),`${D.cliente.id}/${k}`,k==="acoes")).join("")+
    `<div class="grp">Agência</div>`+Object.entries(AGPAGES).map(([k,p])=>item(k,p,!cli&&ROUTE.page===k,`agencia/${k}`,false)).join("")}
@@ -96,10 +107,11 @@ function render(r,scrollTop){
   const th=VIEW+"|"+CID;if(th!==render.th){render.th=th;const tid=VIEW==="cliente"&&D.cliente.tema&&AG.temas.some(x=>x.id===D.cliente.tema)?D.cliente.tema:AG.temas[0].id;applyTheme(tid,false)}   // tema do cliente só na vista do cliente (Q09)
   const t=$("#page");t.classList.remove("on");
   const banner=viewBanner(r);
-  const html=banner+pg.f(r.sub,r.focus);t.innerHTML=html;t.classList.add("on");
+  $("#vbar").innerHTML=banner;
+  const html=pg.f(r.sub,r.focus)+clienteRodape(r);t.innerHTML=html;t.classList.add("on");
   buildNav();buildScope();$("#viewseg").hidden=r.scope==="agencia";$$("#viewseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===VIEW));
   document.title="Arena Radar, "+(r.scope==="agencia"?pg.n:D.cliente.nome+", "+pg.n+(VIEW==="cliente"?" (vista do cliente)":""));
-  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;const h=(banner||"")+pg.f(r.sub,r.focus);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));applySorts($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync();syncUrl()};
+  CUR.refresh=()=>{const y=scrollY;stopRace();stopPlay();CHARTS.length=0;AFTER.length=0;USED.clear();KWHY={};SEAL_OV=null;SEAL_HIDE=false;$("#vbar").innerHTML=banner||"";const h=pg.f(r.sub,r.focus)+clienteRodape(r);$("#page").innerHTML=h;buildNav();buildScope();AFTER.forEach(f=>f());AFTER.length=0;counters($("#page"));applySorts($("#page"));scrollTo({top:y,behavior:"auto"});fpopSync();syncUrl()};
   AFTER.forEach(f=>f());AFTER.length=0;counters(t);syncCounts();applySorts(t);
   if(scrollTop&&!r.focus)scrollTo({top:0,behavior:"auto"});
   const h1=$("h1",t);if(h1&&scrollTop){h1.tabIndex=-1;if(render.n++)h1.focus({preventScroll:true})}

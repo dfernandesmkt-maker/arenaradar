@@ -107,7 +107,7 @@ Os componentes já existem em parte no preview (KPIs, cartões, gráficos SVG, g
 
 | | **Equipa** | **Cliente** |
 |---|---|---|
-| Menu | Completo, com Ações, Torre de controlo e Fontes | Só as páginas que a equipa publicou (Visão geral, Mercado, Procura e notícias, Criativos, Relatório semanal) |
+| Menu | Completo, com Ações, Torre de controlo e Fontes | Sem menu lateral: separadores no topo, só com as páginas que a equipa publicou (Visão geral, Mercado, Procura e notícias, Criativos, Relatórios) |
 | Pistas e atribuições | Sim | Só as marcadas para o cliente e aceites pela equipa, como «A Arena propõe», sem atribuição a Performance, Brand ou Account |
 | Cartões «O que mudou» | Todos, com limiares e hipóteses | Só os que a equipa escolheu, sem limiares nem rótulos internos |
 | Conjunto competitivo | Editável; o Radar sugere marcas | Só de leitura; as sugestões não aceites não aparecem |
@@ -165,3 +165,33 @@ Gerado por `scripts/build_dataset.py` a partir de `config/` e `data/raw/`; um fi
 | A vista Cliente só mostra conteúdo publicado | ✅ Fase D (RB-75). Verificado de ponta a ponta: sem publicar o cliente não vê nada; publicado, não vê limiares, hipóteses, atribuições, Ações nem marcas por aceitar |
 | Consola sem erros; zero pedidos externos; contraste AA nos temas | ✅ Verificado em todas as páginas de todos os clientes, em ecrã largo e em telemóvel |
 | Cada fonte tem o seu `LIGAÇÃO[<id>]` | ✅ `grep -rn "LIGAÇÃO\[" prototype/src scripts config` |
+
+## 9. Sistema visual (D38, D39)
+
+**Tokens.** Espaço `--sp-1…8` (4, 8, 12, 16, 20, 24, 32, 40 px), raio `--rad-s/m/l/xl/pill`, elevação `--sh-0/1/pop` e ligações `--link` (mais clara no modo escuro para manter o contraste AA). Nada de cores nem sombras escritas nos componentes. O contraste de todas as páginas, nos dois temas, é verificado antes de aceitar uma alteração.
+
+**Uma só família de pílulas** (`css/states.css`): etiquetas (`.tag`), selos de dados (`.seal`), estados (`.state`, `.st`), variações (`.dchip`), severidade de alertas (`.alsev`) e cartões de marca (`.bd`) partilham altura, tipografia e cantos. O significado vem da cor, sempre com texto ou ícone (nunca só a cor):
+
+| Aspeto | Significa |
+|---|---|
+| Verde | A favor, aceite, dado real |
+| Âmbar | Atenção, material, dado estimado |
+| Vermelho | Contra, descartada |
+| Azul | Misto |
+| Contorno tracejado | Demonstração |
+| Contorno simples, ponto oco | Pendente, bloqueado, sugerida |
+| Amarelo com anel | **Sinal** (ver abaixo) |
+
+**Amarelo é sinal.** Arena Yellow só aparece onde o Radar está a dizer «olha para aqui»: o número-herói do cabeçalho, o topo dos cartões de sinais materiais, o marcador nos gráficos pequenos, a etiqueta «Porquê?» e o indicador da página ativa no menu. Nunca para decorar nem para estados.
+
+**Cabeçalho de destaque.** Visão geral e Torre abrem com um bloco Guerrilla Forest com um motivo de radar em linhas, o título com o número em amarelo e o selo de dados da página. É o único bloco escuro no modo claro. Em ecrã pequeno o motivo reduz-se e o título passa para uma coluna.
+
+## 10. Vista do cliente como relatório (D40)
+
+Na vista Cliente (e na pré-visualização do rascunho) o menu lateral desaparece:
+- **Cabeçalho do relatório:** logo oficial da Arena, nome do cliente, «Relatório de mercado e concorrência · Arena Media Portugal» e «publicado a <data>» (na pré-visualização do rascunho não há data).
+- **Páginas em separadores** no topo, só as que a equipa publicou; o separador ativo leva a barra amarela de sinal. Em telemóvel mantém-se a barra inferior.
+- **Coluna de leitura** de 1080 px no máximo, tipo ligeiramente maior (+4%) e KPIs sem quebras de linha.
+- **Rodapé assinado** «Arena Media Portugal»: preparado pela equipa Arena, sem autoria individual, com a indicação de que a origem dos dados está no selo de cada página.
+- **Faixa de pré-visualização** (só para a equipa) por cima do cabeçalho, fora da página do relatório: nunca faz parte do que o cliente vê.
+- O tema do cliente (cores de marca) só se aplica depois de a Q09 estar validada.
