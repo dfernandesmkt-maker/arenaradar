@@ -147,3 +147,7 @@ tr[hidden]{display:none!important}
   table[data-tid=fila] th:nth-child(n+3),table[data-tid=fila] td:nth-child(n+3){display:none}
   .fsub{display:block}
 }
+
+/* Miniaturas de criativos: ilustrações de fundo claro; no modo escuro, um pouco mais baixas para não encandear */
+:root[data-mode=dark] svg[aria-label*="ilustrativo"]{filter:brightness(.92)}
+html[data-present][data-view=cliente] .ctabs{zoom:var(--pz)}

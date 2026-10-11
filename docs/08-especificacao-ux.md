@@ -93,7 +93,7 @@ Regras:
 
 Os componentes já existem em parte no preview (KPIs, cartões, gráficos SVG, gaveta, etiquetas); a fase C extrai-os e uniformiza-os.
 
-**Cor.** A cor segue a entidade (D35): cada marca tem a sua cor, fixa (8 cores de marca, ver abaixo); temas e assuntos (notícias, procura por tema) usam uma paleta própria (`--t1` a `--t5`); plataformas e formatos usam a rampa azul. Nenhuma cor muda de significado dentro da mesma página. Qualquer paleta nova passa por `validate_palette.js` (daltonismo, visão normal e contraste) em claro e em escuro.
+**Cor.** A cor segue a entidade (D35): cada marca tem a sua cor, fixa (7 cores de concorrente e a tinta do cliente, ver abaixo); temas e assuntos (notícias, procura por tema) usam uma paleta própria (`--t1` a `--t5`); plataformas e formatos usam a rampa azul. Nenhuma cor muda de significado dentro da mesma página. Qualquer paleta nova passa por `validate_palette.js` (daltonismo, visão normal e contraste) em claro e em escuro.
 
 **Números com janela.** Cada variação diz contra o quê («vs há 12 sem.», «em 4 sem.», «vs média 8 sem.»); os sinais têm janela própria e não seguem o filtro de período. Clicar no «?» de um KPI ou em «Porquê?» abre a explicação completa.
 
@@ -230,26 +230,34 @@ O protótipo mostra 3 sinais e 4 marcas, mas a ferramenta tem de aguentar o uso 
 | Marca sem anúncios no período | Estado vazio em vez de eixos vazios |
 | Telemóvel | A fila da Torre mostra cliente e pista (o sinal vs limiar e a função passam para uma linha por baixo); as tabelas de clientes mostram cliente, sinais e pistas; a barra inferior cabe com 6 itens |
 
-**Limite conhecido:** a paleta de marcas tem 8 cores (D46); a 9.ª marca em diante é cinzenta nas listas e nos pontos e não entra nos gráficos de linhas, exceto se for a marca do sinal (a tinta). Com mais de 7 concorrentes, as cores vão para os de maior volume de anúncios na altura da recolha. Rever a paleta com a Brand (Q08).
+**Limite conhecido:** a paleta de marcas tem a tinta do cliente e 7 cores de concorrente (D46, D47); a 9.ª marca em diante é cinzenta nas listas e nos pontos e não entra nos gráficos de linhas, exceto se for a marca do sinal (a tinta). Com mais de 7 concorrentes, as 7 cores vão para os de maior volume de anúncios na altura da recolha. Rever a paleta com a Brand (Q08).
 
 **Desempenho:** com 30 clientes (11,6 MB de dados embebidos) cada página abre em cerca de 50 ms. Na produção os dados não vão embebidos no HTML.
 
 ## 14. Paleta de marcas (D46)
 
-Ordem fixa, uma cor por entidade (nunca por posição no ranking), com o primeiro lugar sempre do cliente. Validada com `validate_palette.js` (`--mode light --surface #FFFFFF` e `--mode dark --surface #112C28`): banda de luminosidade, croma, separação para daltonismo (adjacentes, protanopia e deuteranopia), visão normal e contraste.
+Ordem fixa, uma cor por entidade (nunca por posição no ranking). **O cliente é sempre a tinta** (D47): o azul da interface (`--brand-ink`) é só para ações, ligações e estados ativos e nunca é uma cor de série. Os 7 matizes foram validados com `validate_palette.js` (`--mode light --surface #FFFFFF` e `--mode dark --surface #112C28`); a tinta é neutra e fica fora da validação de matizes: banda de luminosidade, croma, separação para daltonismo (adjacentes, protanopia e deuteranopia), visão normal e contraste.
 
 | # | Marca | Claro | Escuro |
 |---|---|---|---|
-| 1 | Cliente (azul do tema) | `#2a76ce` | `#2a76ce` |
-| 2 | Laranja | `#eb6834` | `#d95926` |
-| 3 | Verde | `#1baf7a` | `#199e70` |
-| 4 | Âmbar | `#eda100` | `#c98500` |
-| 5 | Rosa | `#e87ba4` | `#d55181` |
-| 6 | Roxo | `#7152b5` | `#8261c9` |
-| 7 | Oliva | `#5f7400` | `#677d00` |
-| 8 | Azul-petróleo | `#008b9e` | `#00889b` |
-| 9+ | Cinzento neutro | `#8b9a97` | `#7d918d` |
+| — | **Cliente: tinta** (D47) | `#0F2623` | `#dbe7e4` |
+| 1 | Laranja | `#eb6834` | `#d95926` |
+| 2 | Verde | `#1baf7a` | `#199e70` |
+| 3 | Âmbar | `#eda100` | `#c98500` |
+| 4 | Rosa | `#e87ba4` | `#d55181` |
+| 5 | Roxo | `#7152b5` | `#8261c9` |
+| 6 | Oliva | `#5f7400` | `#677d00` |
+| 7 | Azul-petróleo | `#008b9e` | `#00889b` |
+| 8+ | Cinzento neutro | `#8b9a97` | `#7d918d` |
 
 Resultado: nos dois modos, banda de luminosidade e croma passam; pior par adjacente 9,1 ΔE (claro) e 8,4 ΔE (escuro) em daltonismo, 17,3 e 16,9 ΔE em visão normal. **Contraste:** em claro, verde, âmbar e rosa ficam abaixo de 3:1 (já era assim); o alívio obrigatório é a legenda visível, a identificação direta e a vista em tabela, que todos os gráficos têm. Em escuro todas passam.
 
 Quem usa a paleta: pontos de marca, linhas dos gráficos, miniaturas dos criativos (texto branco sobre as cores 6 a 8). Os temas e assuntos têm a paleta própria `--t1` a `--t5` (D35), e as variações positiva e negativa têm cores de estado próprias; nenhuma delas é uma cor de marca.
+
+## 15. Modo apresentação (D48)
+
+Em «Apresentar» o conteúdo cresce com a largura do ecrã, para ler-se ao fundo de uma sala: ×1,15 até 1439 px, ×1,3 de 1440 a 1799, ×1,5 de 1800 a 2399 e ×1,9 acima. O texto mais pequeno (12,5 px) fica com cerca de 16 px a 1440 e 19 px a 1920. O menu lateral sai (em ecrãs com mais de 900 px), a barra do roteiro e os seus botões crescem com a mesma escala e a largura da barra acompanha. Na vista do cliente, o cabeçalho do relatório escala igual. Imprimir volta à escala normal.
+
+## 16. Miniaturas dos criativos (D49)
+
+As miniaturas são ilustrações até haver criativos reais (Meta Ad Library, LIGAÇÃO[meta-ad-library]). Têm fundo claro (13% da cor da marca sobre branco), barra de 6 px e formas decorativas a 30% na cor da marca; o texto e o botão são sempre tinta, para dar contraste constante. O cliente usa Guerrilla Forest. Anúncios de pesquisa mantêm o formato de resultado do Google. No modo escuro as miniaturas descem 8% de brilho. Quando os criativos originais estiverem ligados, a mesma moldura e o mesmo brilho aplicam-se às imagens.

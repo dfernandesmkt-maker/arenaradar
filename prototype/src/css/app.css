@@ -188,7 +188,7 @@ tbody tr.go:hover{background:var(--line-2)}
 .rrow .nm em{font-style:normal;font-weight:500;font-size:11.5px;color:var(--text-2);margin-left:6px}
 .rrow .bar{height:12px;border-radius:var(--rad-pill);background:var(--line-2);overflow:hidden}
 .rrow .bar i{display:block;height:100%;width:0;border-radius:var(--rad-pill);background:color-mix(in srgb,var(--text) 38%,var(--surface));transition:width .7s var(--ease)}
-.rrow.me .bar i{background:var(--brand)}
+.rrow.me .bar i{background:var(--c1)}
 .rrow .val{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
 .rrow .dl{text-align:right;font-size:12.5px;font-weight:500;color:var(--text-2);font-variant-numeric:tabular-nums}
 .rrow.off{opacity:0;pointer-events:none}
@@ -453,7 +453,19 @@ html[data-view=cliente] .legend{display:none}
 #tour .tb{display:flex;gap:8px;align-items:center;flex:none}
 #tour .btn.ghost{color:#cfe0dc}
 #tour .btn.ghost:hover{background:rgba(255,255,255,.1);color:#fff}
-html[data-present] #page{zoom:1.1}
+/* Modo apresentação (D47): escala tipográfica por largura do ecrã. O texto mais pequeno (12,5 px) passa a ter pelo menos 15 px
+   num ecrã de 1440 px e 19 px num de 1920 px; o menu lateral sai para dar espaço e a barra do roteiro cresce com a página. */
+html[data-present]{--pz:1.15}
+@media (min-width:1440px){html[data-present]{--pz:1.3}}
+@media (min-width:1800px){html[data-present]{--pz:1.5}}
+@media (min-width:2400px){html[data-present]{--pz:1.9}}
+html[data-present] #page{zoom:var(--pz)}
+html[data-present] #tour{width:min(calc(1000px*var(--pz)),calc(100vw - 24px))}
+html[data-present] #tour .tt b{font-size:calc(15px*var(--pz))}
+html[data-present] #tour .tt span{font-size:calc(13px*var(--pz))}
+html[data-present] #tour .tn{min-width:calc(44px*var(--pz));height:calc(30px*var(--pz));font-size:calc(12.5px*var(--pz))}
+html[data-present] #tour .btn{height:calc(34px*var(--pz));font-size:calc(13.5px*var(--pz))}
+@media (min-width:901px){html[data-present] .app{grid-template-columns:minmax(0,1fr)}html[data-present] .side{display:none}}
 html[data-present] main{padding-bottom:170px}
 html[data-present] .askbtn kbd,html[data-present] .sw,html[data-present] .legend{display:none}
 html[data-present] .fbar{position:static}

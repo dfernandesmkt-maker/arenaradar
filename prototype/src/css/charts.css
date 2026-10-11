@@ -1,8 +1,8 @@
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
-:root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--c6:#7152b5;--c7:#5f7400;--c8:#008b9e;--c9:#8b9a97;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
+:root{--c1:#0F2623;--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--c6:#7152b5;--c7:#5f7400;--c8:#008b9e;--c9:#8b9a97;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
   /* Temas e assuntos (notícias, procura por tema): família própria, para a cor nunca sugerir uma marca. Validada: CVD, visão normal e contraste. */
   --t1:#6250d6;--t2:#008300;--t3:#0b9bb0;--t4:#e34948;--t5:#8b9a97}
-:root[data-mode=dark]{--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#8261c9;--c7:#677d00;--c8:#00889b;--c9:#7d918d;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--neg-ink:#ff8f8f;--pos:#3987e5;
+:root[data-mode=dark]{--c1:#dbe7e4;--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#8261c9;--c7:#677d00;--c8:#00889b;--c9:#7d918d;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--neg-ink:#ff8f8f;--pos:#3987e5;
   --t1:#9085e9;--t2:#1f9d3a;--t3:#1a96a8;--t4:#e66767;--t5:#7d918d}
 
 .fbar{position:sticky;top:62px;z-index:15;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap;padding:10px 0;margin:0 0 6px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}

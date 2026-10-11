@@ -197,7 +197,7 @@ tbody tr.go:hover{background:var(--line-2)}
 .rrow .nm em{font-style:normal;font-weight:500;font-size:11.5px;color:var(--text-2);margin-left:6px}
 .rrow .bar{height:12px;border-radius:var(--rad-pill);background:var(--line-2);overflow:hidden}
 .rrow .bar i{display:block;height:100%;width:0;border-radius:var(--rad-pill);background:color-mix(in srgb,var(--text) 38%,var(--surface));transition:width .7s var(--ease)}
-.rrow.me .bar i{background:var(--brand)}
+.rrow.me .bar i{background:var(--c1)}
 .rrow .val{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
 .rrow .dl{text-align:right;font-size:12.5px;font-weight:500;color:var(--text-2);font-variant-numeric:tabular-nums}
 .rrow.off{opacity:0;pointer-events:none}
@@ -462,7 +462,19 @@ html[data-view=cliente] .legend{display:none}
 #tour .tb{display:flex;gap:8px;align-items:center;flex:none}
 #tour .btn.ghost{color:#cfe0dc}
 #tour .btn.ghost:hover{background:rgba(255,255,255,.1);color:#fff}
-html[data-present] #page{zoom:1.1}
+/* Modo apresentação (D47): escala tipográfica por largura do ecrã. O texto mais pequeno (12,5 px) passa a ter pelo menos 15 px
+   num ecrã de 1440 px e 19 px num de 1920 px; o menu lateral sai para dar espaço e a barra do roteiro cresce com a página. */
+html[data-present]{--pz:1.15}
+@media (min-width:1440px){html[data-present]{--pz:1.3}}
+@media (min-width:1800px){html[data-present]{--pz:1.5}}
+@media (min-width:2400px){html[data-present]{--pz:1.9}}
+html[data-present] #page{zoom:var(--pz)}
+html[data-present] #tour{width:min(calc(1000px*var(--pz)),calc(100vw - 24px))}
+html[data-present] #tour .tt b{font-size:calc(15px*var(--pz))}
+html[data-present] #tour .tt span{font-size:calc(13px*var(--pz))}
+html[data-present] #tour .tn{min-width:calc(44px*var(--pz));height:calc(30px*var(--pz));font-size:calc(12.5px*var(--pz))}
+html[data-present] #tour .btn{height:calc(34px*var(--pz));font-size:calc(13.5px*var(--pz))}
+@media (min-width:901px){html[data-present] .app{grid-template-columns:minmax(0,1fr)}html[data-present] .side{display:none}}
 html[data-present] main{padding-bottom:170px}
 html[data-present] .askbtn kbd,html[data-present] .sw,html[data-present] .legend{display:none}
 html[data-present] .fbar{position:static}
@@ -701,10 +713,10 @@ tbody tr.go:hover td:last-child::after{transform:translateX(3px);opacity:1}
 .grid2>*{min-width:0}
 
 /* ============ Concorrência, Fontes de dados (módulos novos) ============ */
-:root{--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--c6:#7152b5;--c7:#5f7400;--c8:#008b9e;--c9:#8b9a97;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
+:root{--c1:#0F2623;--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--c6:#7152b5;--c7:#5f7400;--c8:#008b9e;--c9:#8b9a97;--r1:#86b6ef;--r2:#3987e5;--r3:#1c5cab;--r4:#0d366b;--neg:#d03b3b;--neg-ink:#b42323;--pos:#2a78d6;
   /* Temas e assuntos (notícias, procura por tema): família própria, para a cor nunca sugerir uma marca. Validada: CVD, visão normal e contraste. */
   --t1:#6250d6;--t2:#008300;--t3:#0b9bb0;--t4:#e34948;--t5:#8b9a97}
-:root[data-mode=dark]{--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#8261c9;--c7:#677d00;--c8:#00889b;--c9:#7d918d;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--neg-ink:#ff8f8f;--pos:#3987e5;
+:root[data-mode=dark]{--c1:#dbe7e4;--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#8261c9;--c7:#677d00;--c8:#00889b;--c9:#7d918d;--r1:#6da7ec;--r2:#3987e5;--r3:#256abf;--r4:#184f95;--neg:#e66767;--neg-ink:#ff8f8f;--pos:#3987e5;
   --t1:#9085e9;--t2:#1f9d3a;--t3:#1a96a8;--t4:#e66767;--t5:#7d918d}
 
 .fbar{position:sticky;top:62px;z-index:15;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap;padding:10px 0;margin:0 0 6px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -1027,6 +1039,10 @@ tr[hidden]{display:none!important}
   .fsub{display:block}
 }
 
+/* Miniaturas de criativos: ilustrações de fundo claro; no modo escuro, um pouco mais baixas para não encandear */
+:root[data-mode=dark] svg[aria-label*="ilustrativo"]{filter:brightness(.92)}
+html[data-present][data-view=cliente] .ctabs{zoom:var(--pz)}
+
 </style>
 </head>
 <body>
@@ -1176,7 +1192,7 @@ function ensureAA(hex){const c=h2r(hex),w=[255,255,255],before=cr(c,w);let k=0,c
    ============================================================ */
 const RAW=JSON.parse($("#radar-data").textContent);
 const AG=RAW.agencia, CLS=RAW.clientes;
-const CAT=["var(--brand-ink)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)"];   // 8 cores de marca validadas (docs/08) + cinzento neutro para a 9.ª marca em diante (nunca se repetem cores)
+const CAT=["var(--c1)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)"];   // o cliente é sempre a tinta (--c1, nunca o azul da interface); 7 cores de concorrente validadas (docs/08) e cinzento neutro para a 9.ª marca em diante (as cores nunca se repetem)
 const COR_N=8;                 // índice do cinzento neutro: marcas além das 8 primeiras
 const TOP=["var(--t1)","var(--t2)","var(--t3)","var(--t4)","var(--t5)"];   // temas e assuntos (nunca as cores das marcas)
 const topC=i=>TOP[Math.min(i,TOP.length-1)];
@@ -1515,15 +1531,15 @@ function tsChart(host,o,anim){
 /* ---------- Criativos: miniaturas ilustrativas (a versão ligada mostra o criativo original) ---------- */
 function wrapTxt(t,n){const w=t.split(" "),L=[];let l="";w.forEach(x=>{if((l+" "+x).trim().length>n){L.push(l);l=x}else l=(l+" "+x).trim()});L.push(l);return L}
 function thumb(c,big){
- const e=ebyid(c.b)||{nome:c.bn||c.b,cor:-1,cliente:false},cc=e.cor<0?"#6b7a77":col(e),ink=e.cliente||e.cor<0||(e.cor>=5&&e.cor<COR_N)?"#fff":"#0F2623",id="tg"+String(c.id).replace(/\W/g,"")+(big?"b":""),fmt=FM[c.fm],bn=esc(e.nome);
+ const e=ebyid(c.b)||{nome:c.bn||c.b,cor:-1,cliente:false},cc=e.cliente?"#0F2623":e.cor<0?"#6b7a77":col(e),ink="#0F2623",tint=`color-mix(in srgb,${cc} 13%,#fff)`,id="tg"+String(c.id).replace(/\W/g,"")+(big?"b":""),fmt=FM[c.fm],bn=esc(e.nome);
  if(fmt==="Texto"){const L=wrapTxt(c.h,30).slice(0,2);
   return`<svg viewBox="0 0 320 200" role="img" aria-label="Anúncio de pesquisa ilustrativo de ${bn}"><rect width="320" height="200" fill="#fff"/><rect x="0" y="0" width="320" height="6" style="fill:${cc}"/><text x="18" y="40" font-size="11" font-weight="600" fill="#586764" font-family="Inter,sans-serif">Anúncio · ${esc(slug(e.nome))}.pt</text><text x="18" y="76" font-size="17" font-weight="600" style="fill:var(--brand-ink)" font-family="Inter,sans-serif">${esc(L[0])}</text>${L[1]?`<text x="18" y="98" font-size="17" font-weight="600" style="fill:var(--brand-ink)" font-family="Inter,sans-serif">${esc(L[1])}</text>`:""}<text x="18" y="134" font-size="12.5" fill="#586764" font-family="Inter,sans-serif">${esc(TH[c.th]||"Anúncio")}. ${esc(c.cta||"")}</text><rect x="18" y="154" width="86" height="22" rx="11" fill="#EDF0EF"/><text x="31" y="169" font-size="11" font-weight="600" fill="#0F2623" font-family="Inter,sans-serif">Pesquisa</text></svg>`}
  const big4=wrapTxt(c.h,19).length>3,L=wrapTxt(c.h,big4?25:19).slice(0,3),fs=big4?17:22,lh=big4?22:26,cta=c.cta||"Saber mais";
- const dec=[`<circle cx="262" cy="130" r="46"/><circle cx="262" cy="130" r="28"/>`,`<circle cx="258" cy="124" r="24"/>${[0,45,90,135,180,225,270,315].map(a=>`<line x1="${258+34*Math.cos(a*Math.PI/180)}" y1="${124+34*Math.sin(a*Math.PI/180)}" x2="${258+50*Math.cos(a*Math.PI/180)}" y2="${124+50*Math.sin(a*Math.PI/180)}" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`).join("")}`,`<path d="M222 132l28 28 52-62" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`,`<rect x="232" y="82" width="60" height="104" rx="12"/>`,`<path d="M218 140l44-40 44 40v44h-88z"/>`][Math.max(0,c.th)];
+ const dec=[`<circle cx="262" cy="130" r="46"/><circle cx="262" cy="130" r="28"/>`,`<circle cx="258" cy="124" r="24"/>${[0,45,90,135,180,225,270,315].map(a=>`<line x1="${258+34*Math.cos(a*Math.PI/180)}" y1="${124+34*Math.sin(a*Math.PI/180)}" x2="${258+50*Math.cos(a*Math.PI/180)}" y2="${124+50*Math.sin(a*Math.PI/180)}" style="stroke:${cc}" stroke-width="5" stroke-linecap="round"/>`).join("")}`,`<path d="M222 132l28 28 52-62" fill="none" style="stroke:${cc}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`,`<rect x="232" y="82" width="60" height="104" rx="12"/>`,`<path d="M218 140l44-40 44 40v44h-88z"/>`][Math.max(0,c.th)];
  let ov="";
  if(fmt==="Vídeo")ov=`<circle cx="40" cy="162" r="17" fill="rgba(0,0,0,.35)"/><path d="M34 153l16 9-16 9z" fill="#fff"/><rect x="262" y="12" width="44" height="18" rx="9" fill="rgba(0,0,0,.35)"/><text x="284" y="25" text-anchor="middle" font-size="10.5" font-weight="600" fill="#fff" font-family="Inter,sans-serif">0:${15+(c.i%3)*5}</text>`;
- if(fmt==="Carrossel")ov=`<circle cx="142" cy="184" r="3.5" fill="#fff"/><circle cx="156" cy="184" r="3.5" fill="#fff" opacity=".5"/><circle cx="170" cy="184" r="3.5" fill="#fff" opacity=".5"/><circle cx="296" cy="100" r="13" fill="rgba(255,255,255,.9)"/><path d="M292 94l7 6-7 6" fill="none" stroke="#0F2623" stroke-width="2.2" stroke-linecap="round"/>`;
- return`<svg viewBox="0 0 320 200" role="img" aria-label="Criativo ilustrativo de ${bn}, ${esc(fmt)}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient></defs><rect width="320" height="200" style="fill:${cc}"/><rect width="320" height="200" fill="url(#${id})"/><g fill="#fff" opacity=".2">${dec}</g><text x="18" y="28" font-size="11" font-weight="700" letter-spacing=".02em" fill="${ink}" opacity=".85" font-family="Inter,sans-serif">${bn}</text>${L.map((t,i)=>`<text x="18" y="${68+i*lh}" font-size="${fs}" font-weight="700" letter-spacing="-.02em" fill="${ink}" font-family="Inter,sans-serif">${esc(t)}</text>`).join("")}${fmt==="Vídeo"?"":`<rect x="18" y="150" width="${70+cta.length*5}" height="26" rx="13" fill="${ink}"/><text x="${18+(70+cta.length*5)/2}" y="167" text-anchor="middle" font-size="11.5" font-weight="700" style="fill:${cc}" font-family="Inter,sans-serif">${esc(cta)}</text>`}${ov}</svg>`}
+ if(fmt==="Carrossel")ov=`<circle cx="142" cy="184" r="3.5" fill="#0F2623"/><circle cx="156" cy="184" r="3.5" fill="#0F2623" opacity=".3"/><circle cx="170" cy="184" r="3.5" fill="#0F2623" opacity=".3"/><circle cx="296" cy="100" r="13" fill="#fff" stroke="rgba(15,38,35,.18)"/><path d="M292 94l7 6-7 6" fill="none" stroke="#0F2623" stroke-width="2.2" stroke-linecap="round"/>`;
+ return`<svg viewBox="0 0 320 200" role="img" aria-label="Criativo ilustrativo de ${bn}, ${esc(fmt)}"><rect width="320" height="200" style="fill:${tint}"/><rect width="320" height="6" style="fill:${cc}"/><g style="fill:${cc}" opacity=".3">${dec}</g><text x="18" y="30" font-size="11" font-weight="700" letter-spacing=".02em" fill="${ink}" opacity=".7" font-family="Inter,sans-serif">${bn}</text>${L.map((t,i)=>`<text x="18" y="${68+i*lh}" font-size="${fs}" font-weight="700" letter-spacing="-.02em" fill="${ink}" font-family="Inter,sans-serif">${esc(t)}</text>`).join("")}${fmt==="Vídeo"?"":`<rect x="18" y="150" width="${70+cta.length*5}" height="26" rx="13" fill="${ink}"/><text x="${18+(70+cta.length*5)/2}" y="167" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff" font-family="Inter,sans-serif">${esc(cta)}</text>`}${ov}</svg>`}
 
 /* ============================================================
    Métricas: janela de análise (período e comparação) e catálogo de KPIs.

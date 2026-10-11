@@ -8,7 +8,7 @@
    ============================================================ */
 const RAW=JSON.parse($("#radar-data").textContent);
 const AG=RAW.agencia, CLS=RAW.clientes;
-const CAT=["var(--brand-ink)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)"];   // 8 cores de marca validadas (docs/08) + cinzento neutro para a 9.ª marca em diante (nunca se repetem cores)
+const CAT=["var(--c1)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)"];   // o cliente é sempre a tinta (--c1, nunca o azul da interface); 7 cores de concorrente validadas (docs/08) e cinzento neutro para a 9.ª marca em diante (as cores nunca se repetem)
 const COR_N=8;                 // índice do cinzento neutro: marcas além das 8 primeiras
 const TOP=["var(--t1)","var(--t2)","var(--t3)","var(--t4)","var(--t5)"];   // temas e assuntos (nunca as cores das marcas)
 const topC=i=>TOP[Math.min(i,TOP.length-1)];
