@@ -52,13 +52,13 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){const o=$(".mm:not(
 function mainChartHTML(){
   const W=win();
   if(hasAds()){
-    const pls=PL.filter(p=>S.pl.has(p)),bs=incl(),xl=i=>wLab(W.a0+i);
-    const ser=pls.map(p=>({id:p,n:p,c:rampOf(p),d:range(W.a0,W.z).map(w=>bs.reduce((s,e)=>s+AD[e.id][p][w],0))}));
-    const last=ser.map(s=>s.d[s.d.length-1]),tot=sum(last)||1,top=ser.map((s,i)=>({n:s.n,v:last[i]})).sort((a,b)=>b.v-a.v)[0];
+    // O gráfico principal responde ao título: as marcas do conjunto, com a do sinal em destaque. O detalhe por plataforma está em Mercado.
+    const bs=incl(),xl=i=>wLab(W.a0+i),sg0=isCli()?cartoesPub()[0]:(S.bquiet?null:sinaisMat()[0]),fe=sg0&&sg0.entidade?bs.find(e=>e.id===sg0.entidade):null;
+    const ser=bs.map(e=>({id:e.id,n:e.nome,c:col(e),w:fe&&e.id===fe.id?3.4:2,d:range(W.a0,W.z).map(w=>act(e.id,w))}));
     const cp={};ADS.filter(a=>a.camp&&bs.some(e=>e.id===a.b)&&PL.includes(a.p)).forEach(a=>{const k=a.b+"|"+a.camp,c=cp[k]||(cp[k]={b:a.b,n:a.camp,st:a.st,k:0});c.st=Math.min(c.st,a.st);c.k++});
     const ev=Object.values(cp).filter(c=>c.st>W.a0&&c.st<=W.z&&c.k>=3).sort((x,y)=>y.k-x.k).slice(0,4).sort((x,y)=>x.st-y.st).filter((c,j,r)=>j===0||c.st-r[j-1].st>=4).slice(0,3).map(c=>({i:c.st-W.a0,t:`${ebyid(c.b).nome} lança «${c.n}»`}));
-    later(()=>tsChart($("#mc"),{series:ser,type:"area",stack:true,end:true,events:ev,xl,fmt:nf,aria:"Anúncios ativos por plataforma"},true));
-    return cardHTML("Anúncios ativos por plataforma",`Soma das marcas do conjunto. ${top?`<b>${top.n}</b> concentra ${nf(top.v/tot*100)}% dos anúncios ativos esta semana.`:""}`,`${legendHTML(ser)}<div class="cv" id="mc"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}
+    later(()=>tsChart($("#mc"),{series:ser,type:"line",end:true,events:ev,dim:fe?fe.id:null,xl,fmt:nf,aria:"Anúncios ativos por marca"},true));
+    return cardHTML("Anúncios ativos por marca",fe?`Em destaque: <b>${esc(fe.nome)}</b>. ${esc(sg0.leitura)} <a href="#" data-go="mercado" style="color:var(--link);font-weight:600">Ver por plataforma em Mercado</a>.`:`Anúncios ativos de cada marca do conjunto, por semana. <a href="#" data-go="mercado" style="color:var(--link);font-weight:600">Ver por plataforma em Mercado</a>.`,`${legendHTML(ser,true)}<div class="cv" id="mc"></div>${tableHTML({series:ser,xl,fmt:nf})}`,"anuncios")}
   if(D.procura){
     const pr=D.procura.principais||D.procura.series.map(s=>s.id),ser=D.procura.series.filter(s=>pr.includes(s.id)),a0=W.a0,xl=i=>wLab(a0+i);
     const S2=ser.map(s=>({id:s.id,n:s.nome,c:procC(s,D.procura.series.indexOf(s)),d:s.valores.slice(a0,Z+1)})),ev=(D.eventos||[]).map(e=>({i:e.semana-a0,t:e.titulo}));

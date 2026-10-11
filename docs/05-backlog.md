@@ -111,6 +111,9 @@ Especificação em `docs/08-especificacao-ux.md`. Por fases:
 - **RB-94** ✅ *(design, D38)* Tokens de espaço, raio e elevação; **sistema único de pílulas** (etiquetas, selos, estados, variações) em `states.css`; ligações com contraste AA nos dois temas; tipografia mínima de 12,5 px.
 - **RB-95** ✅ *(design, D39)* Identidade Arena: cabeçalho **Guerrilla Forest** com motivo de radar na Visão geral e na Torre, **amarelo reservado ao sinal** (número-herói, cartões de sinais materiais, marcador nos gráficos, indicador do menu).
 - **RB-96** ✅ *(design, D40)* **Vista do cliente como relatório**: sem menu lateral, cabeçalho com logo e data de publicação, separadores no topo, coluna de leitura, rodapé assinado pela Arena, faixa de pré-visualização fora da página.
+- **RB-97** ✅ *(design, D42)* **Ações como fila de decisão**: resumo no topo, «Por decidir» e «Já decididas», percurso numerado sinal → leitura → ação, uma ação principal por pista.
+- **RB-98** ✅ *(design, D43)* **Gráfico principal da Visão geral** por marca, com a marca do sinal em destaque; plataformas em Mercado.
+- **RB-99** ✅ *(design, D44)* **Modo silencioso**: variações em tabelas como texto com seta, estado do sinal sem fundo, pista em caixa neutra. Corrige também o botão discreto (`.btn.ghost`) que herdava o estilo de um chip antigo.
 
 ## Concorrência e fontes (out. 2026)
 - **RB-60** Ligar a Meta Ad Library (`collect_meta_ads.py`) ao módulo Concorrência: substituir os anúncios simulados pelos recolhidos, com `origem=real`, fonte e data. Depende de Q10.

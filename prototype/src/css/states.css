@@ -113,3 +113,11 @@ html[data-view=cliente] .kpi .kv .sp{width:64px}
 @media print{.ct-tabs{display:none!important}.ctabs{border:0}html[data-view=cliente]:not([data-present]) :is(#page,.ctabs){zoom:1}}
 .vtag{white-space:nowrap}
 @media (max-width:680px){.vtag{display:none}}
+
+/* ============ Modo silencioso (D42): cor só onde há decisão ============ */
+/* variações dentro de tabelas: texto com seta, sem fundo (as pílulas ficam nos KPIs e nos sinais) */
+table .dchip{--pbg:transparent;--pbd:transparent;height:auto;padding:0;font-size:13px}
+/* estado do sinal no cartão: ponto e texto, sem fundo; o amarelo do topo já marca o sinal */
+.sg .tag.sig{--pbg:transparent;--pbd:transparent;padding:0}
+/* a pista no cartão é um apontador, não um botão: caixa neutra, só o ícone leva cor */
+.sg .pk2,.mv .pk2{background:var(--line-2)}

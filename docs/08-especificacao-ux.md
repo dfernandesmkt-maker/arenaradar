@@ -195,3 +195,20 @@ Na vista Cliente (e na pré-visualização do rascunho) o menu lateral desaparec
 - **Rodapé assinado** «Arena Media Portugal»: preparado pela equipa Arena, sem autoria individual, com a indicação de que a origem dos dados está no selo de cada página.
 - **Faixa de pré-visualização** (só para a equipa) por cima do cabeçalho, fora da página do relatório: nunca faz parte do que o cliente vê.
 - O tema do cliente (cores de marca) só se aplica depois de a Q09 estar validada.
+
+## 11. Ações como fila de decisão (D42)
+
+Ações › Pistas de ação lê-se de cima para baixo:
+1. **Resumo** (KPIs): por decidir, aceites pela equipa (incluindo as ajustadas), marcadas para o cliente e descartadas.
+2. **Por decidir** primeiro, **Já decididas** depois (esbatidas). A atribuição por função (D36) continua a filtrar.
+3. **Cartão de pista:** título e estado; percurso numerado **Sinal → Leitura → Ação possível**, com a ação em destaque (caixa com cor) e «Porquê?» no sinal; **Aceitar** como única ação principal, **Ajustar** e **Descartar** secundárias; atribuição a Performance, Brand ou Account à direita; nota com confiança e data da decisão, e o pedido de aprofundamento à Research como ação discreta.
+4. Depois de aceite, o cartão passa a oferecer «Preparar para o cliente (opcional)» e «Desfazer». Nada chega ao cliente sem publicação (D34).
+
+## 12. Gráfico principal e modo silencioso (D43, D44)
+
+**Gráfico principal da Visão geral.** Mostra o que o título afirma: anúncios ativos por marca, em linhas, com a marca do sinal de topo a cheio e as outras esbatidas; os lançamentos de campanha continuam marcados. O subtítulo repete a leitura do sinal. Quem quiser a divisão por plataforma tem-na em Mercado.
+
+**Modo silencioso.** A cor só aparece onde há decisão:
+- variações em **tabelas** são texto com seta (verde, vermelho ou neutro); as pílulas de variação ficam nos KPIs;
+- o estado do sinal no cartão é ponto e texto, sem fundo (o topo amarelo do cartão já marca o sinal);
+- a pista no cartão é uma caixa neutra; a cor forte da pista fica na página Ações.

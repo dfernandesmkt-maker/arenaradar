@@ -6,15 +6,15 @@
 const ATABS=[["pistas","Pistas de ação"],["alertas","Alertas"],["impacto","Impacto"]];
 function pistaHTML(p){
   const dec=p.s==="aceite"||p.s==="ajustada";let act="";
-  if(p.s==="sugerida")act=`<button class="btn pri" data-a="aceitar"><svg class="ic"><use href="#i-check"/></svg>Aceitar</button><button class="btn" data-a="ajustar"><svg class="ic"><use href="#i-pen"/></svg>Ajustar</button><button class="btn" data-a="descartar"><svg class="ic"><use href="#i-x"/></svg>Descartar</button>`;
+  if(p.s==="sugerida")act=`<button class="btn pri" data-a="aceitar"><svg class="ic"><use href="#i-check"/></svg>Aceitar</button><button class="btn" data-a="ajustar"><svg class="ic"><use href="#i-pen"/></svg>Ajustar</button><button class="btn ghost" data-a="descartar"><svg class="ic"><use href="#i-x"/></svg>Descartar</button>`;
   else if(dec)act=`<button class="btn" data-a="cliente">${p.cli?'<svg class="ic"><use href="#i-check"/></svg>Marcada para o cliente':'<svg class="ic"><use href="#i-send"/></svg>Preparar para o cliente (opcional)'}</button><button class="btn ghost" data-a="repor">Desfazer</button>`;
   else act=`<button class="btn" data-a="repor">Repor</button>`;
   if(p.user)act+=`<button class="btn ghost" data-a="apagar" data-tip="Apagar esta pista criada pela equipa">Apagar</button>`;
-  const res=`<button class="btn ghost" data-a="research" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg>${p.res?"Aprofundamento pedido à Research":"Pedir aprofundamento à Research"}</button>`;
-  return`<article class="pista" id="${p.id}" data-id="${p.id}" data-src="${use(p.bloco)}">
+  const res=`<button class="btn ghost sm" data-a="research" ${p.res?"disabled":""}><svg class="ic"><use href="#i-flask"/></svg>${p.res?"Aprofundamento pedido à Research":"Pedir aprofundamento à Research"}</button>`;
+  return`<article class="pista ${p.s==="sugerida"?"":"dd"}" id="${p.id}" data-id="${p.id}" data-src="${use(p.bloco)}">
    <div class="hd"><h2 class="t-h2" style="max-width:60ch">${esc(p.titulo)}</h2><span class="state" data-s="${p.s}">${STL[p.s]}</span></div>
    <div class="pchain"><div><h4>Sinal ${p.sinal_id?`<button class="lnk" data-why="${p.sinal_id}">Porquê?</button>`:""}</h4><p>${esc(p.sinal)}</p></div><div><h4>Leitura ${p.hipotese?'<span class="tag">Hipótese</span>':""}</h4><p>${esc(p.leitura)}</p></div><div class="act"><h4>Ação possível</h4><p data-act>${esc(p.acao)}</p></div></div>
-   <div class="pfoot">${act}${res}<span class="sp"></span><span class="t-xs">Atribuída a</span><div class="seg">${["Performance","Brand","Account"].map(x=>`<button data-a="para" data-v="${x}" aria-pressed="${p.para===x}">${x}</button>`).join("")}</div></div><p class="conf" style="margin-top:10px">${esc(p.confianca)}${p.dq?` · decidida a ${fmtDT(p.dq)} (${esc(p.dpor||"Equipa")})`:""}</p></article>`}
+   <div class="pfoot">${act}<span class="sp"></span><span class="t-xs">Atribuída a</span><div class="seg">${["Performance","Brand","Account"].map(x=>`<button data-a="para" data-v="${x}" aria-pressed="${p.para===x}">${x}</button>`).join("")}</div></div><div class="pnote"><p class="conf">${esc(p.confianca)}${p.dq?` · decidida a ${fmtDT(p.dq)} (${esc(p.dpor||"Equipa")})`:""}</p>${res}</div></article>`}
 function syncCounts(){const n=pistasPend(D),c=$("#navcnt");if(c){c.textContent=n;c.hidden=n===0}}
 function refreshPista(id,flash){const p=D.pistas.find(x=>x.id===id),old=document.getElementById(id);if(!old)return;const tmp=document.createElement("div");tmp.innerHTML=pistaHTML(p);const n=tmp.firstElementChild;n.classList.add("in");if(flash)n.classList.add("just");old.replaceWith(n);syncCounts()}
 /* ---------- Alertas: só eventos materiais (D: alertas apenas para o que muda de facto) ---------- */
@@ -54,9 +54,15 @@ function aPistas(){
   if(!D.pistas.length)return emptyHTML("Sem pistas esta semana","Quando um sinal ultrapassar o limiar, aparece aqui uma pista para a equipa decidir.");
   later(()=>requestAnimationFrame(()=>$$(".pista").forEach(e=>e.classList.add("in"))));
   const mine=ROLE_PARA[PREFS.role],filt=mine&&S.minhas!==false,lista=filt?D.pistas.filter(p=>p.para===mine):D.pistas;
-  const nova=`<div style="display:flex;justify-content:flex-end;margin:4px 0 -4px"><button class="btn sm" data-novapista><svg class="ic"><use href="#i-pen"/></svg>Nova pista</button></div>`;
+  const P=D.pistas,nPend=pistasPend(D),nDec=pistasDecididas(D).length,nCli=P.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada")).length,nDesc=P.filter(p=>p.s==="descartada").length;
+  const resumo=`<div class="kpis dq">${[["Por decidir",nPend,`de ${P.length} pistas`],["Aceites pela equipa",nDec,"incluindo as ajustadas"],["Marcadas para o cliente",nCli,"opcional, decisão da equipa"],["Descartadas",nDesc,"fora do plano"]].map(k=>kpiHTML({l:k[0],v:`<span data-count="${k[1]}">${k[1]}</span>`,sub:`<span class="muted">${k[2]}</span>`})).join("")}</div>`;
+  const nova=`<button class="btn sm" data-novapista><svg class="ic"><use href="#i-pen"/></svg>Nova pista</button>`;
   const rb=mine?`<div class="rolebar">${filt?`A mostrar as pistas atribuídas a <b>${mine}</b> (${lista.length} de ${D.pistas.length}).`:`A mostrar todas as pistas.`} <button class="lnk" data-minhas="${filt?"0":"1"}">${filt?"Ver todas":"Só as minhas"}</button></div>`:"";
-  return`<p class="t-sm muted" style="max-width:70ch;margin-bottom:6px">Cada pista liga o sinal à leitura e a uma ação de meios possível, atribuída a Performance, Brand ou Account. É uma ferramenta interna: levar uma pista ao cliente é opcional e decisão da equipa.</p>${nova}${rb}<div id="pistas">${lista.length?lista.map(pistaHTML).join(""):emptyHTML("Nenhuma pista atribuída a "+mine,"Muda a atribuição de uma pista ou escolhe «Ver todas».")}</div>`}
+  const por=lista.filter(p=>p.s==="sugerida"),fei=lista.filter(p=>p.s!=="sugerida");
+  const grp=(t,n,l,cls="")=>l.length?`<div class="pgrp ${cls}"><h2 class="t-h3">${t}</h2><span class="cnt2">${n}</span></div>${l.map(pistaHTML).join("")}`:"";
+  const vazio=!lista.length?emptyHTML("Nenhuma pista atribuída a "+mine,"Muda a atribuição de uma pista ou escolhe «Ver todas».")
+    :!por.length?`<div class="empty" style="margin:14px 0"><svg class="ic"><use href="#i-check"/></svg><div><b>Tudo decidido</b><br>Não há pistas por decidir nesta lista.</div></div>`:"";
+  return`${resumo}<div class="dqhead"><p class="t-sm muted">Cada pista liga o sinal à leitura e a uma ação de meios possível. É uma ferramenta interna: levar uma pista ao cliente é opcional e decisão da equipa.</p>${nova}</div>${rb}<div id="pistas">${vazio}${grp("Por decidir",por.length,por)}${grp("Já decididas",fei.length,fei,"done")}</div>`}
 document.addEventListener("click",e=>{const t=e.target.closest("[data-minhas]");if(!t)return;S.minhas=t.dataset.minhas==="1";CUR.refresh()});
 function aImpacto(){
   const jr=AG.impacto.janela_resultado_semanas||4,P=D.pistas,s=P.length,a=pistasDecididas(D).length,c=P.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada")).length,d=P.filter(p=>p.s==="descartada").length;

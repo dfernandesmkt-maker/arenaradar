@@ -38,6 +38,7 @@ Protótipo em HTML único, que abre no browser sem servidor, com quatro **client
 - **Ficha de marca** com comparação entre marcas; **alertas** só para eventos materiais; vista por função (Performance, Brand, Account, Direção).
 - **Levar o Radar para onde a agência trabalha:** gráficos copiados como imagem com a origem dos dados, destaques acrescentados ao briefing semanal.
 - **Identidade Arena** (D38 a D40): cabeçalho Guerrilla Forest com motivo de radar, amarelo reservado ao sinal, sistema único de estados e uma vista do cliente com aspeto de relatório (cabeçalho, separadores, rodapé assinado pela Arena).
+- **Ações como fila de decisão** (por decidir primeiro, percurso sinal → leitura → ação) e um gráfico principal que responde ao título da página (D42 a D44).
 - Paleta de comandos (Ctrl K), modo apresentação, modo escuro e acessibilidade (teclado, leitores de ecrã, alvos tácteis).
 
 ## 4. Percurso até aqui
