@@ -73,3 +73,16 @@ fonte → scripts/collect_<fonte>.py → data/raw/<fonte>/<cliente>/<data>.csv
       → protótipo (lê os JSON; sem clientes, marcas nem séries escritos no código)
 ```
 Implementado (out. 2026). Para cada bloco, `build_dataset.py` usa os dados reais se existirem em `data/raw/` e, caso contrário, os de demonstração. O selo de dados da página (ver `08-especificacao-ux.md`, secção 6) passa sozinho de «Demonstração» a «Real» ou «Misto», sem alterações à interface. Testado com ficheiros de recolha sintéticos (Trends, notícias e Meta): as semanas sem recolha ficam vazias, nunca a zero.
+
+## v4 — radar de movimentos (D50)
+Na v4 todos os pontos de entrada estão no gerador `scripts/v4/gerar_dados.py` (passos 1 e 2: comportamento e movimentos). As previsões (passo 3) e a ligação às respostas (passo 4) mantêm-se com dados reais.
+
+| `LIGAÇÃO[id]` | Fonte | Entra em |
+|---|---|---|
+| `meta-ad-library`, `google-ads-transparency`, `tiktok-ccl` | Bibliotecas de anúncios | Criativos, campanhas, volume de anúncios ativos |
+| `auction-insights` | Contas Google Ads do cliente (com autorização, Q12) | Série «Quem aparece nas pesquisas do cliente» e movimentos de leilão |
+| `dgeg-precos` | DGEG, preços dos combustíveis | Série de preço (Vetra) e movimentos de preço |
+| `monitor-paginas` | Páginas de preço, promoções e folhetos | Índice do cabaz (Mercana), promoções |
+| `noticias-rss` | Imprensa | Movimentos de imprensa e lançamentos |
+| `marktest-adcheck` | Marktest | Investimento em meios tradicionais (hoje estimado) |
+| `persistencia-equipa` | Base partilhada (IT) | Decisões sobre respostas (hoje `localStorage`, em `prototype/v4/src/js/00-core.js`) |

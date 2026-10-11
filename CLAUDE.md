@@ -47,6 +47,12 @@ Lê este ficheiro antes de qualquer tarefa. Depois lê `docs/00-ponto-de-situaca
   - Evitar pesos abaixo de 400 e acima de 700.
 - Documentos Word: logo no cabeçalho, rodapé paginado.
 
+## Reorientação v4 (D50 a D52) — ler primeiro
+- **A plataforma atual é a v4: um radar de movimentos da concorrência.** Objeto central: o *movimento* (campanha, promoção, preço, lançamento, teste de criativos, leilão, imprensa), com prova, importância explicada, histórico da marca e respostas combinadas. Estrutura: Agora · Concorrentes · Comparar · À frente · Respostas (+ Torre e Fontes). Especificação: `docs/11-v4-radar-de-movimentos.md`.
+- **Dois clientes fictícios:** Vetra (combustíveis) e Mercana (retalho alimentar). Config em `config/v4/`; dados com `python3 scripts/v4/gerar_dados.py`; página com `python3 prototype/v4/build.py` → `prototype/arena-radar-v4.html`. Não editar o HTML gerado.
+- Estacionado da v3: vista do cliente e publicação, Impacto, Pergunta ao Radar, briefing, alertas, vista por função. A v3 (`prototype/arena-radar-v3-preview.html`, `prototype/src/`, `config/clients/`) fica como referência; as regras do sistema visual (D38 a D49) aplicam-se à v4.
+- As secções abaixo descrevem sobretudo a v3; onde contradizem esta, vale esta.
+
 ## Direção do produto (out. 2026)
 - Produto para **todos os clientes da Arena**, não para um cliente. Ferramenta da agência, também pensada para o futuro da inovação com IA na casa.
 - **Torre de controlo da concorrência** em três níveis: Agência → Vertical → Cliente. Cada vertical tem um conjunto de concorrentes por defeito (`config/verticals/`); o cliente herda e ajusta. O Radar sugere concorrentes e a equipa aceita ou recusa.

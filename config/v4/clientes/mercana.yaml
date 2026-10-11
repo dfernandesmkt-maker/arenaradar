@@ -1,0 +1,75 @@
+# Cliente FICTÍCIO de demonstração (retalho alimentar / grande consumo). Nenhuma marca abaixo existe;
+# nenhum dado é atribuído a empresas reais. Ver nota em vetra.yaml.
+cliente:
+  id: mercana
+  nome: Mercana
+  setor: Retalho alimentar (hipermercados e supermercados)
+  vertical: Retalho alimentar
+  ficticio: true
+  seed: 23
+
+territorios: [Preço baixo, Promoções e cartão, Frescos e qualidade, Marca própria, Conveniência e entrega]
+territorios_chave: [Preço baixo, Promoções e cartão]
+
+marcas:
+  - {id: mercana, nome: Mercana, cliente: true, papel: Cliente, base: 40, preco: 100, posicionamento: "Líder em hipermercados, cartão com descontos em saldo."}
+  - {id: avanta,  nome: Avanta,  papel: Discount, base: 26, preco: 94, posicionamento: "Discount, preço baixo como mensagem única, campanhas de TV fortes."}
+  - {id: duna,    nome: Duna,    papel: Supermercados, base: 34, preco: 98, posicionamento: "Rede de supermercados, folheto semanal agressivo e cartão próprio."}
+  - {id: frescal, nome: Frescal, papel: Proximidade, base: 16, preco: 103, posicionamento: "Lojas de proximidade, frescos e vinhos, expansão no Norte."}
+  - {id: gema,    nome: Gema,    papel: Premium, base: 12, preco: 109, posicionamento: "Supermercado premium, gourmet e entregas rápidas."}
+
+campanhas:
+  - {marca: avanta, serie: garantia, nome: "Preço Baixo Garantido", anos: {2025: [9, 6], 2026: [40, 6]}, canais: [TV, YouTube, Meta, Google], territorio: Preço baixo, oferta: "1 000 produtos com preço garantido até ao fim do ano", peso: 3, criativos: 12}
+  - {marca: avanta, serie: natal, nome: "Natal ao Preço Certo", anos: {2024: [47, 5], 2025: [47, 5]}, canais: [TV, YouTube, Meta, Exterior], territorio: Preço baixo, oferta: "Cabaz de Natal abaixo de 50 €", peso: 3, criativos: 11}
+  - {marca: avanta, serie: aulas, nome: "Regresso às Aulas Avanta", anos: {2025: [34, 4], 2026: [34, 4]}, canais: [TV, Meta, TikTok], territorio: Preço baixo, oferta: "Material escolar ao preço de custo", peso: 2, criativos: 8}
+  - {marca: duna, serie: blackfriday, nome: "Black Friday Duna", anos: {2024: [48, 1], 2025: [48, 1]}, canais: [Meta, Google, TV], territorio: Promoções e cartão, oferta: "−30% em saldo no cartão em compras acima de 50 €", peso: 3, criativos: 7}
+  - {marca: duna, serie: mercearia, nome: "Mercearia a Metade", anos: {2024: [43, 3], 2025: [42, 3]}, canais: [Meta, YouTube, Imprensa], territorio: Promoções e cartão, oferta: "50% na 2.ª unidade em 400 produtos de mercearia", peso: 2, criativos: 9, teste: true}
+  - {marca: duna, serie: natal, nome: "Natal Duna", anos: {2024: [50, 3], 2025: [49, 4]}, canais: [TV, Meta, YouTube], territorio: Promoções e cartão, oferta: "Cupões de Natal no cartão", peso: 3, criativos: 10}
+  - {marca: frescal, serie: vinho, nome: "Feira do Vinho Frescal", anos: {2024: [41, 3], 2025: [39, 3], 2026: [39, 3]}, canais: [Meta, Imprensa, Google], territorio: Frescos e qualidade, oferta: "−25% em 300 vinhos", peso: 2, criativos: 8}
+  - {marca: frescal, serie: verao, nome: "Verão Fresco", anos: {2025: [26, 6], 2026: [26, 6]}, canais: [Meta, Exterior], territorio: Frescos e qualidade, oferta: "Fruta da época a 0,99 €/kg", peso: 1, criativos: 6}
+  - {marca: gema, serie: natal, nome: "Natal Gourmet", anos: {2024: [46, 6], 2025: [46, 6]}, canais: [YouTube, Meta, Exterior], territorio: Frescos e qualidade, oferta: "Encomendas de Natal com entrega marcada", peso: 2, criativos: 9}
+  - {marca: gema, serie: primavera, nome: "Gema em Casa", anos: {2025: [15, 5], 2026: [16, 5]}, canais: [Meta, TikTok], territorio: Conveniência e entrega, oferta: "Entrega grátis na primeira encomenda", peso: 1, criativos: 6}
+  - {marca: mercana, serie: natal, nome: "Natal Mercana", anos: {2024: [48, 5], 2025: [48, 5]}, canais: [TV, YouTube, Meta, Exterior], territorio: Promoções e cartão, oferta: "Até 50% em saldo no cartão", peso: 3, criativos: 12}
+  - {marca: mercana, serie: aulas, nome: "Regresso às Aulas Mercana", anos: {2025: [33, 4], 2026: [33, 4]}, canais: [TV, Meta, YouTube], territorio: Promoções e cartão, oferta: "20% em saldo em material escolar", peso: 2, criativos: 9}
+  - {marca: mercana, serie: vinho, nome: "Feira do Vinho Mercana", anos: {2025: [38, 3], 2026: [38, 3]}, canais: [Meta, Imprensa, Google], territorio: Frescos e qualidade, oferta: "−30% em 500 vinhos", peso: 2, criativos: 7}
+
+promocoes:
+  - {marca: duna, a_cada: 4, desde: 1, nome: "Folheto Duna", oferta: "50% em saldo em 30 produtos da semana", canais: [Meta, Imprensa], territorio: Promoções e cartão, peso: 1}
+  - {marca: avanta, a_cada: 6, desde: 3, nome: "Super Semana Avanta", oferta: "Preços abaixo de 1 € em 100 produtos", canais: [Meta, TV], territorio: Preço baixo, peso: 1}
+
+pontuais:
+  - {data: 2026-10-01, marca: duna, tipo: Promoção, titulo: "Duna lançou 50% na 2.ª unidade em toda a mercearia", resumo: "Folheto da semana com destaque em Meta e imprensa. Coincide com o arranque da campanha de preço da Avanta.", canais: [Meta, Imprensa], territorio: Promoções e cartão, oferta: "50% na 2.ª unidade em toda a mercearia", peso: 2, criativos: 5}
+  - {data: 2026-10-01, marca: gema, tipo: Lançamento, titulo: "Gema lançou entregas em 1 hora em Lisboa e Porto", resumo: "Serviço na app com criadores no TikTok e anúncios em Meta. Primeira marca do conjunto com entrega em menos de 2 horas.", canais: [TikTok, Meta, Imprensa], territorio: Conveniência e entrega, oferta: "Entrega grátis em outubro", peso: 2, criativos: 5}
+  - {data: 2026-09-30, marca: duna, tipo: Teste de criativos, serie: mercearia, titulo: "Duna está a testar 12 criativos novos com pouco alcance", resumo: "Variações sobre «metade do preço» na mercearia, cada uma com alcance baixo. Em 2024 e 2025 isto antecedeu a campanha «Mercearia a Metade».", canais: [Meta, YouTube], territorio: Promoções e cartão, peso: 1, criativos: 12}
+  - {data: 2026-09-29, marca: frescal, tipo: Imprensa, titulo: "Frescal anunciou 6 lojas novas no Norte até ao Natal", resumo: "Notícia na imprensa de distribuição: Braga, Guimarães e Grande Porto.", canais: [Imprensa], territorio: Frescos e qualidade, peso: 1}
+  - {data: 2026-05-14, marca: gema, tipo: Lançamento, titulo: "Gema lançou a marca própria «Gema Essencial»", resumo: "200 produtos de marca própria a preço de supermercado comum.", canais: [Meta, Imprensa, YouTube], territorio: Marca própria, peso: 2, criativos: 5}
+  - {data: 2026-02-10, marca: avanta, tipo: Lançamento, titulo: "Avanta lançou a app com talões digitais", resumo: "Primeira app da Avanta; cupões semanais.", canais: [Meta, Google, TikTok], territorio: Conveniência e entrega, peso: 2, criativos: 4}
+
+precos:
+  rotulo: "Índice de preço do cabaz (100 = média do conjunto)"
+  base: 100
+  fonte_futura: monitor-paginas
+
+leilao:
+  base: {avanta: 41, duna: 57, frescal: 19, gema: 14}
+  subida: {marca: avanta, semanas: 3, pp: 12}
+
+calendario:
+  - {nome: "Halloween", semana: 44}
+  - {nome: "São Martinho", semana: 46}
+  - {nome: "Black Friday", semana: 48}
+  - {nome: "Natal", semana: 50, duracao: 3}
+
+respostas:
+  - {id: r-preco, nome: "Resposta a campanha de preço do discount", quando: {tipos: [Campanha, Preço], territorios: [Preço baixo], marcas: [avanta], peso_min: 2}, o_que: "Ativar «Preço baixo todos os dias» com 300 produtos de marca própria em Meta e YouTube e reforçar a pesquisa de preço.", quem: Brand, prazo: "72 h", estado: por preparar, acordada: false}
+  - {id: r-folheto, nome: "Contra-promoção de folheto", quando: {tipos: [Promoção], marcas: [duna]}, o_que: "Destacar as 20 promoções mais fortes do folheto Mercana em Meta e no site, com notificação na app.", quem: Performance, prazo: "48 h", estado: pronta, acordada: true}
+  - {id: r-entrega, nome: "Entrega no próprio dia", quando: {territorios: [Conveniência e entrega]}, o_que: "Comunicar as janelas de entrega no próprio dia em Lisboa e Porto (Meta e pesquisa).", quem: Brand, prazo: "7 dias", estado: pronta, acordada: true}
+  - {id: r-leilao, nome: "Defesa no leilão de pesquisa", quando: {tipos: [Leilão]}, o_que: "Rever lances em pesquisas de preço e de marca onde a sobreposição subiu; teto de CPC +15% durante 2 semanas.", quem: Performance, prazo: "24 h", estado: pronta, acordada: true}
+  - {id: r-mercearia, nome: "Mercearia em saldo", quando: {series: [mercearia]}, o_que: "Ter pronta a ação «Mercearia com 30% em saldo no cartão» para lançar na mesma semana que a Duna.", quem: Account, prazo: "até 1 semana antes", estado: por preparar, acordada: false}
+
+textos:
+  Preço baixo: ["Preço baixo todos os dias.", "Encher o carrinho custa menos.", "O mesmo cabaz, mais barato.", "Preço garantido até ao fim do ano.", "Poupa sem pensar."]
+  Promoções e cartão: ["Metade do preço na 2.ª unidade.", "Saldo no cartão em cada compra.", "Esta semana, 30 promoções fortes.", "O teu cartão vale mais.", "Cupões novos todas as semanas."]
+  Frescos e qualidade: ["Fresco de manhã, na tua mesa à noite.", "Os vinhos da feira chegaram.", "Do produtor para a tua loja.", "Qualidade que se prova.", "Peixe fresco todos os dias."]
+  Marca própria: ["Qualidade de marca, preço nosso.", "Feito para ti, ao melhor preço.", "A nossa marca, a tua escolha.", "Essencial e bom.", "200 produtos novos."]
+  Conveniência e entrega: ["Encomenda agora, recebe hoje.", "Entregamos em 1 hora.", "A loja vai a tua casa.", "Recolhe no carro, sem sair.", "Compras feitas em 5 minutos."]

@@ -24,7 +24,17 @@
 
 Três modos de entrega: alertas apenas para eventos materiais, briefing semanal à segunda-feira e pedidos pontuais. A máquina deteta; a equipa só entra no momento de decidir.
 
-## 3.1 O que o protótipo já mostra
+## 3.0 Reorientação (outubro 2026): radar de movimentos (v4)
+O projeto foi repensado (D50). O Radar passa a ser um **radar de movimentos da concorrência**: tudo o que os concorrentes fazem, num só fio, com prova, e com o que isso costuma anunciar a seguir. Protótipo novo (`prototype/arena-radar-v4.html`) com **2 clientes fictícios**, Vetra (combustíveis) e Mercana (retalho alimentar):
+- **Agora:** o que mexeu esta semana, com os criativos, a série de preço ou do leilão como prova, a importância explicada e o que costuma seguir-se.
+- **Concorrentes:** ficha viva de cada marca, com ritmo, linha temporal, biblioteca de criativos e mensagens.
+- **Comparar:** quota de voz, investimento estimado, mapa de mensagens com espaço livre, preço, leilão de pesquisa do cliente.
+- **À frente:** as próximas 12 semanas, calculadas a partir do histórico de cada marca, com sinais precoces e o que preparar.
+- **Respostas:** o que está combinado com o cliente para cada tipo de movimento; a equipa decide ativar.
+
+Detalhe em `docs/11-v4-radar-de-movimentos.md`. A secção seguinte descreve a v3, que fica como referência.
+
+## 3.1 O que o protótipo v3 mostrava
 Protótipo em HTML único, que abre no browser sem servidor, com quatro **clientes fictícios** (Lumio, Vael, Kob e Verdia) em quatro verticais.
 - **Torre de controlo** (Agência › Vertical › Cliente): sinais acima do limiar, fila de decisões e estado de publicação por cliente.
 - **Um padrão de página para todos os clientes:** filtros → KPIs → o que mudou → gráfico principal → detalhe. Mercado, Procura e notícias, Criativos, Relatórios e Ações.

@@ -3,6 +3,16 @@
 Prioridades: **P0** antes da reunião com a direção · **P1** materiais da reunião · **P2** só se o piloto for aprovado · **Futuro**.
 Cada tarefa = um commit com o ID.
 
+## v4 — Radar de movimentos (out. 2026; D50 a D52; `docs/11-v4-radar-de-movimentos.md`)
+- **RB-110** ✅ Configuração v4 (`config/v4/`) com 2 clientes fictícios (Vetra, Mercana) e o comportamento de cada marca.
+- **RB-111** ✅ Gerador `scripts/v4/gerar_dados.py`: 2 anos simulados, deteção de movimentos, importância explicada, histórico, previsões a partir do histórico, ligação às respostas.
+- **RB-112** ✅ Interface v4 (`prototype/v4/`, `prototype/arena-radar-v4.html`): Agora, Concorrentes (fichas), Comparar, À frente, Respostas, Torre e Fontes; sistema visual da v3 (D38 a D49); telemóvel; contraste AA nos dois temas.
+- **RB-113** *(por fazer)* Teste de dados reais: 1 vertical, 6 marcas reais, Meta Ad Library + Google Ads Transparency + TikTok; medir cobertura e qualidade por semana. Depende de Compliance (termos de uso).
+- **RB-114** *(por fazer)* Resumo semanal escrito por IA a partir dos movimentos (revisto pela equipa) e classificação automática dos criativos (mensagem, oferta, chamada à ação).
+- **RB-115** *(por fazer)* Plano de meios do cliente na linha «À frente», para ver sobreposições com a concorrência.
+- **RB-116** *(por fazer)* Persistência partilhada das decisões (ativação de respostas): substitui o `localStorage` da demonstração (RB-22).
+- **RB-117** *(por fazer)* Saída para o cliente: slide ou email da semana assinado pela Arena (substitui, por agora, a vista do cliente da v3).
+
 ## P0 — Protótipo v3
 
 ### RB-01 · Recuperar o protótipo v2 *(manual, David)*

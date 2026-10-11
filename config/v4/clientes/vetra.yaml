@@ -1,0 +1,79 @@
+# Cliente FICTÍCIO de demonstração (combustíveis). Nenhuma marca abaixo existe; nenhum dado é atribuído a empresas reais.
+# As campanhas e movimentos descrevem o COMPORTAMENTO de cada marca; o gerador (scripts/v4/gerar_dados.py) cria a partir
+# daqui os anúncios, criativos, preços, leilão e movimentos de 2 anos, e calcula as previsões a partir do histórico.
+cliente:
+  id: vetra
+  nome: Vetra
+  setor: Combustíveis e mobilidade
+  vertical: Combustíveis
+  ficticio: true
+  seed: 11
+
+territorios: [Preço, Fidelização e app, Conveniência e loja, Mobilidade elétrica, Viagem e lazer]
+territorios_chave: [Preço, Fidelização e app]          # onde o cliente compete; pesa na importância de um movimento
+
+marcas:
+  - {id: vetra,  nome: Vetra,  cliente: true, papel: Cliente, base: 22, preco: 0.010, posicionamento: "Rede nacional média, aposta no cartão Vetra Club."}
+  - {id: norvo,  nome: Norvo,  papel: Líder,  base: 34, preco: 0.032, posicionamento: "Líder de mercado, campanhas sazonais fortes com TV, ritmo muito regular."}
+  - {id: kaldo,  nome: Kaldo,  papel: Low-cost, base: 14, preco: -0.038, posicionamento: "Low-cost, promoções de preço curtas e frequentes, sobretudo ao fim de semana."}
+  - {id: zefira, nome: Zefira, papel: Desafiante, base: 18, preco: 0.018, posicionamento: "Desafiante digital, aposta em mobilidade elétrica, app e TikTok."}
+  - {id: ondal,  nome: Ondal,  papel: Hipermercado, base: 10, preco: -0.021, posicionamento: "Postos de hipermercado, desconto por litro com talão de compras."}
+
+campanhas:     # anos: {ano: [semana ISO de início, duração em semanas]}
+  - {marca: norvo, serie: regresso, nome: "Regresso às Rotinas", anos: {2024: [41, 5], 2025: [39, 6], 2026: [40, 6]}, canais: [TV, YouTube, Meta, Google], territorio: Conveniência e loja, oferta: "Café grátis em abastecimentos acima de 30 L", peso: 3, criativos: 11}
+  - {marca: norvo, serie: natal, nome: "Natal Norvo", anos: {2024: [49, 4], 2025: [49, 4]}, canais: [TV, YouTube, Meta, Exterior], territorio: Viagem e lazer, oferta: "Cabaz de viagem a cada 50 L", peso: 3, criativos: 12}
+  - {marca: norvo, serie: pascoa, nome: "Páscoa na Estrada", anos: {2025: [14, 3], 2026: [13, 3]}, canais: [TV, Meta, Google], territorio: Viagem e lazer, oferta: "−5 cênt/L em autoestrada", peso: 2, criativos: 7}
+  - {marca: norvo, serie: verao, nome: "Verão Norvo", anos: {2025: [25, 8], 2026: [25, 8]}, canais: [TV, YouTube, Meta, Exterior, Rádio], territorio: Viagem e lazer, oferta: "Lavagem grátis acima de 40 L", peso: 3, criativos: 14}
+  - {marca: kaldo, serie: blackfriday, nome: "Black Friday Kaldo", anos: {2024: [48, 1], 2025: [48, 1]}, canais: [Meta, Google, Rádio], territorio: Preço, oferta: "−15 cênt/L durante 3 dias", peso: 3, criativos: 6}
+  - {marca: kaldo, serie: verao, nome: "Verão ao Preço Kaldo", anos: {2025: [28, 4], 2026: [27, 5]}, canais: [Meta, Google, Rádio, TikTok], territorio: Preço, oferta: "−6 cênt/L todos os dias", peso: 2, criativos: 8}
+  - {marca: zefira, serie: inverno, nome: "Inverno Elétrico", anos: {2024: [43, 6], 2025: [42, 5]}, canais: [TikTok, Meta, YouTube], territorio: Mobilidade elétrica, oferta: "Primeiro mês de carregamento grátis", peso: 2, criativos: 10, teste: true}
+  - {marca: zefira, serie: app, nome: "Tudo na App Zefira", anos: {2025: [18, 6], 2026: [17, 5]}, canais: [TikTok, Meta, Google], territorio: Fidelização e app, oferta: "10% em saldo no primeiro abastecimento pela app", peso: 2, criativos: 9, teste: true}
+  - {marca: zefira, serie: verao, nome: "Verão Elétrico", anos: {2025: [29, 5], 2026: [30, 4]}, canais: [TikTok, Meta], territorio: Mobilidade elétrica, oferta: "Carregamento a 0,29 €/kWh", peso: 1, criativos: 6}
+  - {marca: ondal, serie: natal, nome: "Natal com Desconto", anos: {2024: [50, 3], 2025: [49, 3]}, canais: [Meta, Google, Imprensa], territorio: Preço, oferta: "−12 cênt/L com talão de compras de Natal", peso: 2, criativos: 6}
+  - {marca: ondal, serie: verao, nome: "Verão em Viagem", anos: {2025: [28, 5], 2026: [28, 5]}, canais: [Meta, Google, Exterior], territorio: Viagem e lazer, oferta: "−8 cênt/L com talão de compras", peso: 2, criativos: 7}
+  - {marca: vetra, serie: club, nome: "Vetra Club", anos: {2025: [10, 6], 2026: [11, 6]}, canais: [Meta, YouTube, Google], territorio: Fidelização e app, oferta: "Pontos a dobrar no cartão", peso: 2, criativos: 8}
+  - {marca: vetra, serie: verao, nome: "Verão Vetra", anos: {2025: [27, 6], 2026: [27, 6]}, canais: [Meta, YouTube, Rádio], territorio: Viagem e lazer, oferta: "Kit de viagem a cada 60 L", peso: 2, criativos: 8}
+  - {marca: vetra, serie: natal, nome: "Natal Vetra", anos: {2024: [50, 3], 2025: [50, 3]}, canais: [Meta, YouTube, Google], territorio: Fidelização e app, oferta: "Pontos a triplicar em dezembro", peso: 2, criativos: 7}
+
+promocoes:     # promoções curtas e repetidas (geram movimentos «Promoção»)
+  - {marca: kaldo, a_cada: 5, desde: 2, nome: "Fim de semana Kaldo", oferta: "−5 cênt/L de sexta a domingo", canais: [Meta, Google, Rádio], territorio: Preço, peso: 1}
+  - {marca: ondal, a_cada: 8, desde: 4, nome: "Talão em dobro", oferta: "Desconto por litro a dobrar com talão", canais: [Meta, Imprensa], territorio: Preço, peso: 1}
+
+pontuais:      # movimentos datados (lançamentos, imprensa, testes, promoções fortes)
+  - {data: 2026-10-02, marca: kaldo, tipo: Promoção, titulo: "Kaldo baixou 8 cêntimos por litro no gasóleo ao fim de semana", resumo: "Desconto em todos os postos de sexta a domingo, comunicado em Meta, Google e rádio. É o maior desconto da Kaldo desde a Black Friday de 2025.", canais: [Meta, Google, Rádio], territorio: Preço, oferta: "−8 cênt/L de sexta a domingo", peso: 3, criativos: 5}
+  - {data: 2026-09-30, marca: zefira, tipo: Lançamento, titulo: "Zefira lançou uma rede de 40 carregadores rápidos com pagamento na app", resumo: "Anúncio na imprensa económica e vídeos com criadores no TikTok. Primeiro movimento de uma marca do conjunto nos carregadores rápidos.", canais: [Imprensa, TikTok, Meta], territorio: Mobilidade elétrica, oferta: "Primeiros 30 dias sem taxa de serviço", peso: 2, criativos: 4}
+  - {data: 2026-10-01, marca: zefira, tipo: Teste de criativos, serie: inverno, titulo: "Zefira está a testar 9 criativos novos com pouco alcance no Meta", resumo: "Variações de mensagem sobre carregamento no inverno, cada uma com alcance baixo. Padrão típico de teste antes de uma campanha.", canais: [Meta], territorio: Mobilidade elétrica, peso: 1, criativos: 9}
+  - {data: 2026-09-29, marca: norvo, tipo: Imprensa, titulo: "Norvo anunciou uma parceria com uma cadeia de cafés nas áreas de serviço", resumo: "Notícia na imprensa económica: 120 postos com café de marca até ao verão de 2027.", canais: [Imprensa], territorio: Conveniência e loja, peso: 1}
+  - {data: 2026-03-12, marca: zefira, tipo: Lançamento, titulo: "Zefira lançou o pagamento no posto pela app", resumo: "Pagar na bomba sem passar pela caixa.", canais: [Imprensa, TikTok, Meta], territorio: Fidelização e app, peso: 2, criativos: 4}
+  - {data: 2025-11-20, marca: norvo, tipo: Lançamento, titulo: "Norvo lançou o cartão Norvo Frotas para pequenas empresas", resumo: "Cartão com faturação mensal e desconto por volume.", canais: [Imprensa, Google, Meta], territorio: Fidelização e app, peso: 2, criativos: 3}
+  - {data: 2026-06-02, marca: ondal, tipo: Imprensa, titulo: "Ondal anunciou 12 postos novos junto aos hipermercados do Norte", resumo: "Abertura faseada até ao fim de 2026.", canais: [Imprensa], territorio: Conveniência e loja, peso: 1}
+  - {data: 2026-01-15, marca: kaldo, tipo: Lançamento, titulo: "Kaldo lançou o «Preço Kaldo» garantido por 7 dias", resumo: "O preço afixado à segunda-feira mantém-se a semana toda.", canais: [Rádio, Meta, Google], territorio: Preço, peso: 2, criativos: 4}
+
+precos:
+  rotulo: "Gasóleo simples, preço médio de venda (€/L)"
+  base: 1.62
+  fonte_futura: dgeg-precos
+
+leilao:        # sobreposição nas pesquisas do cliente (Auction Insights); subida recente de uma marca
+  base: {norvo: 61, kaldo: 34, zefira: 22, ondal: 38}
+  subida: {marca: ondal, semanas: 4, pp: 14}
+
+calendario:
+  - {nome: "Feriado de 1 de novembro e ponte", semana: 44}
+  - {nome: "Black Friday", semana: 48}
+  - {nome: "Pontes de dezembro", semana: 49}
+  - {nome: "Natal e viagens de fim de ano", semana: 51, duracao: 2}
+
+respostas:     # respostas combinadas de antemão com o cliente (a equipa decide quando as ativa)
+  - {id: r-preco, nome: "Contra-ataque de preço ao fim de semana", quando: {tipos: [Promoção, Preço], territorios: [Preço], marcas: [kaldo, ondal]}, o_que: "Ativar −5 cênt/L na app Vetra no fim de semana seguinte e reforçar em 20% a pesquisa por «gasóleo barato» e «postos perto de mim».", quem: Performance, prazo: "48 h", estado: pronta, acordada: true}
+  - {id: r-lider, nome: "Resposta a campanha sazonal do líder", quando: {tipos: [Campanha], marcas: [norvo], peso_min: 3}, o_que: "Antecipar uma semana a próxima vaga Vetra Club em YouTube e Meta e garantir o topo das pesquisas genéricas enquanto a Norvo está no ar.", quem: Brand, prazo: "72 h", estado: pronta, acordada: true}
+  - {id: r-eletrico, nome: "Mobilidade elétrica", quando: {territorios: [Mobilidade elétrica]}, o_que: "Preparar conteúdo sobre os pontos de carregamento Vetra (TikTok e Meta) e rever as palavras-chave de carregamento.", quem: Brand, prazo: "7 dias", estado: por preparar, acordada: false}
+  - {id: r-leilao, nome: "Defesa no leilão de pesquisa", quando: {tipos: [Leilão]}, o_que: "Rever lances nas pesquisas de marca e genéricas onde a sobreposição subiu; teto de CPC +15% durante 2 semanas.", quem: Performance, prazo: "24 h", estado: pronta, acordada: true}
+  - {id: r-bf, nome: "Black Friday Vetra Club", quando: {series: [blackfriday]}, o_que: "Fechar com o cliente a oferta Vetra Club para a Black Friday e ter criativos prontos uma semana antes.", quem: Account, prazo: "até 2 semanas antes", estado: por preparar, acordada: false}
+
+textos:        # frases dos criativos ilustrativos, por território
+  Preço: ["Abastece mais. Paga menos.", "O gasóleo mais em conta da zona.", "Menos cêntimos em cada litro.", "Preço baixo, sem letras pequenas.", "Este fim de semana, o depósito sai mais barato."]
+  Fidelização e app: ["Cada litro conta pontos.", "Paga na bomba, pela app.", "O teu cartão vale mais em cada visita.", "Saldo de volta em cada abastecimento.", "Tudo na app, sem filas."]
+  Conveniência e loja: ["Pára, abastece, segue com café.", "A tua pausa na estrada, melhor.", "Loja aberta 24 horas.", "Lavagem rápida enquanto abasteces.", "Mais do que um posto."]
+  Mobilidade elétrica: ["Carrega em 20 minutos.", "A rede elétrica que vai contigo.", "Carregar ficou simples.", "Elétrico sem ansiedade.", "O inverno não pára o teu elétrico."]
+  Viagem e lazer: ["Para todas as viagens deste verão.", "A estrada é tua.", "Férias começam no posto.", "Viaja mais, gasta menos.", "Natal é voltar a casa."]

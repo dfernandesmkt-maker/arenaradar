@@ -1,0 +1,35 @@
+# Arena Radar v4 — Radar de movimentos da concorrência (D50).
+# Configuração da agência. Tudo o que é específico de um cliente vive em config/v4/clientes/<cliente>.yaml.
+agencia:
+  nome: Arena Media Portugal
+
+cliente_inicial: vetra
+
+calendario:
+  inicio: 2024-10-07        # segunda-feira da semana 0 do histórico (2 anos)
+  semanas: 104              # semanas de histórico; a última (índice 103) é a semana de 28 set a 4 out 2026
+  futuro: 12                # semanas à frente mostradas em «À frente»
+  hoje: 2026-10-05          # segunda-feira do briefing
+
+# Valor assumido por anúncio ativo e semana (euros) para o investimento ESTIMADO em digital.
+# LIGAÇÃO[marktest-adcheck]: substituído por investimento licenciado quando houver fonte.
+plataformas:
+  - {id: Meta,    valor: 420}
+  - {id: Google,  valor: 360}
+  - {id: YouTube, valor: 540}
+  - {id: TikTok,  valor: 300}
+# Peso assumido de uma semana de TV, rádio ou exterior numa campanha (euros), só para ordens de grandeza.
+offline: {TV: 38000, Rádio: 9000, Exterior: 14000, Imprensa: 6000}
+
+# Fontes que alimentam a versão ligada. Na demonstração nenhuma está ligada.
+fontes:
+  - {id: meta-ad-library, nome: Meta Ad Library (API), da: "Anúncios ativos e históricos de qualquer anunciante na UE, com texto, imagem, datas e alcance", estado: por ligar, regime: oficial}
+  - {id: google-ads-transparency, nome: Google Ads Transparency Center, da: "Anúncios de pesquisa, YouTube e Display por anunciante e país", estado: por ligar, regime: oficial, nota: "Conjunto público no BigQuery; cobertura para Portugal por confirmar"}
+  - {id: tiktok-ccl, nome: TikTok Commercial Content Library (API), da: "Anúncios pagos no TikTok na UE", estado: por ligar, regime: oficial, nota: "Acesso por candidatura"}
+  - {id: linkedin-ad-library, nome: LinkedIn Ad Library, da: "Anúncios no LinkedIn por anunciante", estado: por ligar, regime: oficial}
+  - {id: auction-insights, nome: Auction Insights (contas Google Ads do cliente), da: "Quem aparece nas mesmas pesquisas que o cliente e com que frequência", estado: por ligar, regime: dados do cliente, nota: "Exige autorização do cliente (Q12)"}
+  - {id: marktest-adcheck, nome: Marktest (AdCheck / MediaMonitor), da: "Investimento em TV, rádio, imprensa e exterior", estado: por ligar, regime: licenciada}
+  - {id: dgeg-precos, nome: DGEG — Preços dos combustíveis, da: "Preço por posto e por dia, publicado pela Direção-Geral de Energia e Geologia", estado: por ligar, regime: oficial, vertical: combustiveis}
+  - {id: monitor-paginas, nome: Monitorização de páginas, da: "Alterações em páginas de preços, promoções e folhetos digitais dos concorrentes", estado: por ligar, regime: a validar}
+  - {id: noticias-rss, nome: Notícias (RSS), da: "Imprensa económica e de setor", estado: por ligar, regime: oficial}
+  - {id: google-trends, nome: Google Trends, da: "Interesse de pesquisa por marca e tema", estado: por ligar, regime: oficial}

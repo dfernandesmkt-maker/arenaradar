@@ -51,3 +51,18 @@ Rotas: `#/<cliente>/<página>[/<separador>][?v=cliente&rasc=1&w=…&c=…&p=…&
 ## Teste de carga
 
 `python3 scripts/gerar_carga.py [pasta]` gera, fora do repositório, uma cópia com 30 clientes fictícios em 6 verticais, 17 concorrentes no Lumio e 12 sinais e pistas. Abre `<pasta>/prototype/arena-radar-v3-preview.html` e percorre as páginas em ecrã grande e pequeno (ver `docs/08`, secção «Escala»).
+
+## v4 — Radar de movimentos (atual, D50)
+
+```bash
+python3 scripts/v4/gerar_dados.py      # dados de demonstração a partir de config/v4/ → data/v4/
+python3 prototype/v4/build.py          # → prototype/arena-radar-v4.html
+python3 prototype/v4/build.py --artefacto   # → prototype/dist/arena-radar-v4-artefacto.html
+```
+
+| Pasta | Conteúdo |
+|---|---|
+| `v4/src/css/` | `tokens.css` (tokens, pílulas e cabeçalho da v3, D38 a D49) e `app.css` (estrutura e componentes da v4) |
+| `v4/src/js/` | `00-core` (utilitários, datas, memória local), `10-data` (cliente ativo), `20-ui` (selo, cartões de movimento, criativos, gaveta), `30-charts` (linhas, faixas temporais), páginas `50-agora`, `51-concorrentes`, `52-comparar`, `53-afrente`, `54-respostas`, `56-agencia` (Torre, Fontes) e `90-app` (rotas, menu, âmbito) |
+
+Rotas: `#/<cliente>/<agora|concorrentes|comparar|afrente|respostas>[/<marca>][#<foco>]` e `#/agencia/<torre|fontes>`. Especificação em `docs/11-v4-radar-de-movimentos.md`.

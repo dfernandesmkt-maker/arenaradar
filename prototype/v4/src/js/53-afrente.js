@@ -1,0 +1,25 @@
+/* ============================================================
+   «À frente»: as próximas 12 semanas. O que cada concorrente deve fazer (pelo seu histórico),
+   os sinais precoces de agora, as datas do setor e o que preparar. Antecipação acionável, não adivinhação.
+   ============================================================ */
+function pageAFrente(sub,focus){
+  use("previsoes","movimentos");
+  const cl=cliente(),P=D.previsoes,w0=Z-3,w1=Z+CAL.futuro;
+  const rows=concorrentes().map(m=>({label:m.nome,c:col(m),
+    bars:D.campanhas.filter(c=>c.marca===m.id&&c.tipo==="campanha"&&c.fim>=w0&&c.ini<=Z).map(c=>({ini:c.ini,fim:Math.min(c.fim,Z),tip:`No ar: ${c.nome}`})).concat(P.filter(p=>p.marca===m.id).map(p=>({ini:p.ini,fim:p.fim,dash:true,op:p.confianca==="alta"?1:.75,tip:`${p.nome} · janela ${fD(wDate(p.ini))} a ${fD(wDate(p.fim+1))} · confiança ${p.confianca}`}))),
+    marks:D.movimentos.filter(x=>x.marca===m.id&&x.semana>=w0&&["Teste de criativos","Leilão","Lançamento","Promoção"].includes(x.tipo)).map(x=>({w:x.semana,tip:x.titulo,mv:x.id}))}));
+  rows.push({label:cl.nome+" (plano)",c:col(cl),bars:[],marks:[]});
+  later(()=>swimlane($("#tlf"),{rows,w0,w1,events:D.calendario_setor,aria:"Próximas 12 semanas"}));
+  const sinais=D.movimentos.filter(m=>m.semana>=Z-1&&(m.tipo==="Teste de criativos"||m.tipo==="Leilão"));
+  const card=p=>{const m=MK[p.marca],rr=p.respostas.map(id=>RS[id]).filter(Boolean),prep=rr.filter(r=>estadoR(r)==="por preparar"),ate=wDate(p.ini-1);
+    return`<article class="pb" id="${p.id}"><div class="hd"><div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px">${whoH(p.marca)}${tipoTag(p.tipo)}<span class="conf" data-c="${p.confianca}">confiança ${p.confianca}</span></div><h3>${esc(p.nome)}</h3></div><span class="tag">${fD(wDate(p.ini))} a ${fD(wDate(p.fim+1))}</span></div>
+      <dl><dt>Porque esperamos</dt><dd>${esc(p.porque)}</dd>${p.base.length?`<dt>Ocorrências</dt><dd>${p.base.map(b=>`${fDY(pd(b.inicio))} (${b.duracao} sem.)`).join(" · ")}</dd>`:""}<dt>Como deve ser</dt><dd>${esc(lista(p.canais))} · ${esc(p.territorio)}${p.oferta?` · ${esc(p.oferta)}`:""}</dd>${p.sinal?`<dt>Sinal</dt><dd>${p.sinal.movimento?`<button class="lnk" data-mv="${p.sinal.movimento}">${esc(p.sinal.texto)}</button>`:esc(p.sinal.texto)}</dd>`:""}</dl>
+      ${rr.length?`<div class="hit2">${prep.length?`<b>${p.ini-1<=Z?`Preparar já (a janela abre a ${fD(wDate(p.ini))})`:`Preparar até ${fDY(ate)}`}:</b> ${prep.map(r=>`«${esc(r.nome)}»`).join(", ")} ainda ${prep.length>1?"estão":"está"} por preparar.`:`<b>Resposta pronta:</b> ${rr.map(r=>`«${esc(r.nome)}»`).join(", ")}.`}</div><div class="acts">${rr.map(respBtn).join("")}</div>`:`<p class="t-xs" style="margin-top:12px">Sem resposta combinada para isto. Vale a pena falar com o cliente ${p.ini-1<=Z?"já":"antes de "+fDY(ate)}.</p>`}
+      <p class="foot">Estimado a partir do histórico da marca (${esc(p.metodo)}).</p></article>`};
+  const prep=P.filter(p=>p.respostas.some(id=>RS[id]&&estadoR(RS[id])==="por preparar"));
+  if(focus)later(()=>setTimeout(()=>{const el=document.getElementById(focus);if(el)el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"})},80));
+  return heroHTML(`${esc(cl.nome)} · ${fD(wDate(Z+1))} a ${fD(wDate(Z+CAL.futuro))}`,`${P.length} movimentos esperados nas próximas ${CAL.futuro} semanas`,
+     `Calculados a partir do que cada marca fez nos últimos 2 anos.${sinais.length?` ${sinais.length} sinal${sinais.length>1?"is":""} precoce${sinais.length>1?"s":""} já ${sinais.length>1?"estão":"está"} a acontecer.`:""}${prep.length?` ${prep.length} ${prep.length>1?"precisam":"precisa"} de resposta por preparar.`:""}`)+
+   `<div class="panel pad"><div class="tl" id="tlf"></div><div class="legend2"><span><i style="background:var(--c2)"></i>No ar</span><span><i style="background:transparent;border:1.5px dashed var(--text-2)"></i>Esperado (janela)</span><span><i style="background:var(--surface);border:2px solid var(--text-2);border-radius:50%;width:11px;height:11px"></i>Sinal ou movimento recente</span><span><i style="background:color-mix(in srgb,var(--accent) 45%,transparent)"></i>Data do setor</span></div><p class="foot">A linha «${esc(cl.nome)} (plano)» fica vazia na demonstração: na versão ligada mostra o plano de meios do cliente, para ver sobreposições.</p></div>
+   ${sinais.length?secHTML("Sinais precoces","O que está a acontecer agora e costuma anteceder um movimento maior.",sinais.map((m,i)=>moveCard(m,{i,compact:false})).join("")):""}
+   ${secHTML("O que esperar e o que preparar","Por ordem de data. A janela reflete a variação entre anos; a confiança, a regularidade da marca.",P.map(card).join("")||emptyHTML("Nada esperado","Sem padrões que caiam nas próximas semanas."))}`}
