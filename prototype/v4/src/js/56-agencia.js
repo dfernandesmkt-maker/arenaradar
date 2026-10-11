@@ -16,7 +16,7 @@ function pageTorre(){
    `<div class="tgrid">${cards.join("")}</div>
    <div class="grid2" style="margin-top:16px">
     <div class="card"><h3>Importantes esta semana</h3><p>Em todos os clientes, por ordem de importância.</p><div class="mlist">${tops.sort((a,b)=>b.m.importancia-a.m.importancia).map(x=>`<button class="mrow" style="grid-template-columns:90px minmax(0,1fr)" data-go="${x.c.id}/agora"><span class="d">${esc(x.c.nome)}</span><span><i class="dot" style="background:${x.cor}"></i> ${esc(x.m.titulo)}</span></button>`).join("")}</div></div>
-    <div class="card"><h3>A seguir</h3><p>Próximos movimentos esperados, pelo histórico de cada marca.</p><div class="mlist">${next.slice(0,6).map(x=>`<button class="mrow" style="grid-template-columns:90px minmax(0,1fr)" data-go="${x.c.id}/afrente#${x.p.id}"><span class="d">${fD(x.w)}</span><span><i class="dot" style="background:${x.cor}"></i> ${esc(x.nome)}: ${esc(x.p.nome)} <span class="t-xs">· ${esc(x.c.nome)} · confiança ${x.p.confianca}</span></span></button>`).join("")}</div></div>
+    <div class="card"><h3>A seguir</h3><p>Próximos movimentos esperados, pelo histórico de cada marca.</p><div class="mlist">${next.slice(0,6).map(x=>`<button class="mrow" style="grid-template-columns:90px minmax(0,1fr)" data-go="${x.c.id}/antecipar#${x.p.id}"><span class="d">${fD(x.w)}</span><span><i class="dot" style="background:${x.cor}"></i> ${esc(x.nome)}: ${esc(x.p.nome)} <span class="t-xs">· ${esc(x.c.nome)} · confiança ${x.p.confianca}</span></span></button>`).join("")}</div></div>
    </div>`}
 
 function pageFontes(){

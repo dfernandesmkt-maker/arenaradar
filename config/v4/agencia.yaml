@@ -8,7 +8,7 @@ cliente_inicial: vetra
 calendario:
   inicio: 2024-10-07        # segunda-feira da semana 0 do histórico (2 anos)
   semanas: 104              # semanas de histórico; a última (índice 103) é a semana de 28 set a 4 out 2026
-  futuro: 12                # semanas à frente mostradas em «À frente»
+  futuro: 12                # semanas mostradas em «Antecipar»
   hoje: 2026-10-05          # segunda-feira do briefing
 
 # Valor assumido por anúncio ativo e semana (euros) para o investimento ESTIMADO em digital.
@@ -33,3 +33,4 @@ fontes:
   - {id: monitor-paginas, nome: Monitorização de páginas, da: "Alterações em páginas de preços, promoções e folhetos digitais dos concorrentes", estado: por ligar, regime: a validar}
   - {id: noticias-rss, nome: Notícias (RSS), da: "Imprensa económica e de setor", estado: por ligar, regime: oficial}
   - {id: google-trends, nome: Google Trends, da: "Interesse de pesquisa por marca e tema", estado: por ligar, regime: oficial}
+  - {id: ia-resumo, nome: Modelo de linguagem (IA), da: "Não é uma fonte: redige o resumo da semana e classifica os criativos a partir dos dados acima. Sempre revisto pela equipa", estado: por ligar, regime: a validar, nota: "Fornecedor e dados a aprovar por IT e Compliance (Q13)"}

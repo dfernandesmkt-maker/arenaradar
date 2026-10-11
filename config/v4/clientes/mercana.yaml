@@ -73,3 +73,12 @@ textos:
   Frescos e qualidade: ["Fresco de manhã, na tua mesa à noite.", "Os vinhos da feira chegaram.", "Do produtor para a tua loja.", "Qualidade que se prova.", "Peixe fresco todos os dias."]
   Marca própria: ["Qualidade de marca, preço nosso.", "Feito para ti, ao melhor preço.", "A nossa marca, a tua escolha.", "Essencial e bom.", "200 produtos novos."]
   Conveniência e entrega: ["Encomenda agora, recebe hoje.", "Entregamos em 1 hora.", "A loja vai a tua casa.", "Recolhe no carro, sem sair.", "Compras feitas em 5 minutos."]
+
+# Público principal por território: usado pela classificação de criativos por regras (scripts/v4/ia.py).
+# Com --ia, o público vem do modelo, a partir do texto de cada anúncio.
+publicos:
+  Preço baixo: Famílias atentas ao preço
+  Promoções e cartão: Clientes do cartão
+  Frescos e qualidade: Quem valoriza frescos
+  Marca própria: Famílias atentas ao preço
+  Conveniência e entrega: Quem tem pouco tempo

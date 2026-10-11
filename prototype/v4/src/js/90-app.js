@@ -1,12 +1,13 @@
 /* ============================================================
    Aplicação: rotas, menu, âmbito (Agência / clientes), modo claro e escuro, arranque.
-   Rotas: #/<cliente>/<agora|concorrentes|comparar|afrente|respostas>[/<marca>][#<foco>] · #/agencia/<torre|fontes>
+   Rotas: #/<cliente>/<agora|concorrentes|comparar|antecipar|respostas>[/<marca>][#<foco>] · #/agencia/<torre|fontes>
    ============================================================ */
-const PAGES={agora:{n:"Agora",i:"i-pulse",f:pageAgora},concorrentes:{n:"Concorrentes",s:"Marcas",i:"i-users",f:pageConcorrentes},comparar:{n:"Comparar",i:"i-chart",f:pageComparar},afrente:{n:"À frente",i:"i-cal",f:pageAFrente},respostas:{n:"Respostas",i:"i-shield",f:pageRespostas}};
+const PAGES={agora:{n:"Agora",i:"i-pulse",f:pageAgora},concorrentes:{n:"Concorrentes",s:"Marcas",i:"i-users",f:pageConcorrentes},comparar:{n:"Comparar",i:"i-chart",f:pageComparar},antecipar:{n:"Antecipar",i:"i-cal",f:pageAntecipar},respostas:{n:"Respostas",i:"i-shield",f:pageRespostas}};
 const AGP={torre:{n:"Torre",i:"i-grid",f:pageTorre},fontes:{n:"Fontes de dados",i:"i-plug",f:pageFontes}};
 let ROUTE={scope:"cliente",cid:AG.cliente_inicial,page:"agora",sub:null,focus:null};
 function parse(h){const s=(h||"").replace(/^#\/?/,""),[path,focus]=s.split("#"),p=path.split("/").filter(Boolean);
   if(p[0]==="agencia")return{scope:"agencia",cid:ROUTE.cid,page:AGP[p[1]]?p[1]:"torre",sub:null,focus};
+  if(p[1]==="afrente")p[1]="antecipar";       // ligações antigas («À frente»)
   if(CLS[p[0]])return{scope:"cliente",cid:p[0],page:PAGES[p[1]]?p[1]:"agora",sub:p[2]||null,focus};
   return{scope:"cliente",cid:ROUTE.cid||AG.cliente_inicial,page:"agora",sub:null,focus:null}}
 const href=r=>r.scope==="agencia"?`#/agencia/${r.page}`:`#/${r.cid}/${r.page}${r.sub?"/"+r.sub:""}${r.focus?"#"+r.focus:""}`;

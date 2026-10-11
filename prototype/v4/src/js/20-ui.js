@@ -87,6 +87,7 @@ function creativeDetail(c){const m=MK[c.marca];
    <h2>${esc(c.titulo)}</h2><div class="big-th">${thumbSVG(c)}</div>
    <div class="meta" style="margin-top:14px"><span>No ar: <b>${fD(wDate(c.ini))} a ${c.fim>=Z?"hoje":fD(wDate(c.fim+1))}</b></span><span>Mensagem: <b>${esc(c.territorio)}</b></span>${c.oferta?`<span>Oferta: <b>${esc(c.oferta)}</b></span>`:""}<span>Variantes: <b>${c.variantes}</b></span><span>Alcance estimado: <b>${nf(c.alcance)}</b></span></div>
    ${c.campanha?`<p class="t-sm" style="margin-top:12px">Campanha: <b>${esc(c.campanha)}</b></p>`:""}
+   ${c.cls?`<div class="clsbox"><div class="clh"><b>Classificação automática</b><span class="seal" data-o="estimado" style="height:20px">Estimado</span></div><div class="meta"><span>Mecânica: <b>${esc(c.cls.mecanica)}</b></span><span>Tom: <b>${esc(c.cls.tom)}</b></span><span>Público: <b>${esc(c.cls.publico)}</b></span><span>Pede: <b>${esc(c.cls.acao)}</b></span></div><p class="foot">${esc(D.blocos.classificacao.metodo)}.</p></div>`:""}
    <p class="foot" style="margin-top:16px">Ilustração de demonstração (marca fictícia). Na versão ligada mostra-se o criativo original da biblioteca de anúncios, com ligação para a fonte.</p>`)}
 document.addEventListener("click",e=>{let t;
   if(t=e.target.closest("[data-mv]")){const m=MV[t.dataset.mv];if(m)moveDetail(m);return}

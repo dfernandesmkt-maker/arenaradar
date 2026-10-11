@@ -85,4 +85,5 @@ Na v4 todos os pontos de entrada estão no gerador `scripts/v4/gerar_dados.py` (
 | `monitor-paginas` | Páginas de preço, promoções e folhetos | Índice do cabaz (Mercana), promoções |
 | `noticias-rss` | Imprensa | Movimentos de imprensa e lançamentos |
 | `marktest-adcheck` | Marktest | Investimento em meios tradicionais (hoje estimado) |
-| `persistencia-equipa` | Base partilhada (IT) | Decisões sobre respostas (hoje `localStorage`, em `prototype/v4/src/js/00-core.js`) |
+| `persistencia-equipa` | Base partilhada (IT) | Decisões sobre respostas e estado «revisto» do resumo (hoje `localStorage`, em `prototype/v4/src/js/00-core.js` e `50-agora.js`) |
+| `ia-resumo`, `ia-classificacao` | Modelo de linguagem aprovado (Q13) | Resumo da semana e classificação de criativos (`scripts/v4/ia.py`; com `--ia`, cache em `data/v4/ia/`) |

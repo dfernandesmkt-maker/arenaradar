@@ -77,3 +77,12 @@ textos:        # frases dos criativos ilustrativos, por território
   Conveniência e loja: ["Pára, abastece, segue com café.", "A tua pausa na estrada, melhor.", "Loja aberta 24 horas.", "Lavagem rápida enquanto abasteces.", "Mais do que um posto."]
   Mobilidade elétrica: ["Carrega em 20 minutos.", "A rede elétrica que vai contigo.", "Carregar ficou simples.", "Elétrico sem ansiedade.", "O inverno não pára o teu elétrico."]
   Viagem e lazer: ["Para todas as viagens deste verão.", "A estrada é tua.", "Férias começam no posto.", "Viaja mais, gasta menos.", "Natal é voltar a casa."]
+
+# Público principal por território: usado pela classificação de criativos por regras (scripts/v4/ia.py).
+# Com --ia, o público vem do modelo, a partir do texto de cada anúncio.
+publicos:
+  Preço: Condutores atentos ao preço
+  Fidelização e app: Clientes do cartão e da app
+  Conveniência e loja: Condutores em viagem
+  Mobilidade elétrica: Condutores de elétricos
+  Viagem e lazer: Famílias em viagem

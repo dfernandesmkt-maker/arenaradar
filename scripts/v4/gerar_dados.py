@@ -1,6 +1,7 @@
 """Arena Radar v4 — gera os dados de DEMONSTRAÇÃO do radar de movimentos (D50).
 
-    python3 scripts/v4/gerar_dados.py
+    python3 scripts/v4/gerar_dados.py          # resumo e classificação por regras (sem chamadas externas)
+    python3 scripts/v4/gerar_dados.py --ia     # com credenciais da API: resumo e classificação por IA (cache em data/v4/ia/)
 
 Lê config/v4/ (agência e clientes fictícios) e escreve data/v4/<cliente>.json e data/v4/agencia.json.
 
@@ -10,10 +11,12 @@ O que faz, por cliente:
 2. Deteta os MOVIMENTOS (o objeto central da v4): lançamento de campanha, promoção, mudança de preço,
    lançamento de produto ou serviço, teste de criativos, subida no leilão, notícia. Cada movimento tem prova
    (criativos ou série), importância explicada e o histórico da mesma marca.
-3. Calcula as PREVISÕES («À frente») a partir do histórico, como a versão ligada fará com dados reais:
+3. Calcula as PREVISÕES («Antecipar») a partir do histórico, como a versão ligada fará com dados reais:
    séries de campanhas que se repetem na mesma altura do ano, promoções com ritmo regular e testes de criativos
    que costumam anteceder campanhas.
 4. Liga cada movimento e previsão às RESPOSTAS combinadas com o cliente.
+5. Escreve o RESUMO DA SEMANA e CLASSIFICA os criativos (scripts/v4/ia.py, RB-114): por regras ou, com --ia, por IA.
+   Fica sempre «por rever» até a equipa o rever.
 
 Regra de ouro: tudo o que sai daqui tem origem «demo» (ou «estimado», com método) e só usa marcas fictícias.
 LIGAÇÃO[meta-ad-library] LIGAÇÃO[google-ads-transparency] LIGAÇÃO[tiktok-ccl] LIGAÇÃO[auction-insights]
@@ -25,11 +28,14 @@ from __future__ import annotations
 import json
 import math
 import random
+import sys
 from datetime import date, timedelta
 from pathlib import Path
 from statistics import mean
 
 import yaml
+
+import ia
 
 ROOT = Path(__file__).resolve().parents[2]
 CFG = ROOT / "config" / "v4"
@@ -404,7 +410,7 @@ def build(cfg: dict) -> dict:
         if m["tipo"] == "Promoção" and m["semana"] >= Z - 1:
             m["evidencia"] = "preco"
 
-    # ---------- 3. previsões («À frente»)
+    # ---------- 3. previsões («Antecipar»)
     prev_out = []
     series = {}
     for o in camps:
@@ -488,23 +494,6 @@ def build(cfg: dict) -> dict:
         i = iso_idx(ano, e["semana"])
         cal.append({"nome": e["nome"], "ini": i, "fim": i + e.get("duracao", 1) - 1})
 
-    # ---------- resumo da semana (frases a partir dos movimentos; na versão ligada, texto gerado por IA e revisto)
-    agora = [m for m in mov if m["semana"] >= Z]
-    agora.sort(key=lambda m: -m["importancia"])
-    resumo = []
-    rid = {r["id"]: r for r in resp}
-    for m in agora[:2]:
-        rr = [rid[x] for x in m["respostas"]]
-        pronto = next((r for r in rr if r["estado"] == "pronta"), None)
-        resumo.append(m["titulo"] + "." + (f" Há uma resposta combinada pronta: «{pronto['nome']}»." if pronto else
-                                           (f" A resposta «{rr[0]['nome']}» ainda está por preparar." if rr else " Não há resposta combinada para isto.")))
-    tst = next((m for m in agora if m.get("antecede")), None)
-    if tst:
-        resumo.append(f"Sinal precoce. {tst['titulo']}. {tst['seguinte']}")
-    elif prev_out:
-        p = prev_out[0]
-        resumo.append(f"A seguir: «{p['nome']}» da {nome[p['marca']]} deve arrancar na semana de {fdata(wdate(p['provavel']))}.")
-
     blocos = {
         "movimentos": bloco("Movimentos da concorrência", "demo", "Simulados a partir do comportamento descrito em config/v4/clientes/%s.yaml; marcas fictícias" % cl["id"], "meta-ad-library, google-ads-transparency, tiktok-ccl, noticias-rss"),
         "criativos": bloco("Criativos", "demo", "Criativos ilustrativos gerados para cada campanha simulada", "meta-ad-library, google-ads-transparency, tiktok-ccl"),
@@ -535,7 +524,6 @@ def build(cfg: dict) -> dict:
         "ritmo": ritmo,
         "calendario_setor": cal,
         "respostas": resp,
-        "resumo": resumo,
         "blocos": blocos,
     }
 
@@ -546,11 +534,13 @@ def nf(x: float, d: int = 0) -> str:
 
 
 def main() -> None:
+    usar_ia = "--ia" in sys.argv[1:]
     OUT.mkdir(parents=True, exist_ok=True)
     clientes = []
     for p in sorted((CFG / "clientes").glob("*.yaml")):
         cfg = load(p)
         d = build(cfg)
+        ia.aplicar(d, cfg, wdate, fdata, OUT / "ia", usar_ia)
         assert all(m.get("origem") for m in d["movimentos"]), "movimento sem origem"
         assert all(b.get("origem") in ("demo", "estimado", "real") for b in d["blocos"].values()), "bloco sem origem"
         (OUT / f"{d['cliente']['id']}.json").write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

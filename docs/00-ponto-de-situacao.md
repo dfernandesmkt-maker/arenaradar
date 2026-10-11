@@ -26,10 +26,10 @@ Três modos de entrega: alertas apenas para eventos materiais, briefing semanal 
 
 ## 3.0 Reorientação (outubro 2026): radar de movimentos (v4)
 O projeto foi repensado (D50). O Radar passa a ser um **radar de movimentos da concorrência**: tudo o que os concorrentes fazem, num só fio, com prova, e com o que isso costuma anunciar a seguir. Protótipo novo (`prototype/arena-radar-v4.html`) com **2 clientes fictícios**, Vetra (combustíveis) e Mercana (retalho alimentar):
-- **Agora:** o que mexeu esta semana, com os criativos, a série de preço ou do leilão como prova, a importância explicada e o que costuma seguir-se.
+- **Agora:** o que mexeu esta semana, com um resumo pronto a rever (por IA na versão ligada; o email para o cliente só se copia depois de revisto), com os criativos, a série de preço ou do leilão como prova, a importância explicada e o que costuma seguir-se.
 - **Concorrentes:** ficha viva de cada marca, com ritmo, linha temporal, biblioteca de criativos e mensagens.
 - **Comparar:** quota de voz, investimento estimado, mapa de mensagens com espaço livre, preço, leilão de pesquisa do cliente.
-- **À frente:** as próximas 12 semanas, calculadas a partir do histórico de cada marca, com sinais precoces e o que preparar.
+- **Antecipar:** as próximas 12 semanas, calculadas a partir do histórico de cada marca, com sinais precoces e o que preparar.
 - **Respostas:** o que está combinado com o cliente para cada tipo de movimento; a equipa decide ativar.
 
 Detalhe em `docs/11-v4-radar-de-movimentos.md`. A secção seguinte descreve a v3, que fica como referência.

@@ -63,6 +63,6 @@ python3 prototype/v4/build.py --artefacto   # → prototype/dist/arena-radar-v4-
 | Pasta | Conteúdo |
 |---|---|
 | `v4/src/css/` | `tokens.css` (tokens, pílulas e cabeçalho da v3, D38 a D49) e `app.css` (estrutura e componentes da v4) |
-| `v4/src/js/` | `00-core` (utilitários, datas, memória local), `10-data` (cliente ativo), `20-ui` (selo, cartões de movimento, criativos, gaveta), `30-charts` (linhas, faixas temporais), páginas `50-agora`, `51-concorrentes`, `52-comparar`, `53-afrente`, `54-respostas`, `56-agencia` (Torre, Fontes) e `90-app` (rotas, menu, âmbito) |
+| `v4/src/js/` | `00-core` (utilitários, datas, memória local), `10-data` (cliente ativo), `20-ui` (selo, cartões de movimento, criativos, gaveta), `30-charts` (linhas, faixas temporais), páginas `50-agora`, `51-concorrentes`, `52-comparar`, `53-antecipar`, `54-respostas`, `56-agencia` (Torre, Fontes) e `90-app` (rotas, menu, âmbito) |
 
-Rotas: `#/<cliente>/<agora|concorrentes|comparar|afrente|respostas>[/<marca>][#<foco>]` e `#/agencia/<torre|fontes>`. Especificação em `docs/11-v4-radar-de-movimentos.md`.
+Rotas: `#/<cliente>/<agora|concorrentes|comparar|antecipar|respostas>[/<marca>][#<foco>]` e `#/agencia/<torre|fontes>`. Especificação em `docs/11-v4-radar-de-movimentos.md`.

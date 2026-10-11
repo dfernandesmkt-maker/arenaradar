@@ -1,8 +1,8 @@
 /* ============================================================
-   «À frente»: as próximas 12 semanas. O que cada concorrente deve fazer (pelo seu histórico),
+   «Antecipar»: as próximas 12 semanas. O que cada concorrente deve fazer (pelo seu histórico),
    os sinais precoces de agora, as datas do setor e o que preparar. Antecipação acionável, não adivinhação.
    ============================================================ */
-function pageAFrente(sub,focus){
+function pageAntecipar(sub,focus){
   use("previsoes","movimentos");
   const cl=cliente(),P=D.previsoes,w0=Z-3,w1=Z+CAL.futuro;
   const rows=concorrentes().map(m=>({label:m.nome,c:col(m),
