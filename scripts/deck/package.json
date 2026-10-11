@@ -1,0 +1,7 @@
+{
+  "name": "arena-radar-deck",
+  "private": true,
+  "description": "Gera o deck da direção (deliverables/arena-radar-direcao.pptx) a partir das capturas do protótipo v4.",
+  "scripts": { "capturas": "node capturas.js", "deck": "node gerar_deck.js" },
+  "dependencies": { "pptxgenjs": "3.12.0" }
+}

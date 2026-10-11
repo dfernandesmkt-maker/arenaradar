@@ -57,12 +57,14 @@ Criar `scripts/build_dataset.py`: lê `data/raw/**`, agrega por semana e gera `d
 **Aceitação:** correr os coletores + build atualiza o protótipo sem editar o HTML à mão.
 
 ## P1 — Materiais para a direção
-### RB-10 · Capturas do protótipo
-Capturas em alta resolução (Puppeteer ou Playwright) dos ecrãs do modo direção, para o deck.
+### RB-10 · Capturas do protótipo ✅
+`node scripts/deck/capturas.js` → `deliverables/capturas/*.png` (v4, 2x, tema claro): Agora, gaveta do movimento, resumo, Antecipar, plano, previsão, Torre.
 
-### RB-11 · Deck da direção (PowerPoint)
-8 slides segundo o guião em `00-ponto-de-situacao.md`. Inter (decisão D22), cores Arena, logo oficial, visual antes de texto, notas do orador em todos os slides. Gerar com `pptxgenjs`.
-**Aceitação:** nenhuma afirmação sem fonte; números iguais aos do documento.
+### RB-11 · Deck da direção (PowerPoint) ✅
+`deliverables/arena-radar-direcao.pptx`, 9 slides segundo o guião em `00-ponto-de-situacao.md` (anexo). Inter (D22), cores Arena, logo oficial, notas do orador em todos os slides. Gerado por `scripts/deck/gerar_deck.js` (`cd scripts/deck && npm install`, depois `node scripts/deck/gerar_deck.js`). **Para apresentar, o computador precisa da fonte Inter instalada**; sem ela, o PowerPoint substitui por outra fonte e o texto pode mudar de largura.
+
+### RB-119 · Ponto de situação reescrito para a v4 ✅
+`docs/00-ponto-de-situacao.md` e a visão geral do dossier passam a contar a história da v4: teste de dados reais de 2 semanas, piloto de 6, critérios, quatro pedidos.
 
 ### RB-12 · Documento do projeto (Word)
 Consolidar `docs/00` a `docs/04` num documento Word. Arial Nova, logo no cabeçalho, rodapé paginado. Gerar com `docx` (Node.js).

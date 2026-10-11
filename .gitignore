@@ -7,3 +7,6 @@ __pycache__/
 data/raw/internal/
 # Variante do protótipo para publicar no claude.ai (gerada)
 prototype/dist/
+
+# Dependências do gerador do deck
+node_modules/

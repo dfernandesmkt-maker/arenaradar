@@ -8,7 +8,7 @@ function pageAgora(){
   const cl=cliente(),A=agora(),imp=A.filter(m=>m.nivel==="importante"),top=A[0];
   const pr=A.filter(m=>respostasDe(m).some(r=>estadoR(r)==="pronta")).length;
   const emc=concorrentes().filter(m=>D.ritmo[m.id].em_curso.length);
-  const media=mean(range(Z-8,Z-1).map(w=>D.movimentos.filter(m=>m.semana===w&&!MK[m.marca].cliente).length));
+  const ant=range(Z-13,Z-1).map(w=>D.movimentos.filter(m=>m.semana===w&&!MK[m.marca].cliente).length),media=mean(ant.slice(-8)),maxAnt=Math.max(...ant);
   const pv=D.previsoes[0];
   const L=D.movimentos.filter(m=>m.semana>Z-FA.per&&(FA.tipo==="Todos"||m.tipo===FA.tipo)&&(!FA.marca||m.marca===FA.marca)).sort((a,b)=>FA.per===1?b.importancia-a.importancia:b.data.localeCompare(a.data)||b.importancia-a.importancia);
   const base=D.movimentos.filter(m=>m.semana>Z-FA.per),tps=TIPOS.filter(t=>base.some(m=>m.tipo===t));
@@ -27,7 +27,7 @@ function pageAgora(){
   return heroHTML(`${esc(cl.nome)} · semana de ${wRange(Z)}`,top?hl(esc(top.titulo)):"Semana calma: nenhum movimento da concorrência",
       `${A.length} movimento${A.length===1?"":"s"} da concorrência esta semana${imp.length?`, ${imp.length} importante${imp.length>1?"s":""}`:""}. ${pr?`${pr} ${pr>1?"têm":"tem"} resposta combinada pronta.`:"Nenhum tem resposta combinada pronta."} A equipa decide o que fazer.`)+
    `<div class="kpis">
-     <div class="kpi"><span class="l">Movimentos esta semana</span><span class="big" data-count="${A.length}">${A.length}</span><span class="s">média das 8 semanas anteriores: ${nf(media,1)}</span></div>
+     <div class="kpi"><span class="l">Movimentos esta semana</span><span class="big" data-count="${A.length}">${A.length}</span><span class="s">${A.length>maxAnt?"a semana mais movimentada dos últimos 3 meses":`média das 8 semanas anteriores: ${nf(media,1)}`}</span></div>
      <div class="kpi"><span class="l">Importantes</span><span class="big" data-count="${imp.length}">${imp.length}</span><span class="s">${[...new Set(imp.map(m=>MK[m.marca].nome))].map(esc).join(", ")||"nenhum"}</span></div>
      <div class="kpi"><span class="l">Concorrentes no ar</span><span class="big">${emc.length} <span style="font-size:18px;color:var(--text-2)">de ${concorrentes().length}</span></span><span class="s">com campanha a decorrer</span></div>
      <div class="kpi"><span class="l">Próximo movimento esperado</span><span class="big" style="font-size:24px">${pv?fD(wDate(pv.provavel)):"—"}</span><span class="s">${pv?`${esc(MK[pv.marca].nome)}: ${esc(pv.nome)}`:"sem previsões"}</span></div>
