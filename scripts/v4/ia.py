@@ -32,8 +32,8 @@ from datetime import date, timedelta
 from pathlib import Path
 
 MODELO = "claude-opus-5-5"
-VERSAO_REGRAS = "regras-1"
-VERSAO_PROMPT = "prompt-1"
+VERSAO_REGRAS = "regras-2"
+VERSAO_PROMPT = "prompt-2"
 
 MECANICAS = ["Desconto no preço", "Saldo, pontos ou cupões", "Oferta ou brinde", "Preço garantido", "Leve mais, pague menos", "Sem oferta"]
 TONS = ["Urgência", "Racional", "Emocional", "Informativo"]
@@ -64,6 +64,7 @@ def factos(d: dict, wdate, fdata) -> dict:
     """O que o modelo (ou as regras) pode usar. Só factos já presentes nos dados do Radar."""
     Z = d["calendario"]["atual"]
     hoje = date.fromisoformat(d["calendario"]["hoje"])
+    P = {p["id"]: p for p in d["previsoes"]}
     nome = {m["id"]: m["nome"] for m in d["marcas"]}
     rid = {r["id"]: r for r in d["respostas"]}
     sem = sorted([m for m in d["movimentos"] if m["semana"] >= Z], key=lambda m: -m["importancia"])
@@ -84,6 +85,10 @@ def factos(d: dict, wdate, fdata) -> dict:
                         "nivel": m["nivel"], "oferta": m.get("oferta"), "o_que_costuma_seguir": m.get("seguinte", ""),
                         "respostas": resp(m["respostas"])} for m in sem[:8]],
         "previsoes": prev,
+        "plano_do_cliente": [{"nome": x["nome"], "semanas": intervalo(wdate(x["ini"]), wdate(x["fim"]) + timedelta(days=6), fdata), "territorio": x["territorio"],
+                              "coincide_com": [{"previsao": P[o["previsao"]]["nome"], "marca": nome[P[o["previsao"]]["marca"]], "mesmo_territorio": o["mesmo_territorio"],
+                                                "confianca": P[o["previsao"]]["confianca"], "choque": o["choque"], "semanas": o["semanas"]} for o in x["sobreposicoes"]]}
+                             for x in d.get("plano", [])],
     }
 
 
@@ -119,6 +124,10 @@ def briefing_regras(f: dict) -> dict:
             dec.append({"texto": f"Preparar «{pp['nome']}» para responder à {m['marca']}.", "movimento": m["id"]})
         else:
             dec.append({"texto": f"Combinar com a {cl} uma resposta para movimentos destes ({m['tipo'].lower()} da {m['marca']})?", "movimento": m["id"]})
+    choques = [(x, o) for x in f.get("plano_do_cliente", []) for o in x["coincide_com"] if o["choque"]]
+    if choques:
+        x, ch = max(choques, key=lambda t: t[1]["semanas"])
+        dec.append({"texto": f"Rever «{x['nome']}» ({x['semanas']}): coincide com «{ch['previsao']}» da {ch['marca']}, no mesmo território (confiança {ch['confianca']}). Antecipar, mudar a mensagem ou manter?", "movimento": ""})
     for p in P[:2]:
         pp = [r for r in p["respostas"] if r["estado"] != "pronta"]
         if pp:
@@ -129,7 +138,7 @@ def briefing_regras(f: dict) -> dict:
         linhas.append(f"• A seguir, esperamos «{P[0]['nome']}» da {P[0]['marca']} na janela de {P[0]['janela']}.")
     corpo = (f"Olá,\n\nDeixamos o resumo da atividade da concorrência na semana de {f['semana']}.\n\n" + "\n".join(linhas)
              + "\n\nA nossa leitura e o que propomos fazer seguem na reunião de acompanhamento.\n\nArena Media")
-    return {"em30s": em30, "pontos": pontos[:5], "decisoes": dec[:4],
+    return {"em30s": em30, "pontos": pontos[:5], "decisoes": dec[:5],
             "para_cliente": {"assunto": f"Concorrência: o que mexeu na semana de {f['semana']}", "corpo": corpo}}
 
 
@@ -156,7 +165,7 @@ Regras:
 - A plataforma sugere, a equipa decide: as decisões são perguntas ou propostas à equipa («Ativar …?», «Preparar … até …»), nunca ordens nem recomendações diretas ao cliente.
 - «em30s»: no máximo duas frases com o essencial da semana.
 - «pontos»: 3 a 5 pontos, do mais para o menos importante. Em «movimento», o id do movimento a que o ponto se refere, ou "" se não se refere a nenhum.
-- «decisoes»: 1 a 4 decisões que cabem à equipa esta semana, ligadas às respostas combinadas quando existem (indica o estado e o prazo). Em «movimento», o id ou "".
+- «decisoes»: 1 a 5 decisões que cabem à equipa esta semana, ligadas às respostas combinadas quando existem (indica o estado e o prazo). Se uma vaga do plano do cliente coincide com um movimento esperado no mesmo território («choque»), inclui uma decisão para a rever. Em «movimento», o id ou "".
 - «para_cliente»: rascunho de email para o cliente, assinado «Arena Media» (sem nomes de pessoas). Não incluas pontuações, níveis de importância, nomes internos de respostas nem quem as executa na agência. Tom profissional e factual."""
 
 

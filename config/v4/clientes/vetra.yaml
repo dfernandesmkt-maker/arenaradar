@@ -86,3 +86,10 @@ publicos:
   Conveniência e loja: Condutores em viagem
   Mobilidade elétrica: Condutores de elétricos
   Viagem e lazer: Famílias em viagem
+
+# Plano de meios do CLIENTE para as próximas semanas (fictício). Semanas ISO do ano corrente.
+# Na versão ligada vem da ferramenta de planeamento da agência (LIGAÇÃO[plano-meios]).
+plano:
+  - {nome: Vetra Club no Outono, semana: 42, duracao: 5, canais: [Meta, YouTube, Google], territorio: Fidelização e app, oferta: Pontos a dobrar no cartão}
+  - {nome: Semana do Preço Certo, semana: 47, duracao: 2, canais: [Meta, Google, Rádio], territorio: Preço, oferta: −6 cênt/L na app}
+  - {nome: Natal Vetra, semana: 50, duracao: 3, canais: [Meta, YouTube, Google], territorio: Fidelização e app, oferta: Pontos a triplicar em dezembro}

@@ -34,3 +34,14 @@ fontes:
   - {id: noticias-rss, nome: Notícias (RSS), da: "Imprensa económica e de setor", estado: por ligar, regime: oficial}
   - {id: google-trends, nome: Google Trends, da: "Interesse de pesquisa por marca e tema", estado: por ligar, regime: oficial}
   - {id: ia-resumo, nome: Modelo de linguagem (IA), da: "Não é uma fonte: redige o resumo da semana e classifica os criativos a partir dos dados acima. Sempre revisto pela equipa", estado: por ligar, regime: a validar, nota: "Fornecedor e dados a aprovar por IT e Compliance (Q13)"}
+
+# Roteiro da demonstração (botão «Demonstração» no topo). Cada passo abre uma rota e, opcionalmente,
+# destaca um elemento (foco: seletor CSS) ou abre um detalhe (abrir: "movimento-topo" = o movimento mais importante da semana).
+roteiro:
+  - {titulo: O que mexeu esta semana, rota: vetra/agora, foco: ".phead.hero", texto: "Abre-se o Radar na segunda-feira e o primeiro ecrã diz logo o que importa: a Kaldo baixou 8 cêntimos por litro ao fim de semana."}
+  - {titulo: Com prova e com porquê, rota: vetra/agora, abrir: movimento-topo, texto: "Cada movimento traz a prova (criativos, série de preço), porque é importante (pontos explicados) e o que a marca costuma fazer a seguir."}
+  - {titulo: O resumo de segunda-feira, rota: vetra/agora, foco: ".summary", texto: "O resumo da semana vem escrito e fica «por rever». As decisões são da equipa; o email para o cliente só se copia depois de revisto."}
+  - {titulo: O que vem aí, rota: "vetra/antecipar#p-zefira-inverno", foco: "#p-zefira-inverno", texto: "A Zefira começou a testar criativos com pouco alcance. No histórico, isso antecede a campanha de inverno em 2 semanas: a equipa prepara a resposta antes."}
+  - {titulo: Choque com o nosso plano, rota: vetra/antecipar, foco: ".plano", texto: "A «Semana do Preço Certo» da Vetra cai em cima da Black Friday que a Kaldo faz todos os anos, no mesmo território. Ainda há tempo para mudar."}
+  - {titulo: Respostas combinadas, rota: vetra/respostas, foco: ".phead", texto: "O que fazer em cada tipo de movimento fica combinado com o cliente de antemão. Quando acontece, a equipa decide ativar."}
+  - {titulo: Todos os clientes, rota: agencia/torre, foco: ".phead", texto: "A Torre junta todos os clientes da agência: o que é importante esta semana e o que vem a seguir em cada um."}

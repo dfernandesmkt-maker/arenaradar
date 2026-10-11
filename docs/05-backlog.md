@@ -3,13 +3,14 @@
 Prioridades: **P0** antes da reunião com a direção · **P1** materiais da reunião · **P2** só se o piloto for aprovado · **Futuro**.
 Cada tarefa = um commit com o ID.
 
-## v4 — Radar de movimentos (out. 2026; D50 a D52; `docs/11-v4-radar-de-movimentos.md`)
+## v4 — Radar de movimentos (out. 2026; D50 a D54; `docs/11-v4-radar-de-movimentos.md`)
 - **RB-110** ✅ Configuração v4 (`config/v4/`) com 2 clientes fictícios (Vetra, Mercana) e o comportamento de cada marca.
 - **RB-111** ✅ Gerador `scripts/v4/gerar_dados.py`: 2 anos simulados, deteção de movimentos, importância explicada, histórico, previsões a partir do histórico, ligação às respostas.
 - **RB-112** ✅ Interface v4 (`prototype/v4/`, `prototype/arena-radar-v4.html`): Agora, Concorrentes (fichas), Comparar, Antecipar (antes «À frente», D53), Respostas, Torre e Fontes; sistema visual da v3 (D38 a D49); telemóvel; contraste AA nos dois temas.
 - **RB-113** *(por fazer)* Teste de dados reais: 1 vertical, 6 marcas reais, Meta Ad Library + Google Ads Transparency + TikTok; medir cobertura e qualidade por semana. Depende de Compliance (termos de uso).
 - **RB-114** ✅ Resumo da semana (em 30 segundos, pontos, decisões, rascunho de email) e classificação automática dos criativos (mecânica, tom, público, ação), em `scripts/v4/ia.py`: por regras na demonstração; com `--ia`, por IA, com cache. Sempre «por rever» até a equipa rever (D54). Uso em produção depende da Q13.
-- **RB-115** *(por fazer)* Plano de meios do cliente na linha de «Antecipar», para ver sobreposições com a concorrência.
+- **RB-115** ✅ Plano de meios do cliente em «Antecipar» (fictício, `plano:` em `config/v4/clientes/*.yaml`): linha própria na faixa das 12 semanas, secção «O plano e o que coincide» e **choques** (mesmo território, confiança alta ou média), que entram nas decisões do resumo da semana.
+- **RB-118** ✅ Roteiro da demonstração: botão «Demonstração» no topo, 7 passos definidos em `config/v4/agencia.yaml` (`roteiro:`), setas do teclado e Esc.
 - **RB-116** *(por fazer)* Persistência partilhada das decisões (ativação de respostas): substitui o `localStorage` da demonstração (RB-22).
 - **RB-117** *(por fazer)* Saída para o cliente: slide ou email da semana assinado pela Arena (substitui, por agora, a vista do cliente da v3).
 

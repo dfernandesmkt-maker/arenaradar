@@ -82,3 +82,9 @@ publicos:
   Frescos e qualidade: Quem valoriza frescos
   Marca própria: Famílias atentas ao preço
   Conveniência e entrega: Quem tem pouco tempo
+
+# Plano de meios do CLIENTE para as próximas semanas (fictício). Semanas ISO do ano corrente.
+# Na versão ligada vem da ferramenta de planeamento da agência (LIGAÇÃO[plano-meios]).
+plano:
+  - {nome: Fresco da Semana, semana: 42, duracao: 4, canais: [Meta, Google], territorio: Frescos e qualidade, oferta: Frescos a preço de produtor}
+  - {nome: Natal Mercana, semana: 48, duracao: 5, canais: [TV, YouTube, Meta, Exterior], territorio: Promoções e cartão, oferta: Até 50% em saldo no cartão}

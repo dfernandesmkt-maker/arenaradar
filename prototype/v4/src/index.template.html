@@ -64,6 +64,7 @@
     <header class="top">
       <div class="scope" id="scope" role="group" aria-label="Âmbito"></div>
       <span class="sp"></span>
+      <button class="btn sm" id="tourbtn" aria-pressed="false"><svg class="ic"><use href="#i-play"/></svg><span class="lg">Demonstração</span></button>
       <button class="iconbtn" id="modebtn" aria-label="Mudar entre modo claro e escuro"><svg class="ic"><use href="#i-moon"/></svg></button>
     </header>
     <main id="page" aria-label="Conteúdo"></main>
@@ -73,6 +74,7 @@
 <aside id="drawer" aria-label="Detalhe" aria-hidden="true"></aside>
 <div id="pop" role="dialog" aria-label="Origem dos dados"></div>
 <div id="tip" role="tooltip"></div>
+<div id="tourbar" role="region" aria-label="Roteiro da demonstração"></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="live" class="sr" aria-live="polite"></div>
 
@@ -88,6 +90,7 @@ const DATA={{DATA_JSON}};
 {{INCLUDE:js/53-antecipar.js}}
 {{INCLUDE:js/54-respostas.js}}
 {{INCLUDE:js/56-agencia.js}}
+{{INCLUDE:js/58-roteiro.js}}
 {{INCLUDE:js/90-app.js}}
 </script>
 </body>

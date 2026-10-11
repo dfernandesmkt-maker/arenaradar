@@ -3,7 +3,7 @@
    ============================================================ */
 :root{
   --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --brand:#328CF5; --brand-ink:#1B6FD6; --forest:#0F2623; --accent:#FFDC32;
+  --brand:#328CF5; --brand-ink:#1B6FD6; --forest:#0F2623; --forest-2:#14332f; --accent:#FFDC32;
   --ok:#00B89B; --ok-ink:#00614F; --warn:#E0A100; --warn-ink:#7A5400; --bad:#E60000; --info:#733478; --info-ink:#733478;
   --bg:#F6F8FA; --surface:#FFFFFF; --text:#0F2623; --text-2:#586764; --line:#E1E6E5; --line-2:#EDF0EF;
   --brand-soft:color-mix(in srgb,var(--brand) 11%,transparent);

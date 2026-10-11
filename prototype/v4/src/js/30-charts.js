@@ -11,11 +11,10 @@ const legendH=S=>`<div class="lgd">${S.map(s=>`<span><i style="background:${s.c}
 /* linhas: o={series:[{n,c,d,w,dim}], xl:i=>rótulo, fmt, h, min, max, ref:{v,n}, end, mini} */
 function lineChart(host,o){if(!host)return;const R={host,draw(){
   const S=o.series,n=S[0].d.length,W=Math.max(220,host.clientWidth||300),mini=!!o.mini,H=o.h||(mini?110:(W<520?220:260));
-  const ml=mini?34:42,mr=o.end&&W>=560?92:12,mt=10,mb=22,iw=W-ml-mr,ih=H-mt-mb;
-  const vals=S.flatMap(s=>s.d).concat(o.ref?[o.ref.v]:[]),lo=o.min??Math.min(...vals),hi=o.max??Math.max(...vals);
+  const f=o.fmt||(v=>nf(v)),vals=S.flatMap(s=>s.d).concat(o.ref?[o.ref.v]:[]),lo=o.min??Math.min(...vals),hi=o.max??Math.max(...vals);
   const pad=(hi-lo)*.12||1,y0=o.min??(lo-pad),y1=o.max??(hi+pad);
+  const ml=Math.max(mini?34:42,10+(mini?6:6.4)*Math.max(...[y0,y1,(y0+y1)/2].map(v=>f(v).length))),mr=o.end&&W>=560?Math.min(150,Math.max(92,22+6.8*Math.max(...o.series.map(x=>x.n.length)))):12,mt=10,mb=22,iw=W-ml-mr,ih=H-mt-mb;
   const x=i=>ml+i*iw/Math.max(1,n-1),y=v=>mt+ih*(1-(v-y0)/(y1-y0));
-  const f=o.fmt||(v=>nf(v));
   let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(o.aria||"Gráfico")}" tabindex="0">`;
   [0,.5,1].forEach(k=>{const v=y0+(y1-y0)*k;s+=`<line class="gl" x1="${ml}" x2="${W-mr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${ml-6}" y="${y(v)+4}" text-anchor="end">${f(v)}</text>`});
   const st=Math.ceil(n/(W<520?4:mini?4:7));for(let i=0;i<n;i+=st)s+=`<text class="ax" x="${x(i)}" y="${H-5}" text-anchor="middle">${o.xl(i)}</text>`;

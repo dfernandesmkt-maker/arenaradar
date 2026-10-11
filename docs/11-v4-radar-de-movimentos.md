@@ -39,7 +39,7 @@ Níveis: **Importante** (≥ 75 pontos, topo amarelo = sinal), **A acompanhar** 
 | **Agora** | O que mexeu esta semana? | Cabeçalho com o movimento mais importante; KPIs; resumo da semana (secção 5); fio de movimentos com prova; ao lado: o que vem a seguir, quem aparece nas pesquisas do cliente, quem está no ar |
 | **Concorrentes** | Como age cada marca? | Fichas: estado atual, ritmo (campanhas por ano, duração, meses fortes, se testa antes), linha temporal de 12 meses + 12 semanas previstas, movimentos, biblioteca de criativos, como comunica (classificação automática), mensagens vs cliente |
 | **Comparar** | Quem pesa mais e onde? | Quota de voz, investimento estimado, quem aparece nas pesquisas do cliente, mapa de mensagens com **espaço livre**, preço (€/L ou índice do cabaz) |
-| **Antecipar** | O que vem aí? | 12 semanas: janelas esperadas por marca, datas do setor, sinais precoces, e para cada previsão o que preparar e até quando |
+| **Antecipar** | O que vem aí? | 12 semanas: janelas esperadas por marca, datas do setor, **plano de meios do cliente** e o que coincide com ele (choques no mesmo território), sinais precoces, e para cada previsão o que preparar e até quando |
 | **Respostas** | Estamos prontos? | Respostas combinadas com o cliente (quando, o quê, quem, prazo, estado), as que correspondem a movimentos desta semana, lacunas sem resposta; ativar é decisão da equipa |
 | Agência › **Torre** | Como estão todos os clientes? | Um cartão por cliente, importantes da semana e próximos movimentos esperados em todos |
 | Agência › **Fontes** | De onde vêm os dados? | Fontes da versão ligada, regime (oficial, licenciada, dados do cliente) e estado |
@@ -53,6 +53,12 @@ Calculadas no gerador a partir do histórico de cada marca, como a versão ligad
 - **Sinais precoces:** testes de criativos com pouco alcance que, no histórico, antecederam campanhas (2 semanas); quando o teste aparece, a confiança sobe para alta. Subidas fortes no leilão de pesquisa do cliente.
 
 Evitar a palavra «preditivo»: isto é **antecipação acionável** com método explicado em cada previsão.
+
+## 4.1 Plano do cliente e choques (RB-115)
+O plano de meios do cliente (fictício: `plano:` na config) aparece como última linha da faixa das 12 semanas. Para cada vaga do plano, o gerador lista as previsões da concorrência cuja janela coincide. **Choque** = mesmo território e confiança alta ou média. Os choques aparecem em Antecipar com etiqueta amarela e entram nas decisões do resumo da semana («Rever … : antecipar, mudar a mensagem ou manter?»). Na versão ligada, o plano vem da ferramenta de planeamento da agência (`LIGAÇÃO[plano-meios]`) e nunca segue para modelos de IA.
+
+## 4.2 Roteiro da demonstração
+Botão «Demonstração» no topo: 7 passos (o que mexeu, a prova, o resumo, o que vem aí, o choque com o plano, as respostas, a Torre), definidos em `config/v4/agencia.yaml` (`roteiro:`). Setas ← → mudam de passo; Esc sai.
 
 ## 5. Resumo da semana e classificação de criativos (RB-114, D54)
 Duas tarefas de linguagem em `scripts/v4/ia.py`, chamadas pelo gerador:

@@ -494,6 +494,25 @@ def build(cfg: dict) -> dict:
         i = iso_idx(ano, e["semana"])
         cal.append({"nome": e["nome"], "ini": i, "fim": i + e.get("duracao", 1) - 1})
 
+    # ---------- plano de meios do cliente (RB-115) e sobreposições com o que se espera da concorrência
+    # LIGAÇÃO[plano-meios]: na versão ligada, o plano vem da ferramenta de planeamento da agência.
+    plano = []
+    for i, f in enumerate(cfg.get("plano", [])):
+        a = iso_idx(ano, f["semana"])
+        z = a + f["duracao"] - 1
+        sob = []
+        for p in prev_out:
+            ini, fim = max(a, p["ini"]), min(z, p["fim"])
+            if ini <= fim:
+                mesmo = p["territorio"] == f["territorio"]
+                sob.append({"previsao": p["id"], "mesmo_territorio": mesmo, "semanas": fim - ini + 1,
+                            "choque": mesmo and p["confianca"] in ("alta", "média")})
+        sob.sort(key=lambda x: (not x["choque"], not x["mesmo_territorio"], -x["semanas"]))
+        plano.append({"id": f"pl-{i}", "nome": f["nome"], "ini": a, "fim": z, "canais": f["canais"], "territorio": f["territorio"],
+                      "oferta": f.get("oferta"), "sobreposicoes": sob, "origem": "demo"})
+    for p in prev_out:
+        p["plano"] = [x["id"] for x in plano if any(s["previsao"] == p["id"] for s in x["sobreposicoes"])]
+
     blocos = {
         "movimentos": bloco("Movimentos da concorrência", "demo", "Simulados a partir do comportamento descrito em config/v4/clientes/%s.yaml; marcas fictícias" % cl["id"], "meta-ad-library, google-ads-transparency, tiktok-ccl, noticias-rss"),
         "criativos": bloco("Criativos", "demo", "Criativos ilustrativos gerados para cada campanha simulada", "meta-ad-library, google-ads-transparency, tiktok-ccl"),
@@ -502,6 +521,7 @@ def build(cfg: dict) -> dict:
         "precos": bloco(pc["rotulo"], "demo", "Série simulada", pc.get("fonte_futura", "")),
         "leilao": bloco("Presença nas pesquisas do cliente", "demo", "Sobreposição de impressões simulada (formato Auction Insights)", "auction-insights"),
         "previsoes": bloco("Previsões", "estimado", "Calculadas a partir do histórico de cada marca (séries que se repetem, ritmo de promoções, testes que antecedem campanhas)", ""),
+        "plano": bloco("Plano de meios do cliente", "demo", "Plano fictício do cliente para as próximas semanas (config); sobreposição = janela esperada de um concorrente que coincide com uma vaga do plano; choque = mesmo território e confiança alta ou média", "plano-meios"),
         "respostas": bloco("Respostas combinadas", "demo", "Exemplos de respostas acordadas com o cliente (config)", ""),
     }
 
@@ -521,6 +541,7 @@ def build(cfg: dict) -> dict:
         "precos": {"rotulo": pc["rotulo"], "unidade": "€/L" if combust else "índice", "mercado": mercado if combust else None, "marcas": precos},
         "leilao": leilao,
         "previsoes": prev_out,
+        "plano": plano,
         "ritmo": ritmo,
         "calendario_setor": cal,
         "respostas": resp,
@@ -551,7 +572,7 @@ def main() -> None:
                          "respostas_prontas": sum(1 for r in d["respostas"] if r["estado"] == "pronta"), "respostas_total": len(d["respostas"])})
         print(f"  {d['cliente']['id']}: {len(d['movimentos'])} movimentos ({len(agora)} esta semana), {len(d['criativos'])} criativos, {len(d['previsoes'])} previsões")
     clientes.sort(key=lambda c: (c["id"] != AG["cliente_inicial"], c["nome"]))
-    ag = {"versao": 4, "agencia": AG["agencia"], "cliente_inicial": AG["cliente_inicial"], "clientes": clientes, "fontes": AG["fontes"],
+    ag = {"versao": 4, "agencia": AG["agencia"], "cliente_inicial": AG["cliente_inicial"], "clientes": clientes, "fontes": AG["fontes"], "roteiro": AG.get("roteiro", []),
           "calendario": {"inicio": INI.isoformat(), "semanas": NW, "atual": Z, "futuro": FUT, "hoje": AG["calendario"]["hoje"].isoformat()}}
     (OUT / "agencia.json").write_text(json.dumps(ag, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
