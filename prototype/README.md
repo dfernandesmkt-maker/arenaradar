@@ -29,13 +29,13 @@ A interface **não tem clientes, marcas nem séries escritos no código**: lê o
 | `20-components.js` | Selo de dados, KPI, cartão, estado vazio, **barra de filtros**, gaveta |
 | `30-charts.js` | Gráficos SVG (linha, área, barras, empilhado), tabela, miniaturas |
 | `40-metrics.js` | Janela de análise (período e comparação) e catálogo de KPIs |
-| `50` a `58-page-*.js` | Páginas: Visão geral, Mercado, Procura e notícias, Criativos, Relatórios (briefing e publicação), Ações (pistas, alertas, impacto), Agência (Torre e Piloto), Fontes, **ficha de marca** |
+| `50` a `58-page-*.js` | Páginas: Visão geral, Mercado, Procura e notícias, Criativos, Relatórios (briefing e publicação), Ações (pistas, alertas, impacto), Agência (Torre), Fontes, **ficha de marca** |
 | `59-export.js` | Copiar gráfico como imagem (com origem dos dados) e destaques do briefing |
 | `80-settings.js`, `82-palette.js` | Definições (aparência, tema, função, demonstração) e paleta Ctrl K |
 | `85-tour.js` | Modo apresentação |
 | `90-app.js` | Rotas, seletor de âmbito, menu único, Pergunta ao Radar, arranque |
 
-Rotas: `#/<cliente>/<página>[/<separador>][?v=cliente&rasc=1&w=…&c=…&p=…&b=…]` e `#/agencia/<torre|piloto|fontes>`. `v=cliente` abre a vista do cliente (publicado), `rasc=1` a pré-visualização do rascunho; `w`, `c`, `p`, `b` são os filtros (período, comparação, plataformas, marcas), por isso uma ligação partilha a vista.
+Rotas: `#/<cliente>/<página>[/<separador>][?v=cliente&rasc=1&w=…&c=…&p=…&b=…]` e `#/agencia/<torre|fontes>`. `v=cliente` abre a vista do cliente (publicado), `rasc=1` a pré-visualização do rascunho; `w`, `c`, `p`, `b` são os filtros (período, comparação, plataformas, marcas), por isso uma ligação partilha a vista.
 
 ## Notas
 - Cada bloco de dados tem origem (real, estimado, demonstração, por ligar). Cada página mostra **um selo de dados** que resume a origem; ao clicar vê-se o detalhe, e ao passar o cursor num número vê-se a sua origem (decisão D27).

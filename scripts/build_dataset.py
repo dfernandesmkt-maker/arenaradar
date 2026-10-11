@@ -5,7 +5,7 @@
 
 Saída:
     data/processed/<cliente>.json   dataset completo de um cliente (tudo o que a interface mostra)
-    data/processed/agencia.json     visão da agência (verticais, clientes, fontes, temas, piloto)
+    data/processed/agencia.json     visão da agência (verticais, clientes, fontes, temas, impacto)
 
 Princípios
 - A interface não tem clientes, marcas nem séries escritos no código: lê estes ficheiros.
@@ -430,7 +430,7 @@ def build_agency(datasets: list[dict], ag: dict, fontes: dict) -> dict:
                          "pulso": d["pulso"], "n_entidades": sum(1 for e in d["entidades"] if e["incluida"])})
     return {"versao": 1, "gerado_em": ag["calendario"]["data_referencia"], "agencia": ag["agencia"],
             "cliente_inicial": ag.get("cliente_inicial"), "calendario": ag["calendario"], "rotulo_semana_atual": rotulo_semana(ag["calendario"]["inicio"], ag["calendario"]["semana_atual"]), "verticais": list(verts.values()), "clientes": clientes,
-            "fontes": fontes["fontes"], "temas": temas, "piloto": ag["piloto"],
+            "fontes": fontes["fontes"], "temas": temas, "impacto": ag["impacto"],
             "roteiro": carregar_roteiro({c["id"] for c in clientes})}
 
 

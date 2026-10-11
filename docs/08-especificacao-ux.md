@@ -33,7 +33,7 @@ Arena Radar   [ Agência ▾ ] › [ Ambiente e economia circular ▾ ] › [ Ve
 | **Relatórios** | Briefing semanal, vista cliente, exportações | Igual |
 | **Ações** *(só vista Equipa)* | Pistas de ação, **alertas** (só eventos materiais), impacto | Igual |
 
-Nível Agência: **Torre de controlo** (fila de decisões e clientes por vertical) · **Piloto** (fases e critérios) · **Fontes de dados** (resumo, com detalhe técnico a pedido).
+Nível Agência: **Torre de controlo** (fila de decisões e clientes por vertical) · **Fontes de dados** (resumo, com detalhe técnico a pedido).
 
 ## 3. Padrão de página
 

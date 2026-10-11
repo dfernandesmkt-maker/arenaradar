@@ -11,7 +11,7 @@ const PAGES={
   criativos:{n:"Criativos",i:"i-image",f:pageCriativos,if:()=>hasAds()},
   relatorios:{n:"Relatórios",i:"i-mail",f:pageRelatorios},
   acoes:{n:"Ações",i:"i-spark",f:pageAcoes}};
-const AGPAGES={torre:{n:"Torre de controlo",i:"i-grid",f:pageTorre},piloto:{n:"Piloto",i:"i-flask",f:pagePiloto},fontes:{n:"Fontes de dados",i:"i-plug",f:pageFontes}};
+const AGPAGES={torre:{n:"Torre de controlo",i:"i-grid",f:pageTorre},fontes:{n:"Fontes de dados",i:"i-plug",f:pageFontes}};
 let ROUTE={scope:"cliente",view:"equipa",rasc:false,cid:null,page:"visao",sub:null,focus:null};
 const PAGE_CLI_VAZIO={n:"Relatório",f:pageClienteVazio};
 function pageClienteVazio(){SEAL_HIDE=true;return pheadHTML(`${esc(D.cliente.nome)} · vista do cliente`,"Ainda não há relatório publicado","A equipa Arena ainda não publicou o relatório desta semana. O cliente não vê nada sem essa decisão.")+`<div class="empty"><svg class="ic"><use href="#i-lock"/></svg><div><b>Sem publicação</b><br>Prepara o que o cliente vê em Relatórios, «Publicar para o cliente», ou vê já como ficaria com a seleção sugerida.<div class="emptyacts"><button class="btn pri" data-sugerir="1"><svg class="ic"><use href="#i-eye"/></svg>Ver como ficaria</button><button class="btn" data-go="${D.cliente.id}/relatorios/publicar?v=equipa">Preparar publicação</button></div></div></div>`}

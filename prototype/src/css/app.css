@@ -652,15 +652,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;bac
 .tl3 span.done{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok-ink)}
 .tl3 i{width:10px;height:1px;background:var(--line);flex:none}
 
-/* Torre: clientes por vertical; Piloto */
+/* Torre: clientes por vertical */
 .vblocks{display:grid;gap:14px}
 .vblock{padding:0;overflow:hidden}
 .vhead{display:grid;grid-template-columns:minmax(0,1fr) 140px auto;gap:18px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line-2)}
 .vhead .spark{height:30px}
 @media (max-width:680px){.vhead{grid-template-columns:minmax(0,1fr) auto}.vhead .spark{display:none}}
-.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.fase{display:flex;gap:14px;padding:16px 18px}
-.fase .fn{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand-ink);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
 
 /* tabelas ordenáveis e linhas clicáveis */
 th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap}

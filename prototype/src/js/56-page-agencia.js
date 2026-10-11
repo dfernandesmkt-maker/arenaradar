@@ -1,5 +1,5 @@
 /* ============================================================
-   Nível Agência: Torre de controlo (todos os clientes, por vertical) e piloto.
+   Nível Agência: Torre de controlo (todos os clientes, por vertical).
    Lê os datasets de todos os clientes; nada está escrito aqui sobre um cliente em particular.
    ============================================================ */
 function agSeal(){
@@ -11,7 +11,7 @@ const pubSeal=d=>d.pub.pubd?(pubPend(d)?`<span class="seal" data-o="estimado">Al
 function pageTorre(){
   SEAL_OV=agSeal();
   const cs=AG.clientes,live=cs.map(c=>CLS[c.id]),sg=cs.reduce((s,c)=>s+c.sinais_material,0),pend=live.reduce((s,d)=>s+pistasPend(d),0);
-  const kp=[["Clientes monitorizados",cs.length,`em ${AG.verticais.length} verticais`],["Sinais acima do limiar",sg,"esta semana"],["Pistas por decidir",pend,"a aguardar a equipa"],["Tempo médio até decidir","—","o histórico começa no piloto"]];
+  const kp=[["Clientes monitorizados",cs.length,`em ${AG.verticais.length} verticais`],["Sinais acima do limiar",sg,"esta semana"],["Pistas por decidir",pend,"a aguardar a equipa"],["Tempo médio até decidir","—","sem histórico real ainda"]];
   const dec=live.reduce((s,d)=>s+pistasDecididas(d).length,0),cli=live.reduce((s,d)=>s+d.pistas.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada")).length,0);
   const agora={pistas_aceites:String(dec),acoes_cliente:String(cli)};
   const rowFor=c=>{const o=c.origens.includes("real")&&c.origens.includes("demo")?"misto":c.origens.includes("real")?"real":"demo";return`<tr class="go" data-go="${c.id}/visao"><td style="font-weight:600">${esc(c.nome)}${c.ficticio?' <span class="tag">fictício</span>':""}</td><td class="n">${c.sinais_material}</td><td class="n">${pistasPend(CLS[c.id])}</td><td>${pubSeal(CLS[c.id])}</td><td><span class="seal" data-o="${o}">${o==="misto"?"Misto":o==="real"?"Real":"Demonstração"}</span></td></tr>`};
@@ -26,12 +26,3 @@ function pageTorre(){
    ${secHTML("Fila de decisões","Pistas à espera da equipa, em todos os clientes, por ordem sugerida: primeiro as da tua função, depois as de sinal mais forte. A plataforma sugere; a equipa decide.",filaHTML)}
    ${secHTML("Clientes por vertical","Cada vertical traz o seu conjunto de concorrentes por defeito (config/verticals/); o cliente herda e ajusta. «Concorrência» compara marcas; «Tema» acompanha a conversa pública quando a disputa é por atenção e não por quota.",`<div class="vblocks">${porV}</div>`)}`;
   return pheadHTML(`Semana de ${AG.rotulo_semana_atual} · ${esc(AG.agencia.nome)}`,"Torre de controlo","O que mudou nos mercados dos nossos clientes, por vertical, e o que a equipa ainda tem por decidir.",{hero:true})+body}
-
-/* ---------- Piloto: fases e critérios de sucesso (proposta, por validar com a direção) ---------- */
-function pagePiloto(){
-  SEAL_HIDE=true;
-  const P=AG.piloto,live=AG.clientes.map(c=>CLS[c.id]),dec=live.reduce((s,d)=>s+pistasDecididas(d).length,0),cli=live.reduce((s,d)=>s+d.pistas.filter(p=>p.cli&&pubOk(p)).length,0);
-  const agora={pistas_aceites:String(dec),acoes_cliente:String(cli)};
-  return pheadHTML("Proposta, por validar com a direção",`Piloto de ${P.duracao_semanas} semanas`,"Prova o valor com um cliente real antes de pedir investimento: primeiro em modo sombra, depois com o cliente, e uma decisão no fim com critérios claros.")+
-   secHTML("Fases","O briefing semanal é o ritmo do piloto.",`<div class="fases">${P.fases.map((f,i)=>`<div class="fase panel"><span class="fn">${i+1}</span><div><b>${esc(f.nome)}</b><span class="t-xs" style="display:block">Semana${/ /.test(f.semanas)?"s":""} ${esc(f.semanas)}</span><p class="t-sm muted" style="margin-top:6px">${esc(f.descricao)}</p></div></div>`).join("")}</div>`)+
-   secHTML("Critérios de sucesso","Metas propostas, ainda por validar com a direção. A coluna «Agora» conta as decisões feitas nesta pré-visualização.",`<div class="panel tblwrap"><table><thead><tr><th>Critério</th><th>Meta proposta</th><th class="n">Agora</th></tr></thead><tbody>${P.criterios.map(c=>`<tr><td>${esc(c.criterio)}</td><td>${esc(c.meta)}</td><td class="n">${c.metrica?agora[c.metrica]:"—"}</td></tr>`).join("")}</tbody></table></div>`)}
