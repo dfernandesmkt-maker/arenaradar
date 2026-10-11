@@ -66,6 +66,9 @@ Criar `scripts/build_dataset.py`: lê `data/raw/**`, agrega por semana e gera `d
 ### RB-119 · Ponto de situação reescrito para a v4 ✅
 `docs/00-ponto-de-situacao.md` e a visão geral do dossier passam a contar a história da v4: teste de dados reais de 2 semanas, piloto de 6, critérios, quatro pedidos.
 
+### RB-120 · Deck explicativo «O que é o Arena Radar» ✅
+`deliverables/arena-radar-o-que-e.pptx`, 17 slides: o que é, porque existe, o movimento, as áreas (com capturas), antecipação, plano do cliente, respostas, resumo e IA, fontes, regras e estado. Poppins (D55), notas do orador em todos os slides. Gerado por `scripts/deck/gerar_explicador.js`; a base comum aos dois decks está em `scripts/deck/comum.js`.
+
 ### RB-12 · Documento do projeto (Word)
 Consolidar `docs/00` a `docs/04` num documento Word. Arial Nova, logo no cabeçalho, rodapé paginado. Gerar com `docx` (Node.js).
 

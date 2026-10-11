@@ -27,5 +27,11 @@ const exe = fs.existsSync("/opt/pw-browsers/chromium") ? { executablePath: "/opt
   await shot("vetra/antecipar#p-zefira-inverno", "previsao", async () => { await p.locator("#p-zefira-inverno").screenshot({ path: path.join(OUT, "previsao.png") }); });
   // 7. Torre
   await shot("agencia/torre", "torre", async () => { await p.screenshot({ path: path.join(OUT, "torre.png") }); });
+  // 8. Ficha de um concorrente (primeiro ecrã)
+  await shot("vetra/concorrentes/kaldo", "ficha", async () => { await p.screenshot({ path: path.join(OUT, "ficha.png") }); });
+  // 9. Comparar: mapa de mensagens com espaço livre
+  await shot("vetra/comparar", "mensagens", async () => { await p.locator("table.mx").evaluate(e => e.closest(".card").classList.add("cap-mx")); await p.locator(".cap-mx").screenshot({ path: path.join(OUT, "mensagens.png") }); });
+  // 10. Respostas: a primeira resposta combinada
+  await shot("vetra/respostas", "respostas", async () => { await p.locator("article.pb").first().screenshot({ path: path.join(OUT, "respostas.png") }); });
   await b.close();
 })();

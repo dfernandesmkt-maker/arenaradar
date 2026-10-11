@@ -2,88 +2,19 @@
    Guião: anexo de docs/00-ponto-de-situacao.md. Capturas: node scripts/deck/capturas.js (RB-10).
    Poppins (D55, Brand Guidelines para PowerPoint), cores Arena, logo oficial, notas do orador em todos os slides.
    Uso: (cd scripts/deck && npm install) && node scripts/deck/gerar_deck.js */
-const path = require("path"), fs = require("fs");
-const pptxgen = require("pptxgenjs");
-const ROOT = path.resolve(__dirname, "../..");
-const CAP = f => path.join(ROOT, "deliverables/capturas", f);
+const path = require("path");
+const { novoDeck, ROOT } = require("./comum");
 const OUT = path.join(ROOT, "deliverables/arena-radar-direcao.pptx");
-const LOGO = path.join(ROOT, "assets/arena_media_portugal_logo.jpg");
-const SKILL_THEME = process.env.APPLY_THEME_JS; // opcional: caminho de um apply_theme.js que escreve as cores no tema do ficheiro
-
-const THEME = {
-  name: "Arena Radar",
-  headFontFace: "Poppins", bodyFontFace: "Poppins",
-  colors: { dk1: "0F2623", lt1: "FFFFFF", dk2: "4E5F5C", lt2: "F1F4F3",
-            accent1: "328CF5", accent2: "FFDC32", accent3: "00B89B", accent4: "E60000", accent5: "733478", accent6: "1B6FD6",
-            hlink: "1B6FD6", folHlink: "733478" },
-};
-const H = THEME.colors; // hexadecimais, só onde a biblioteca não aceita cores do tema
-const TINT = { ok: "E2F5F0", okInk: "0B6B58", wip: "FFF5C7", wipInk: "5E4B00", todo: "F1F4F3", todoInk: "4E5F5C", line: "DCE3E1" };
-
-const pres = new pptxgen();
-pres.layout = "LAYOUT_WIDE"; // 13,33 × 7,5 polegadas
-pres.title = "Arena Radar — Ponto de situação";
-pres.author = "Arena Media Portugal";
-pres.company = "Arena Media Portugal";
-pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFace };
-// Cores em hexadecimal (do THEME), para o ficheiro não depender de aplicar o tema depois de escrito.
-const C = { text1: H.dk1, text2: H.dk2, background1: H.lt1, background2: H.lt2, accent1: H.accent1, accent2: H.accent2 };
-const W = 13.333, M = 0.6;
 const RODAPE = "Arena Radar · Ponto de situação para a direção · Outubro 2026";
-
-// ---------- layouts
-pres.defineSlideMaster({
-  title: "CAPA", background: { color: H.dk1 },
-  objects: [
-    { rect: { x: M, y: 0.6, w: 1.0, h: 1.0, fill: { color: C.background1 }, rectRadius: 0.12 } },
-    { image: { path: LOGO, x: M + 0.08, y: 0.68, w: 0.84, h: 0.84 } },
-    { placeholder: { options: { name: "title", type: "title", x: M, y: 2.35, w: 9.5, h: 1.3, fontSize: 60, bold: true, color: C.background1, margin: 0, valign: "bottom", align: "left" }, text: "" } },
-    { placeholder: { options: { name: "body", type: "body", x: M, y: 3.85, w: 9.5, h: 1.2, fontSize: 24, color: C.background1, margin: 0, valign: "top", align: "left" }, text: "" } },
-    { text: { text: "Ponto de situação para a direção · Outubro 2026", options: { x: M, y: 6.55, w: 8, h: 0.4, fontSize: 13, color: C.background2, margin: 0 } } },
-  ],
-});
-pres.defineSlideMaster({
-  title: "CONTEUDO", background: { color: H.lt1 },
-  margin: [0.5, M, 0.8, M],
-  objects: [
-    { text: { text: RODAPE, options: { x: M, y: 6.95, w: 9, h: 0.3, fontSize: 10, color: C.text2, margin: 0 } } },
-    { image: { path: LOGO, x: W - M - 0.42, y: 6.86, w: 0.42, h: 0.42 } },
-    { placeholder: { options: { name: "title", type: "title", x: M, y: 0.45, w: W - 2 * M, h: 0.85, fontSize: 32, bold: true, color: C.text1, margin: 0, valign: "middle", align: "left" }, text: "" } },
-  ],
-  slideNumber: { x: W - M - 1.3, y: 6.95, w: 0.7, h: 0.3, fontSize: 10, color: C.text2, align: "right" },
-});
-pres.defineSlideMaster({
-  title: "FECHO", background: { color: H.dk1 },
-  objects: [
-    { placeholder: { options: { name: "title", type: "title", x: M, y: 0.6, w: W - 2 * M, h: 0.9, fontSize: 36, bold: true, color: C.background1, margin: 0, align: "left" }, text: "" } },
-    { rect: { x: W - M - 0.62, y: 6.62, w: 0.62, h: 0.62, fill: { color: C.background1 }, rectRadius: 0.08 } },
-    { image: { path: LOGO, x: W - M - 0.57, y: 6.67, w: 0.52, h: 0.52 } },
-    { text: { text: RODAPE, options: { x: M, y: 6.95, w: 9, h: 0.3, fontSize: 10, color: C.background2, margin: 0 } } },
-  ],
-  slideNumber: { x: W - M - 1.5, y: 6.95, w: 0.7, h: 0.3, fontSize: 10, color: C.background2, align: "right" },
-});
-
-// ---------- auxiliares
-const txt = (s, t, o) => s.addText(t, Object.assign({ isTextBox: true, margin: 0, fontSize: 15, color: C.text1, valign: "top" }, o));
-const card = (s, x, y, w, h, nome, fill) => s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.12, fill: { color: fill || C.background2 }, line: { color: fill || C.background2, width: 0 }, objectName: nome });
-const num = (s, x, y, n, escuro) => {
-  s.addShape(pres.shapes.OVAL, { x, y, w: 0.46, h: 0.46, fill: { color: escuro ? C.background1 : C.text1 }, line: { color: escuro ? C.background1 : C.text1, width: 0 }, objectName: "numero " + n });
-  txt(s, String(n), { x, y, w: 0.46, h: 0.46, fontSize: 15, bold: true, align: "center", valign: "middle", color: escuro ? C.text1 : C.background1 });
-};
-const legenda = (s, x, y, w, t) => txt(s, t, { x, y, w, h: 0.3, fontSize: 11, color: C.text2, italic: true });
-const DEMO = "Demonstração com clientes e marcas fictícios (D33). Sem dados reais.";
-const img = (s, f, x, y, w, h, nome) => s.addImage({ path: CAP(f), x, y, w, h, objectName: nome, altText: nome });
-const contorno = (s, x, y, w, h) => s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.06, fill: { type: "none" }, line: { color: TINT.line, width: 1 }, objectName: "moldura" });
+const { pres, C, TINT, W, M, DEMO, txt, card, num, legenda, img, contorno, radar, escrever } =
+  novoDeck({ titulo: "Arena Radar — Ponto de situação", rodape: RODAPE, capa: "Ponto de situação para a direção · Outubro 2026" });
 
 // ---------- 1. Capa
 pres.addSection({ title: "Abertura" });
 let s = pres.addSlide({ masterName: "CAPA", sectionTitle: "Abertura" });
 s.addText("Arena Radar", { placeholder: "title" });
 s.addText("Ver primeiro. Perceber o padrão. Responder depressa.", { placeholder: "body" });
-// motivo: radar (círculos concêntricos e o ponto amarelo do sinal)
-[3.2, 2.3, 1.4].forEach((d, i) => s.addShape(pres.shapes.OVAL, { x: 11.5 - d / 2, y: 3.75 - d / 2, w: d, h: d, fill: { type: "none" }, line: { color: C.background1, width: 1, transparency: 70 + i * 5 }, objectName: "radar " + i }));
-s.addShape(pres.shapes.LINE, { x: 11.5, y: 2.15, w: 0, h: 1.6, line: { color: C.accent2, width: 1.5 }, objectName: "varrimento" });
-s.addShape(pres.shapes.OVAL, { x: 12.12, y: 2.75, w: 0.18, h: 0.18, fill: { color: C.accent2 }, line: { color: C.accent2, width: 0 }, objectName: "sinal" });
+radar(s, 11.5, 3.75);
 s.addNotes("Abrir com a ideia central: o Radar existe para pôr a equipa de conta à frente da concorrência dos clientes. Três verbos: ver primeiro, perceber o padrão, responder depressa. Tudo o que vão ver hoje usa clientes e marcas fictícios; não há dados reais nesta fase. No fim peço quatro decisões concretas.");
 
 // ---------- 2. O problema
@@ -254,8 +185,4 @@ ped.forEach(([t, b], i) => {
 });
 s.addNotes("Fechar com as quatro decisões. As duas primeiras são da direção: o teste e, se passar, o piloto, com a escolha da equipa e do cliente. A terceira é encaminhar as perguntas que bloqueiam a versão ligada para quem as pode responder. A quarta só se aplica se o grupo já tiver uma fonte licenciada de investimento. Oferecer a demonstração ao vivo no fim.");
 
-(async () => {
-  await pres.writeFile({ fileName: OUT });
-  if (SKILL_THEME) { const { applyTheme } = require(SKILL_THEME); await applyTheme(OUT, THEME); }
-  console.log(path.relative(ROOT, OUT));
-})();
+escrever(OUT);
