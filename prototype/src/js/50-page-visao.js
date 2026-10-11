@@ -19,7 +19,7 @@ function sigCardCli(s,i){
    <div class="top2"><span class="who">${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd">${esc(s.leitura)}${s.hipotese?" (leitura a validar)":""}</p>
-   ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(pp.acao)}</span></div>`:""}
+   ${pp?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--link);flex:none"><use href="#i-spark"/></svg><span><b>A Arena propõe:</b> ${esc(pp.acao)}</span></div>`:""}
   </article>`}
 function sigMeter(s){
   if(s.limiar==null||s.valor==null||!+s.limiar)return"";
@@ -30,13 +30,13 @@ function sigMeter(s){
 function sigCard(s,i){
   if(isCli())return sigCardCli(s,i);
   const e=s.entidade?ebyid(s.entidade):null,p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),noRasc=D.pub.cartoes.includes(s.id),noPub=!!(D.pub.pubd&&D.pub.pubd.cartoes.includes(s.id)),pub=noRasc;
-  if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52},false));
+  if(ch)later(()=>tsChart($("#sgc"+i),{...ch,type:"line",fill:true,mini:true,h:52,blip:s.material},false));
   const crt=s.entidade&&s.categoria==="Lançamento",det=crt?`data-cr-b="${s.entidade}"`:`data-go="${sigGo(s)}"`,dl=crt?"Ver criativos":"Ver detalhe";
   return`<article class="sg ${s.material?"":"obs"}" data-src="${use(s.bloco)}">
-   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${p&&ROLE_PARA[PREFS.role]===p.para?`<span class="tag hi" data-tip="A pista deste cartão está atribuída à tua função.">Para ti</span>`:""}${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
+   <div class="top2"><span class="who" ${e?`data-ent="${e.id}" role="button" tabindex="0" data-tip="Abrir a marca"`:""}>${e?`<i style="background:${col(e)}"></i>${esc(e.nome)}`:esc(s.categoria)}</span><span class="tags">${p&&ROLE_PARA[PREFS.role]===p.para?`<span class="tag hi" data-tip="A pista deste cartão está atribuída à tua função.">Para ti</span>`:""}${s.novo?`<span class="tag nw" data-tip="Não estava acima do limiar na semana passada.">Novo</span>`:""}<span class="tag ${s.material?"sig":""}">${s.material?"Acima do limiar":"Em observação"}</span></span></div>
    <h3>${esc(s.titulo)}</h3>${ch?`<div class="cv" id="sgc${i}" style="height:52px"></div>`:""}
    <p class="rd clamp">${esc(s.leitura)} ${s.hipotese?`<span class="tag">Hipótese</span>`:""}</p>${sigMeter(s)}
-   ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--brand-ink);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
+   ${p?`<div class="pk2"><svg class="ic" style="width:16px;height:16px;margin-top:2px;color:var(--link);flex:none"><use href="#i-spark"/></svg><span class="pa"><b>Pista:</b> ${esc(p.acao)}</span><span class="ps">${esc(p.para)} · ${STL[p.s]}</span></div>`:""}
    <div class="acts">${p?`<button class="btn" data-go="acoes/pistas#${p.id}">Ver pista</button>`:`<button class="btn" ${det}>${dl}</button>`}<button class="btn ghost" data-why="${s.id}">Porquê?</button>
     ${noRasc&&noPub?`<span class="tag ok" data-tip="Este cartão faz parte do que o cliente vê agora.">No cliente</span>`:noRasc?`<span class="tag" data-tip="Está no rascunho da vista do cliente. Só chega ao cliente quando publicares.">No rascunho</span>`:noPub?`<span class="tag warn" data-tip="O cliente ainda vê este cartão. Sai quando publicares as alterações.">A retirar</span>`:""}
     <div class="more"><button class="btn ghost ico" data-cardmenu aria-haspopup="menu" aria-expanded="false" aria-label="Mais ações"><svg class="ic"><use href="#i-dots"/></svg></button>
@@ -63,7 +63,7 @@ function mainChartHTML(){
     const pr=D.procura.principais||D.procura.series.map(s=>s.id),ser=D.procura.series.filter(s=>pr.includes(s.id)),a0=W.a0,xl=i=>wLab(a0+i);
     const S2=ser.map(s=>({id:s.id,n:s.nome,c:procC(s,D.procura.series.indexOf(s)),d:s.valores.slice(a0,Z+1)})),ev=(D.eventos||[]).map(e=>({i:e.semana-a0,t:e.titulo}));
     later(()=>tsChart($("#mc"),{series:S2,type:"line",ymax:100,events:ev,xl,fmt:v=>nf(v),aria:"Interesse de pesquisa por tema"},true));
-    return cardHTML("Procura por tema",`Interesse de pesquisa em Portugal, de 0 a 100. <a href="#" data-go="procura" style="color:var(--brand-ink);font-weight:600">Abrir Procura e notícias</a>.`,`${legendHTML(S2,true)}<div class="cv" id="mc"></div>${tableHTML({series:S2,xl,fmt:nf})}`,"procura")}
+    return cardHTML("Procura por tema",`Interesse de pesquisa em Portugal, de 0 a 100. <a href="#" data-go="procura" style="color:var(--link);font-weight:600">Abrir Procura e notícias</a>.`,`${legendHTML(S2,true)}<div class="cv" id="mc"></div>${tableHTML({series:S2,xl,fmt:nf})}`,"procura")}
   return""}
 
 function detailHTML(){
@@ -113,7 +113,7 @@ function pageVisao(){
    ${secHTML("O que mudou esta semana",isCli()?"Os pontos que a equipa Arena escolheu destacar.":"O Radar lê os dados e aponta onde olhar. A pista sugere; a equipa decide.",sg?`${sinceHTML()}<div class="sgs">${sg}</div>`:isCli()?emptyHTML("Sem destaques esta semana","A equipa Arena não destacou nenhum ponto nesta edição."):semDados()?emptyHTML("Ainda sem dados ligados","Liga a Meta Ad Library, o Google Trends ou o Google News RSS (ver Fontes de dados). Sem dados, o Radar não inventa números."):emptyHTML("Sem sinais materiais esta semana","O Radar continua a observar. Isto também é informação."))}
    <div class="sec" style="margin-top:34px">${mainChartHTML()}</div>
    ${detailHTML()}`;
-  return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,esc(headline()),esc(leadText()))+body}
+  return pheadHTML(`${esc(D.cliente.nome)} · semana de ${D.calendario.rotulo_semana_atual}`,hlnum(esc(headline())),esc(leadText()),{hero:true})+body}
 
 document.addEventListener("click",e=>{const b=e.target.closest("[data-pubsg]");if(!b)return;const id=b.dataset.pubsg,i=D.pub.cartoes.indexOf(id);if(i<0)D.pub.cartoes.push(id);else D.pub.cartoes.splice(i,1);saveState();toast(i<0?"Cartão adicionado ao rascunho da vista do cliente. Só chega ao cliente quando publicares em Relatórios.":"Cartão retirado do rascunho da vista do cliente.");CUR.refresh()});
 

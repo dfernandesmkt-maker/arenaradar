@@ -15,7 +15,7 @@ function sealHTML(ids){if(SEAL_HIDE)return"";const s=SEAL_OV||sealInfo(ids);retu
 function renderSeal(){const el=$("#seal");if(el)el.outerHTML=sealHTML(USED)}
 const SEALTXT={demo:"Todos os blocos desta página usam dados de demonstração. Quando as fontes forem ligadas, o selo muda sozinho.",real:"Todos os blocos desta página vêm de fontes ligadas, com fonte e data de recolha.",estimado:"Os blocos desta página são reais ou estimados, com o método indicado.",misto:"Parte dos blocos desta página vem de fontes reais e parte é demonstração.",pendente:"Esta página ainda não tem dados ligados."};
 function openSeal(){const s=SEAL_OV||sealInfo(USED),pop=$("#pop");
-  pop.innerHTML=SEAL_OV?SEAL_OV.pop:`<h3>Origem dos dados desta página</h3><p class="s">${SEALTXT[s.o]}</p>${s.bl.map(b=>`<div class="bl"><b>${esc(b.rotulo)}</b><span class="seal" data-o="${b.origem}" style="height:22px;font-size:11px">${OL[b.origem]}</span><span class="m">${b.origem==="real"?`Fonte: ${esc(b.fonte||"—")} · recolha ${fmtDt(b.data_recolha)}`:b.origem==="demo"?"Dados simulados, sem fonte. Nunca atribuídos a entidades reais de terceiros.":""}${b.metodo?`<br>Método: ${esc(b.metodo)}`:""}</span></div>`).join("")}`;
+  pop.innerHTML=SEAL_OV?SEAL_OV.pop:`<h3>Origem dos dados desta página</h3><p class="s">${SEALTXT[s.o]}</p>${s.bl.map(b=>`<div class="bl"><b>${esc(b.rotulo)}</b><span class="seal" data-o="${b.origem}">${OL[b.origem]}</span><span class="m">${b.origem==="real"?`Fonte: ${esc(b.fonte||"—")} · recolha ${fmtDt(b.data_recolha)}`:b.origem==="demo"?"Dados simulados, sem fonte. Nunca atribuídos a entidades reais de terceiros.":""}${b.metodo?`<br>Método: ${esc(b.metodo)}`:""}</span></div>`).join("")}`;
   const r=$("#seal").getBoundingClientRect();pop.classList.add("on");pop.style.left=Math.max(12,Math.min(r.left,innerWidth-pop.offsetWidth-12))+"px";pop.style.top=Math.min(r.bottom+8,innerHeight-pop.offsetHeight-12)+"px"}
 document.addEventListener("click",e=>{if(e.target.closest("#seal")){$("#pop").classList.contains("on")?$("#pop").classList.remove("on"):openSeal();return}if(!e.target.closest("#pop"))$("#pop").classList.remove("on")});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#pop").classList.remove("on")});
@@ -34,7 +34,8 @@ function secHTML(title,desc,body,src,extra=""){if(src)use(src);return`<div class
 function cardHTML(title,desc,body,src,extra=""){if(src)use(src);
   const chart=/class="cv"/.test(body)&&!/id="gp"/.test(body),acts=chart?`<div class="cacts no-print"><button class="btn ghost sm" type="button" data-chartimg aria-label="Copiar o gráfico como imagem" data-tip="Copiar como imagem, com título e origem dos dados"><svg class="ic"><use href="#i-copy"/></svg><span>Copiar imagem</span></button>${isCli()?"":`<button class="btn ghost sm" type="button" data-addbrief data-tip="Acrescentar este ponto ao briefing semanal"><svg class="ic"><use href="#i-mail"/></svg><span>Ao briefing</span></button>`}</div>`:"";
   return`<div class="card" ${src?`data-srcid="${src}"`:""}><header><div><h2 class="t-h2">${title}</h2>${desc?`<p>${desc}</p>`:""}</div>${extra}${acts}</header>${body}${src?foot(src):""}</div>`}
-function pheadHTML(kick,title,lead,{sm=false}={}){return`<div class="phead ${sm?"sm":""}"><div class="kick"><span>${kick}</span><span id="sealslot">${sealHTML(USED)}</span></div><h1 class="t-display">${title}</h1>${lead?`<p class="lead">${lead}</p>`:""}</div>`}
+const hlnum=s=>String(s).replace(/(\d[\d\s]*(?:,\d+)?\s?(?:%|p\.p\.))/,'<em class="hn">$1</em>');
+function pheadHTML(kick,title,lead,{sm=false,hero=false}={}){return`<div class="phead ${sm?"sm":""} ${hero?"hero":""}"><div class="kick"><span>${kick}</span><span id="sealslot">${sealHTML(USED)}</span></div><h1 class="t-display">${title}</h1>${lead?`<p class="lead">${lead}</p>`:""}</div>`}
 
 /* ---------- Barra de filtros global (uma linha; cada filtro abre um painel; em telemóvel, uma folha «Filtros») ---------- */
 const FCFG={brands:false,platforms:false,compare:true}, FP={k:null};
@@ -90,7 +91,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
 const sigUnit=s=>s.categoria==="Quota de voz"?" p.p.":s.categoria==="Lançamento"?" criativos":"%";
 const plain=h=>String(h).replace(/<[^>]+>/g,"");
 function whyBlk(label,html){return`<div class="blk"><div class="t-xs">${label}</div>${html}</div>`}
-function whySrc(ids){const s=sealInfo(new Set(ids));return`<p class="why-src"><span class="seal" data-o="${s.o}" style="height:22px;font-size:11px">${esc(s.t)}</span></p>${ids.map(id=>BLK(id)?`<p class="t-sm muted" style="margin-top:6px">${srcTip(id)}</p>`:"").join("")}`}
+function whySrc(ids){const s=sealInfo(new Set(ids));return`<p class="why-src"><span class="seal" data-o="${s.o}">${esc(s.t)}</span></p>${ids.map(id=>BLK(id)?`<p class="t-sm muted" style="margin-top:6px">${srcTip(id)}</p>`:"").join("")}`}
 function openKpiWhy(k){const w=k.why;if(!w)return;
   openDrawer(`${drawerHead("Como se calcula")}<p class="why-t">${plain(k.l)}</p>
    <div class="blk"><div class="why-v">${k.v}</div><div class="sub" style="margin-top:4px">${k.sub||""}</div></div>
@@ -101,7 +102,7 @@ function openWhy(id){const s=D.sinais.find(x=>x.id===id);if(!s)return;
   const p=s.pista_id?D.pistas.find(x=>x.id===s.pista_id):null,ch=sigChart(s),u=sigUnit(s),d=v=>Math.abs(v)<10?1:0;
   const nums=s.detalhe?`<dl class="why-dl">${s.detalhe.map(x=>`<dt>${esc(x.rotulo)}</dt><dd>${nf(x.valor,x.dec)}${esc(x.sufixo)}</dd>`).join("")}${s.valor!=null?`<dt>Variação observada</dt><dd><b>${sgn(s.valor,d(s.valor))}${u}</b></dd>`:""}${s.limiar!=null?`<dt>Limiar do sinal</dt><dd>${nf(Math.abs(s.limiar),d(s.limiar))}${u}</dd>`:""}${s.valor_anterior!=null?`<dt>Na semana passada</dt><dd>${sgn(s.valor_anterior,d(s.valor_anterior))}${u}</dd>`:""}</dl>`:"";
   openDrawer(`${drawerHead("Porquê este sinal?")}<p class="why-t">${esc(s.titulo)}</p>
-   <div class="blk"><span class="tag ${s.material?"hi":""}">${s.material?"Acima do limiar":"Em observação"}</span>${s.novo?` <span class="tag nw">Novo esta semana</span>`:""}${s.hipotese?` <span class="tag">Hipótese</span>`:""}</div>
+   <div class="blk"><span class="tag ${s.material?"sig":""}">${s.material?"Acima do limiar":"Em observação"}</span>${s.novo?` <span class="tag nw">Novo esta semana</span>`:""}${s.hipotese?` <span class="tag">Hipótese</span>`:""}</div>
    ${s.regra?whyBlk("A regra",`<p>${esc(s.regra)}</p>`):""}
    ${nums?whyBlk("Os números"+(s.janela?`, ${esc(s.janela)}`:""),nums):""}
    ${ch?whyBlk("Últimas 12 semanas",`<div class="cv" id="whych" style="height:84px"></div>`):""}

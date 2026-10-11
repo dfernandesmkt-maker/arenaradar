@@ -42,6 +42,7 @@ function tsChart(host,o,anim){
       if(o.fill)s+=`<path d="${d} L${p[p.length-1][0].toFixed(1)},${y(0)} L${p[0][0].toFixed(1)},${y(0)}Z" style="fill:${z.c};opacity:.13"/>`;
       s+=`<path d="${d}" fill="none" style="stroke:${z.c};stroke-width:${z.w||(mini?2:2.4)};stroke-linecap:round;stroke-linejoin:round${o.dim&&o.dim!==z.id?";opacity:.18":""}"/>`})}});
   s+=`</g>`;
+  if(o.blip&&!bars){const z0=S[0],li=z0.d.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(li!=null)s+=`<circle class="blip" cx="${x(li).toFixed(1)}" cy="${y(top[0][li]).toFixed(1)}" r="4.5"/>`}
   if(o.end&&!mini&&W>=640&&S.length<=6){const ys=S.map((z,si)=>({z,y:stk?(y(top[si][n-1])+y(base[si][n-1]))/2:y(top[si][n-1])})).sort((a,b)=>a.y-b.y);for(let i=1;i<ys.length;i++)if(ys[i].y-ys[i-1].y<14)ys[i].y=ys[i-1].y+14;
    ys.forEach(q=>{s+=`<circle cx="${W-mr+10}" cy="${q.y}" r="4" style="fill:${q.z.c}"/><text class="elab" x="${W-mr+18}" y="${q.y+4}">${esc(q.z.n)}</text>`})}
   s+=`<g class="mk"></g><g class="hv"></g><rect class="hit" x="${ml}" y="0" width="${iw}" height="${H}"/></svg>`;

@@ -5,16 +5,16 @@
 function agSeal(){
   const cs=AG.clientes,real=cs.filter(c=>c.origens.includes("real")),all=cs.length;
   const o=real.length===0?"demo":real.length===all?"real":"misto",t=o==="demo"?"Demonstração":o==="real"?"Real":`Misto · ${real.length} de ${all} clientes com dados reais`;
-  const rows=cs.map(c=>{const r=c.origens.includes("real"),d=c.origens.includes("demo");const so=r&&d?"misto":r?"real":"demo";return`<div class="bl"><b>${esc(c.nome)}</b><span class="seal" data-o="${so}" style="height:22px;font-size:11px">${so==="misto"?"Misto":so==="real"?"Real":"Demonstração"}</span><span class="m">${c.ficticio?"Cliente fictício de demonstração.":"Cliente real: contexto com fonte e data; séries ainda simuladas onde a fonte não está ligada."}</span></div>`}).join("");
+  const rows=cs.map(c=>{const r=c.origens.includes("real"),d=c.origens.includes("demo");const so=r&&d?"misto":r?"real":"demo";return`<div class="bl"><b>${esc(c.nome)}</b><span class="seal" data-o="${so}">${so==="misto"?"Misto":so==="real"?"Real":"Demonstração"}</span><span class="m">${c.ficticio?"Cliente fictício de demonstração.":"Cliente real: contexto com fonte e data; séries ainda simuladas onde a fonte não está ligada."}</span></div>`}).join("");
   return{o,t,pop:`<h3>Origem dos dados desta página</h3><p class="s">A Torre agrega todos os clientes. Cada cliente mostra o seu próprio selo nas suas páginas.</p>${rows}`}}
-const pubSeal=d=>d.pub.pubd?(pubPend(d)?`<span class="seal" data-o="estimado" style="height:22px;font-size:11px">Alterações por publicar</span>`:`<span class="seal" data-o="real" style="height:22px;font-size:11px">Publicada a ${fmtShort(d.pub.pubd.quando)}</span>`):`<span class="muted t-sm">Por publicar</span>`;
+const pubSeal=d=>d.pub.pubd?(pubPend(d)?`<span class="seal" data-o="estimado">Alterações por publicar</span>`:`<span class="seal" data-o="real">Publicada a ${fmtShort(d.pub.pubd.quando)}</span>`):`<span class="muted t-sm">Por publicar</span>`;
 function pageTorre(){
   SEAL_OV=agSeal();
   const cs=AG.clientes,live=cs.map(c=>CLS[c.id]),sg=cs.reduce((s,c)=>s+c.sinais_material,0),pend=live.reduce((s,d)=>s+pistasPend(d),0);
   const kp=[["Clientes monitorizados",cs.length,`em ${AG.verticais.length} verticais`],["Sinais acima do limiar",sg,"esta semana"],["Pistas por decidir",pend,"a aguardar a equipa"],["Tempo médio até decidir","—","o histórico começa no piloto"]];
   const dec=live.reduce((s,d)=>s+pistasDecididas(d).length,0),cli=live.reduce((s,d)=>s+d.pistas.filter(p=>p.cli&&(p.s==="aceite"||p.s==="ajustada")).length,0);
   const agora={pistas_aceites:String(dec),acoes_cliente:String(cli)};
-  const rowFor=c=>{const o=c.origens.includes("real")&&c.origens.includes("demo")?"misto":c.origens.includes("real")?"real":"demo";return`<tr class="go" data-go="${c.id}/visao"><td style="font-weight:600">${esc(c.nome)}${c.ficticio?' <span class="tag">fictício</span>':""}</td><td class="n">${c.sinais_material}</td><td class="n">${pistasPend(CLS[c.id])}</td><td>${pubSeal(CLS[c.id])}</td><td><span class="seal" data-o="${o}" style="height:22px;font-size:11px">${o==="misto"?"Misto":o==="real"?"Real":"Demonstração"}</span></td></tr>`};
+  const rowFor=c=>{const o=c.origens.includes("real")&&c.origens.includes("demo")?"misto":c.origens.includes("real")?"real":"demo";return`<tr class="go" data-go="${c.id}/visao"><td style="font-weight:600">${esc(c.nome)}${c.ficticio?' <span class="tag">fictício</span>':""}</td><td class="n">${c.sinais_material}</td><td class="n">${pistasPend(CLS[c.id])}</td><td>${pubSeal(CLS[c.id])}</td><td><span class="seal" data-o="${o}">${o==="misto"?"Misto":o==="real"?"Real":"Demonstração"}</span></td></tr>`};
   const porV=AG.verticais.map(v=>{const cl=v.clientes.map(id=>cs.find(c=>c.id===id)),n=cl.reduce((s,c)=>s+c.sinais_material,0),c0=cl[0];
     later(()=>{const h=$(`.spark[data-v="${v.id}"]`);if(h)h.innerHTML=spark(c0.pulso,140,30)});
     return`<div class="panel vblock"><div class="vhead"><div><h3 class="t-h2">${esc(v.nome)}</h3><span class="t-sm muted">${c0.tipo_universo==="tema"?"Tema":"Concorrência, "+c0.n_entidades+" marcas"}</span></div><div class="spark" data-v="${v.id}"></div><span class="t-sm" style="font-weight:600">${n?`${n} ${n===1?"sinal":"sinais"} acima do limiar`:"Sem sinais acima do limiar"}</span></div>
@@ -25,7 +25,7 @@ function pageTorre(){
   const body=`<div class="kpis k5">${kp.map(k=>kpiHTML({l:k[0],v:`<span ${typeof k[1]==="number"?`data-count="${k[1]}"`:""}>${k[1]}</span>`,sub:`<span class="muted">${k[2]}</span>`})).join("")}</div>
    ${secHTML("Fila de decisões","Pistas à espera da equipa, em todos os clientes, por ordem sugerida: primeiro as da tua função, depois as de sinal mais forte. A plataforma sugere; a equipa decide.",filaHTML)}
    ${secHTML("Clientes por vertical","Cada vertical traz o seu conjunto de concorrentes por defeito (config/verticals/); o cliente herda e ajusta. «Concorrência» compara marcas; «Tema» acompanha a conversa pública quando a disputa é por atenção e não por quota.",`<div class="vblocks">${porV}</div>`)}`;
-  return pheadHTML(`Semana de ${AG.rotulo_semana_atual} · ${esc(AG.agencia.nome)}`,"Torre de controlo","O que mudou nos mercados dos nossos clientes, por vertical, e o que a equipa ainda tem por decidir.")+body}
+  return pheadHTML(`Semana de ${AG.rotulo_semana_atual} · ${esc(AG.agencia.nome)}`,"Torre de controlo","O que mudou nos mercados dos nossos clientes, por vertical, e o que a equipa ainda tem por decidir.",{hero:true})+body}
 
 /* ---------- Piloto: fases e critérios de sucesso (proposta, por validar com a direção) ---------- */
 function pagePiloto(){
