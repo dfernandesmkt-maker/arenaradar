@@ -1,6 +1,6 @@
 /* Deck da direção (RB-11): deliverables/arena-radar-direcao.pptx
    Guião: anexo de docs/00-ponto-de-situacao.md. Capturas: node scripts/deck/capturas.js (RB-10).
-   Inter em tudo (D22), cores Arena, logo oficial, notas do orador em todos os slides.
+   Poppins (D55, Brand Guidelines para PowerPoint), cores Arena, logo oficial, notas do orador em todos os slides.
    Uso: (cd scripts/deck && npm install) && node scripts/deck/gerar_deck.js */
 const path = require("path"), fs = require("fs");
 const pptxgen = require("pptxgenjs");
@@ -12,7 +12,7 @@ const SKILL_THEME = process.env.APPLY_THEME_JS; // opcional: caminho de um apply
 
 const THEME = {
   name: "Arena Radar",
-  headFontFace: "Inter", bodyFontFace: "Inter",
+  headFontFace: "Poppins", bodyFontFace: "Poppins",
   colors: { dk1: "0F2623", lt1: "FFFFFF", dk2: "4E5F5C", lt2: "F1F4F3",
             accent1: "328CF5", accent2: "FFDC32", accent3: "00B89B", accent4: "E60000", accent5: "733478", accent6: "1B6FD6",
             hlink: "1B6FD6", folHlink: "733478" },
@@ -110,7 +110,7 @@ pres.addSection({ title: "O produto" });
 s = pres.addSlide({ masterName: "CONTEUDO", sectionTitle: "O produto" });
 s.addText("O movimento da concorrência é o centro do Radar", { placeholder: "title" });
 const cx = 4.89, cy = 2.05, cw = 3.55, ch = 2.2;
-const attrs = [["Prova", "Criativos, série de preço, dados de pesquisa"], ["Porque importa", "Pontos de importância explicados, nunca uma caixa negra"],
+const attrs = [["Prova", "Criativos, série de preço, dados de pesquisa"], ["Porque importa", "Pontos explicados, nunca uma caixa negra"],
                ["O que vem a seguir", "O que a marca costuma fazer, pelo seu histórico"], ["Resposta combinada", "O que está acordado com o cliente; a equipa ativa"]];
 attrs.forEach(([t, b], i) => {
   const x = i < 2 ? M : W - M - 3.7, y = i % 2 ? 3.2 : 1.6;
@@ -158,9 +158,9 @@ s.addText("Ver o que vem aí, e o choque com o nosso plano", { placeholder: "tit
 const ih5 = 3.05, iw5 = ih5 * (2288 / 638);
 img(s, "antecipar.png", M, 1.45, iw5, ih5, "Captura das próximas 12 semanas");
 contorno(s, M, 1.45, iw5, ih5);
-legenda(s, M, 1.45 + ih5 + 0.08, W - 2 * M, DEMO + " Tracejado: o que se espera pelo histórico de cada marca. Última linha: o plano da Vetra.");
+legenda(s, M, 1.45 + ih5 + 0.08, W - 2 * M, DEMO + " Tracejado: o esperado pelo histórico. Última linha: o plano da Vetra.");
 const y5 = 1.45 + ih5 + 0.5, w5 = (W - 2 * M - 0.3) / 2, h5 = 6.7 - y5;
-[["Sinal precoce", "A Zefira começou a testar criativos com pouco alcance. No histórico, isso antecede a campanha de inverno em 2 semanas. A equipa prepara a resposta antes."],
+[["Sinal precoce", "A Zefira começou a testar criativos com pouco alcance. No histórico, isso antecede a campanha de inverno: a equipa prepara a resposta antes."],
  ["Choque com o plano", "A «Semana do Preço Certo» da Vetra cai na semana da Black Friday que a Kaldo faz todos os anos, no mesmo território. Ainda há tempo para mudar."]].forEach(([t, b], i) => {
   const x = M + i * (w5 + 0.3);
   card(s, x, y5, w5, h5, t);
@@ -176,7 +176,7 @@ s.addText("A plataforma sugere, a equipa decide", { placeholder: "title" });
 const ih6 = 4.95, iw6 = ih6 * (1572 / 1494);
 img(s, "resumo.png", M, 1.5, iw6, ih6, "Captura do resumo da semana");
 contorno(s, M, 1.5, iw6, ih6);
-legenda(s, M, 1.5 + ih6 + 0.08, iw6, DEMO);
+legenda(s, M, 1.5 + ih6 + 0.08, W - 2 * M, DEMO);
 const x6 = M + iw6 + 0.6, w6 = W - M - x6;
 [["Texto da IA sempre por rever", "O resumo e a classificação dos criativos podem ser feitos por IA. Ficam «por rever» até alguém da equipa os rever."],
  ["Nada sai sozinho", "O email para o cliente só se copia depois de revisto e sai assinado pela Arena. A plataforma nunca fala com o cliente."],
@@ -194,13 +194,13 @@ s = pres.addSlide({ masterName: "CONTEUDO", sectionTitle: "Estado e proposta" })
 s.addText("Protótipo completo; dados reais por provar", { placeholder: "title" });
 const EST = { ok: ["Feito", TINT.ok, TINT.okInk], wip: ["Em curso", TINT.wip, TINT.wipInk], todo: ["Por fazer", TINT.todo, TINT.todoInk] };
 const linhas = [
-  ["Conceito e estrutura (radar de movimentos)", "ok", "Especificação fechada para esta fase"],
+  ["Conceito e estrutura", "ok", "Especificação fechada para esta fase"],
   ["Protótipo de demonstração", "ok", "2 clientes fictícios, roteiro, telemóvel, contraste AA"],
-  ["Deteção, importância, previsões e choques", "wip", "Métodos prontos; por provar com dados reais"],
-  ["Resumo e classificação de criativos por IA", "wip", "Por regras na demonstração; IA depende de IT e Compliance"],
+  ["Deteção, previsões e choques", "wip", "Métodos prontos; por provar com dados reais"],
+  ["Resumo e classificação por IA", "wip", "Por regras na demonstração; IA depende de IT e Compliance"],
   ["Recolha de dados reais", "todo", "Pontos de entrada marcados; termos de uso por validar"],
-  ["Dados do cliente (pesquisa paga, plano de meios)", "todo", "Com autorização do cliente; ficam na agência"],
-  ["Partilha entre a equipa e stack de produção", "todo", "Decisão com o IT"],
+  ["Dados do cliente (pesquisa, plano)", "todo", "Com autorização do cliente; ficam na agência"],
+  ["Partilha na equipa e stack", "todo", "Decisão com o IT"],
 ];
 const hdr = o => Object.assign({ bold: true, color: C.background1, fill: { color: C.text1 }, fontSize: 13 }, o);
 const rows = [[{ text: "Componente", options: hdr() }, { text: "Estado", options: hdr() }, { text: "Nota", options: hdr() }]].concat(linhas.map(([a, e, n]) => [

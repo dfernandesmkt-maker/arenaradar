@@ -61,7 +61,7 @@ Criar `scripts/build_dataset.py`: lê `data/raw/**`, agrega por semana e gera `d
 `node scripts/deck/capturas.js` → `deliverables/capturas/*.png` (v4, 2x, tema claro): Agora, gaveta do movimento, resumo, Antecipar, plano, previsão, Torre.
 
 ### RB-11 · Deck da direção (PowerPoint) ✅
-`deliverables/arena-radar-direcao.pptx`, 9 slides segundo o guião em `00-ponto-de-situacao.md` (anexo). Inter (D22), cores Arena, logo oficial, notas do orador em todos os slides. Gerado por `scripts/deck/gerar_deck.js` (`cd scripts/deck && npm install`, depois `node scripts/deck/gerar_deck.js`). **Para apresentar, o computador precisa da fonte Inter instalada**; sem ela, o PowerPoint substitui por outra fonte e o texto pode mudar de largura.
+`deliverables/arena-radar-direcao.pptx`, 9 slides segundo o guião em `00-ponto-de-situacao.md` (anexo). Poppins (D55, Brand Guidelines), cores Arena, logo oficial, notas do orador em todos os slides. Gerado por `scripts/deck/gerar_deck.js` (`cd scripts/deck && npm install`, depois `node scripts/deck/gerar_deck.js`). **Para apresentar, o computador precisa da fonte Poppins instalada**; sem ela, o PowerPoint substitui por outra fonte e o texto pode mudar de largura.
 
 ### RB-119 · Ponto de situação reescrito para a v4 ✅
 `docs/00-ponto-de-situacao.md` e a visão geral do dossier passam a contar a história da v4: teste de dados reais de 2 semanas, piloto de 6, critérios, quatro pedidos.

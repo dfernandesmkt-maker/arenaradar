@@ -11,7 +11,7 @@
 | Q05 | Dados internos de clientes (ex.: chatbot): ficam fora do âmbito até haver parecer? | Compliance / cliente | Por confirmar |
 | Q06 | Que fontes oficiais ou licenciadas já estão disponíveis ao grupo para a fase de produção? | David / IT | Por confirmar |
 | Q07 | A conta de desenvolvimento atual é adequada para a demonstração com dados públicos? | IT | Por confirmar |
-| Q08 | As Brand Guidelines indicam Poppins. O Radar usa Inter em tudo (interface, apresentações e documentos do Radar). Marketing/Brand valida esta exceção? | Marketing / Brand | Por confirmar |
+| Q08 | As Brand Guidelines indicam Poppins. O Radar usa Inter na interface e nos documentos do Radar (os decks em PowerPoint já usam Poppins, D55). Marketing/Brand valida esta exceção? | Marketing / Brand | Por confirmar |
 | Q09 | Podem os clientes ter temas de cor próprios na ferramenta (uso de marcas de clientes), e em que condições? | Direção / Jurídico | Por confirmar |
 | Q10 | A Meta Ad Library API cobre anúncios comerciais entregues na UE, sem investimento nem segmentação. Confirmar na documentação atual os campos e a retenção, e se o grupo aprova o uso do token de programador | IT / Compliance | Por confirmar |
 | Q11 | Que fornecedor licenciado de ad intelligence ou de monitorização de investimento (ex.: Marktest AdCheck) está disponível ao grupo, e com que direitos de uso? | Direção / IT | Por confirmar |
